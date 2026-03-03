@@ -40,7 +40,7 @@
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
             max-width: 1000px;
-            margin: 0 auto;
+            margin: 0 auto 60px auto;
         }
 
         .feature-card {
@@ -90,43 +90,31 @@
             margin-top: 15px;
         }
 
-        .stats-banner {
-            background: rgba(255, 255, 255, 0.1);
+        /* ПУСТОЙ БЛОК ДЛЯ РЕКЛАМЫ — ТЫ САМ ЗАПОЛНИШЬ ПОТОМ */
+        .ad-space {
+            max-width: 1000px;
+            margin: 40px auto 0 auto;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.1);
             border-radius: 20px;
-            padding: 40px;
-            margin: 60px auto 0;
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 30px;
-            backdrop-filter: blur(5px);
-        }
-
-        .stat-item {
             text-align: center;
+            color: white;
+            font-size: 1.2em;
+            border: 2px dashed rgba(255,255,255,0.3);
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .stat-number {
-            font-size: 36px;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            opacity: 0.9;
-            color: white;
+        .ad-space::before {
+            content: "💰 Здесь будет реклама";
+            opacity: 0.7;
         }
 
         @media (max-width: 700px) {
             .hero h1 {
                 font-size: 2.5em;
-            }
-            
-            .stats-banner {
-                flex-direction: column;
-                text-align: center;
             }
         }
     </style>
@@ -173,56 +161,10 @@
             </a>
         </div>
 
-        <!-- Статистика -->
-        <div class="stats-banner">
-            <div class="stat-item">
-                <div class="stat-number" id="total-users">1,234</div>
-                <div class="stat-label">тестов сегодня</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="avg-cps">8.5</div>
-                <div class="stat-label">средний CPS</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="record-cps">32</div>
-                <div class="stat-label">рекорд CPS</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="double-rate">12%</div>
-                <div class="stat-label">мышей с дабл-кликом</div>
-            </div>
-        </div>
+        <!-- БЛОК ДЛЯ РЕКЛАМЫ (ПУСТОЙ, ТЫ ЗАПОЛНИШЬ ПОЗЖЕ) -->
+        <div class="ad-space"></div>
     </div>
 
     <script src="/assets/js/top-panel.js"></script>
-    
-    <script>
-        // Простая анимация счётчиков
-        document.addEventListener('DOMContentLoaded', () => {
-            const counters = [
-                { element: document.getElementById('total-users'), target: 1234, current: 1000 },
-                { element: document.getElementById('avg-cps'), target: 8.5, current: 7.2 },
-                { element: document.getElementById('record-cps'), target: 32, current: 28 },
-                { element: document.getElementById('double-rate'), target: 12, current: 8 }
-            ];
-            
-            counters.forEach(counter => {
-                const interval = setInterval(() => {
-                    if (counter.current < counter.target) {
-                        counter.current += (counter.target - counter.current) * 0.1;
-                        if (counter.element === document.getElementById('avg-cps') || 
-                            counter.element === document.getElementById('double-rate')) {
-                            counter.element.textContent = counter.current.toFixed(1) + 
-                                (counter.element === document.getElementById('double-rate') ? '%' : '');
-                        } else {
-                            counter.element.textContent = Math.round(counter.current);
-                        }
-                    } else {
-                        clearInterval(interval);
-                    }
-                }, 50);
-            });
-        });
-    </script>
 </body>
 </html>

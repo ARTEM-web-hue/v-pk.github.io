@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloudflare Speed Test - В ПК!</title>
+    <title>Speedtest от Ookla - В ПК!</title>
     
+    <!-- Подключаем стили топ-панели -->
     <link rel="stylesheet" href="/assets/css/top-panel.css">
     
     <style>
         body {
             margin: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #f6821f 0%, #f38020 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
         }
 
         .speedtest-container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 40px auto;
             padding: 30px;
             background: rgba(255, 255, 255, 0.95);
@@ -26,232 +27,99 @@
 
         h1 {
             text-align: center;
-            color: #2c3e50;
+            color: #1e3c72;
             font-size: 2.5em;
             margin-bottom: 10px;
         }
 
         .subtitle {
             text-align: center;
-            color: #7f8c8d;
-            margin-bottom: 40px;
+            color: #666;
+            margin-bottom: 30px;
             font-size: 1.1em;
         }
 
-        .cloudflare-badge {
+        .speedtest-badge {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            background: #f6821f;
+            gap: 15px;
+            background: #1e3c72;
             color: white;
-            padding: 10px 20px;
+            padding: 15px 25px;
             border-radius: 50px;
             width: fit-content;
             margin: 0 auto 30px;
             font-weight: bold;
+            font-size: 1.2em;
         }
 
-        .metrics-grid {
+        .speedtest-badge img {
+            height: 30px;
+        }
+
+        /* Контейнер для iframe */
+        .speedtest-frame {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 30px 0;
+        }
+
+        /* Результаты теста (будем парсить из iframe) */
+        .results-summary {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-            margin-bottom: 40px;
+            gap: 20px;
+            margin: 40px 0 20px;
         }
 
-        .metric-card {
-            background: white;
-            padding: 25px;
+        .result-card {
+            background: #f8f9fa;
+            padding: 20px;
             border-radius: 15px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             transition: transform 0.3s;
         }
 
-        .metric-card:hover {
+        .result-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        .metric-icon {
-            font-size: 40px;
-            margin-bottom: 15px;
-        }
-
-        .metric-label {
-            color: #7f8c8d;
-            font-size: 0.9em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .metric-value {
-            font-size: 2.5em;
-            font-weight: bold;
-            color: #2c3e50;
-            margin: 10px 0;
-        }
-
-        .metric-unit {
-            font-size: 0.9em;
-            color: #95a5a6;
-        }
-
-        .ping-card {
-            grid-column: span 3;
-            background: linear-gradient(135deg, #f6821f 0%, #f38020 100%);
-            color: white;
-        }
-
-        .ping-card .metric-label,
-        .ping-card .metric-value,
-        .ping-card .metric-unit {
-            color: white;
-        }
-
-        .control-panel {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin: 30px 0;
-        }
-
-        .btn {
-            padding: 15px 40px;
-            font-size: 1.2em;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #f6821f 0%, #f38020 100%);
-            color: white;
-            box-shadow: 0 10px 20px rgba(246, 130, 31, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(246, 130, 31, 0.4);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-secondary {
-            background: #ecf0f1;
-            color: #7f8c8d;
-        }
-
-        .btn-secondary:hover {
-            background: #bdc3c7;
-            color: white;
-        }
-
-        .status-panel {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-
-        .current-test {
-            font-size: 1.2em;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-
-        .progress-container {
-            margin: 20px 0;
-        }
-
-        .progress-bar {
-            height: 20px;
-            background: #ecf0f1;
-            border-radius: 10px;
-            overflow: hidden;
+        .result-icon {
+            font-size: 32px;
             margin-bottom: 10px;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #f6821f, #f38020);
-            width: 0%;
-            transition: width 0.3s;
-            border-radius: 10px;
-        }
-
-        .progress-details {
-            display: flex;
-            justify-content: space-between;
-            color: #7f8c8d;
-            font-size: 0.95em;
-        }
-
-        .latency-chart {
-            display: flex;
-            justify-content: space-around;
-            margin: 30px 0;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 15px;
-        }
-
-        .latency-item {
-            text-align: center;
-        }
-
-        .latency-label {
-            color: #7f8c8d;
-            font-size: 0.8em;
+        .result-label {
+            color: #666;
+            font-size: 0.9em;
             text-transform: uppercase;
         }
 
-        .latency-value {
-            font-size: 1.5em;
+        .result-value {
+            font-size: 1.8em;
             font-weight: bold;
-            color: #2c3e50;
+            color: #1e3c72;
+            margin: 5px 0;
         }
 
-        .jitter-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.8em;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-
-        .jitter-good {
-            background: #2ecc71;
-            color: white;
-        }
-
-        .jitter-ok {
-            background: #f39c12;
-            color: white;
-        }
-
-        .jitter-bad {
-            background: #e74c3c;
-            color: white;
+        .result-value span {
+            font-size: 0.5em;
+            color: #999;
         }
 
         .history-section {
             margin-top: 40px;
-            border-top: 2px solid #ecf0f1;
+            border-top: 2px solid #e0e0e0;
             padding-top: 30px;
         }
 
         .history-title {
-            color: #2c3e50;
+            color: #1e3c72;
             margin-bottom: 20px;
         }
 
@@ -265,21 +133,42 @@
         .history-item {
             display: flex;
             justify-content: space-between;
-            padding: 12px;
+            padding: 15px;
             background: #f8f9fa;
             margin-bottom: 8px;
             border-radius: 10px;
-            color: #2c3e50;
+            color: #333;
             font-size: 0.95em;
         }
 
+        .history-item .time {
+            color: #666;
+        }
+
+        .history-item .results {
+            font-weight: bold;
+            color: #1e3c72;
+        }
+
+        .btn-reset {
+            background: #1e3c72;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+
+        .btn-reset:hover {
+            background: #2a5298;
+        }
+
         @media (max-width: 700px) {
-            .metrics-grid {
+            .results-summary {
                 grid-template-columns: 1fr;
-            }
-            
-            .ping-card {
-                grid-column: span 1;
             }
             
             .speedtest-container {
@@ -290,454 +179,259 @@
             h1 {
                 font-size: 2em;
             }
-            
-            .control-panel {
-                flex-direction: column;
-            }
 
-            .latency-chart {
-                flex-direction: column;
-                gap: 15px;
+            .speedtest-frame {
+                height: 400px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Сюда вставится топ-панель -->
     <div id="top-panel-placeholder"></div>
 
     <div class="speedtest-container">
-        <h1>⚡ Cloudflare Speed Test</h1>
-        <div class="subtitle">Тест скорости на глобальной сети Cloudflare</div>
+        <h1>📡 Speedtest от Ookla</h1>
+        <div class="subtitle">Самый точный тест скорости интернета</div>
         
-        <div class="cloudflare-badge">
-            <span>🔒</span>
-            <span>Powered by Cloudflare</span>
+        <!-- Бейдж с официальной символикой -->
+        <div class="speedtest-badge">
+            <span>⚡</span>
+            <span>OOKLA SPEEDTEST</span>
             <span>🌐</span>
         </div>
 
-        <div class="metrics-grid">
-            <div class="metric-card ping-card">
-                <div class="metric-icon">⚡</div>
-                <div class="metric-label">ПИНГ</div>
-                <div class="metric-value" id="ping-value">—</div>
-                <div class="metric-unit">мс</div>
-            </div>
+        <!-- Официальный iframe от Speedtest.net -->
+        <iframe 
+            class="speedtest-frame" 
+            src="https://www.speedtest.net/embed/ru?settings=%7B%22background%22%3A%22white%22%2C%22buttonText%22%3A%22%22%2C%22startText%22%3A%22%D0%9D%D0%B0%D1%87%D0%B0%D1%82%D1%8C%20%D1%82%D0%B5%D1%81%D1%82%22%7D"
+            allow="geolocation"
+            loading="lazy">
+        </iframe>
 
-            <div class="metric-card">
-                <div class="metric-icon">⬇️</div>
-                <div class="metric-label">ВХОДЯЩАЯ</div>
-                <div class="metric-value" id="download-value">—</div>
-                <div class="metric-unit">Мбит/с</div>
+        <!-- Сохранённые результаты (парсим через postMessage) -->
+        <div class="results-summary">
+            <div class="result-card">
+                <div class="result-icon">📥</div>
+                <div class="result-label">Загрузка</div>
+                <div class="result-value" id="download-result">—</div>
             </div>
-
-            <div class="metric-card">
-                <div class="metric-icon">⬆️</div>
-                <div class="metric-label">ИСХОДЯЩАЯ</div>
-                <div class="metric-value" id="upload-value">—</div>
-                <div class="metric-unit">Мбит/с</div>
+            <div class="result-card">
+                <div class="result-icon">📤</div>
+                <div class="result-label">Отдача</div>
+                <div class="result-value" id="upload-result">—</div>
             </div>
-
-            <div class="metric-card">
-                <div class="metric-icon">📊</div>
-                <div class="metric-label">ПОТЕРИ</div>
-                <div class="metric-value" id="packet-loss">—</div>
-                <div class="metric-unit">%</div>
+            <div class="result-card">
+                <div class="result-icon">⚡</div>
+                <div class="result-label">Пинг</div>
+                <div class="result-value" id="ping-result">—</div>
             </div>
         </div>
 
-        <!-- Детальная информация о задержках -->
-        <div class="latency-chart" id="latency-chart">
-            <div class="latency-item">
-                <div class="latency-label">МИН</div>
-                <div class="latency-value" id="latency-min">—</div>
-            </div>
-            <div class="latency-item">
-                <div class="latency-label">СРЕД</div>
-                <div class="latency-value" id="latency-avg">—</div>
-            </div>
-            <div class="latency-item">
-                <div class="latency-label">МАКС</div>
-                <div class="latency-value" id="latency-max">—</div>
-            </div>
-            <div class="latency-item">
-                <div class="latency-label">ДЖИТТЕР</div>
-                <div class="latency-value" id="latency-jitter">—</div>
-            </div>
+        <!-- Кнопка сохранить результат -->
+        <div style="text-align: center; margin: 20px 0;">
+            <button class="btn-reset" id="save-result">💾 Сохранить результат</button>
         </div>
 
-        <div class="status-panel">
-            <div class="current-test" id="current-test-status">Готов к тестированию</div>
-            
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress-fill"></div>
-                </div>
-                <div class="progress-details">
-                    <span id="progress-stage">Ожидание</span>
-                    <span id="progress-percent">0%</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="control-panel">
-            <button class="btn btn-primary" id="start-test">🚀 Начать тест Cloudflare</button>
-            <button class="btn btn-secondary" id="reset-test">🔄 Сбросить</button>
-        </div>
-
+        <!-- История тестов -->
         <div class="history-section">
             <h3 class="history-title">📜 История тестов</h3>
             <ul class="history-list" id="history-list">
                 <li class="history-item">
-                    <span>Ещё нет данных</span>
-                    <span>—</span>
+                    <span class="time">Ещё нет данных</span>
+                    <span class="results">—</span>
                 </li>
             </ul>
+            <div style="text-align: right;">
+                <button class="btn-reset" id="clear-history">🔄 Очистить историю</button>
+            </div>
         </div>
     </div>
 
+    <!-- Подключаем скрипт топ-панели -->
     <script src="/assets/js/top-panel.js"></script>
     
     <script>
-        class CloudflareSpeedTest {
+        class SpeedtestWidget {
             constructor() {
-                this.history = [];
-                this.testInProgress = false;
-                
-                // Cloudflare тестовые файлы
-                this.cfTestUrls = {
-                    small: 'https://speed.cloudflare.com/__down?bytes=100000', // 100KB
-                    medium: 'https://speed.cloudflare.com/__down?bytes=1000000', // 1MB
-                    large: 'https://speed.cloudflare.com/__down?bytes=10000000', // 10MB
-                    upload: 'https://speed.cloudflare.com/__up'
-                };
+                this.history = this.loadHistory() || [];
+                this.currentResult = null;
                 
                 this.initElements();
                 this.addEventListeners();
+                this.setupMessageListener();
+                this.renderHistory();
             }
 
             initElements() {
-                this.pingEl = document.getElementById('ping-value');
-                this.downloadEl = document.getElementById('download-value');
-                this.uploadEl = document.getElementById('upload-value');
-                this.packetLossEl = document.getElementById('packet-loss');
-                this.latencyMin = document.getElementById('latency-min');
-                this.latencyAvg = document.getElementById('latency-avg');
-                this.latencyMax = document.getElementById('latency-max');
-                this.latencyJitter = document.getElementById('latency-jitter');
-                
-                this.startBtn = document.getElementById('start-test');
-                this.resetBtn = document.getElementById('reset-test');
-                this.progressFill = document.getElementById('progress-fill');
-                this.progressStage = document.getElementById('progress-stage');
-                this.progressPercent = document.getElementById('progress-percent');
-                this.currentStatus = document.getElementById('current-test-status');
+                this.downloadEl = document.getElementById('download-result');
+                this.uploadEl = document.getElementById('upload-result');
+                this.pingEl = document.getElementById('ping-result');
+                this.saveBtn = document.getElementById('save-result');
+                this.clearBtn = document.getElementById('clear-history');
                 this.historyList = document.getElementById('history-list');
+                this.speedtestFrame = document.querySelector('.speedtest-frame');
             }
 
             addEventListeners() {
-                this.startBtn.addEventListener('click', () => this.runCloudflareTest());
-                this.resetBtn.addEventListener('click', () => this.resetTest());
+                this.saveBtn.addEventListener('click', () => this.saveCurrentResult());
+                this.clearBtn.addEventListener('click', () => this.clearHistory());
             }
 
-            async runCloudflareTest() {
-                if (this.testInProgress) return;
-                
-                this.testInProgress = true;
-                this.startBtn.disabled = true;
-                
-                try {
-                    // Сбор данных для статистики
-                    const pings = [];
-                    
-                    // Шаг 1: Подготовка
-                    this.updateProgress(5, 'Подготовка', 'Подключение к Cloudflare...');
-                    this.currentStatus.textContent = 'Инициализация теста...';
-                    
-                    // Шаг 2: Тест пинга (10 замеров)
-                    this.updateProgress(10, 'Пинг', 'Измерение задержки...');
-                    
-                    for (let i = 0; i < 10; i++) {
-                        const ping = await this.measurePing();
-                        pings.push(ping);
-                        
-                        // Обновляем текущий пинг
-                        const currentAvg = Math.round(pings.reduce((a, b) => a + b, 0) / pings.length);
-                        this.pingEl.textContent = currentAvg;
-                        
-                        this.updateProgress(
-                            10 + (i * 3), 
-                            'Пинг', 
-                            `Замер ${i + 1}/10 (${ping} мс)`
-                        );
-                        
-                        await this.sleep(200);
+            setupMessageListener() {
+                // Слушаем сообщения от iframe Speedtest
+                window.addEventListener('message', (event) => {
+                    // Проверяем, что сообщение от Speedtest
+                    if (event.origin.includes('speedtest.net')) {
+                        try {
+                            const data = JSON.parse(event.data);
+                            if (data && data.type === 'speedtest' && data.data) {
+                                this.updateResults(data.data);
+                            }
+                        } catch (e) {
+                            // Не JSON, игнорируем
+                        }
                     }
-                    
-                    // Рассчитываем статистику пинга
-                    const pingStats = this.calculatePingStats(pings);
-                    this.updateLatencyInfo(pingStats);
-                    
-                    // Шаг 3: Тест загрузки (входящая скорость)
-                    this.updateProgress(40, 'Загрузка', 'Тестирование входящей скорости...');
-                    
-                    // Сначала маленький файл для разогрева
-                    await this.measureDownload('small');
-                    
-                    // Затем средний файл для точности
-                    const downloadSpeed = await this.measureDownload('medium');
-                    this.downloadEl.textContent = downloadSpeed.toFixed(1);
-                    
-                    this.updateProgress(70, 'Загрузка', `Скорость: ${downloadSpeed.toFixed(1)} Мбит/с`);
-                    
-                    // Шаг 4: Тест отдачи (исходящая скорость)
-                    this.updateProgress(80, 'Отдача', 'Тестирование исходящей скорости...');
-                    
-                    const uploadSpeed = await this.measureUpload();
-                    this.uploadEl.textContent = uploadSpeed.toFixed(1);
-                    
-                    // Шаг 5: Проверка потери пакетов
-                    this.updateProgress(95, 'Потери', 'Проверка стабильности...');
-                    
-                    const packetLoss = await this.measurePacketLoss();
-                    this.packetLossEl.textContent = packetLoss.toFixed(1);
-                    
-                    // Сохраняем результат
-                    this.addToHistory({
-                        ping: pingStats.avg,
-                        download: downloadSpeed,
-                        upload: uploadSpeed,
-                        packetLoss: packetLoss,
-                        jitter: pingStats.jitter,
-                        time: new Date().toLocaleTimeString(),
-                        date: new Date().toLocaleDateString()
-                    });
-                    
-                    this.updateProgress(100, 'Завершено', 'Тест окончен!');
-                    this.currentStatus.textContent = '✅ Тест успешно завершен!';
-                    
-                } catch (error) {
-                    console.error('Ошибка теста Cloudflare:', error);
-                    this.currentStatus.textContent = '❌ Ошибка тестирования';
-                } finally {
-                    this.testInProgress = false;
-                    this.startBtn.disabled = false;
-                    
-                    setTimeout(() => {
-                        this.progressFill.style.width = '0%';
-                        this.progressStage.textContent = 'Ожидание';
-                        this.progressPercent.textContent = '0%';
-                    }, 2000);
-                }
-            }
-
-            measurePing() {
-                return new Promise((resolve) => {
-                    const start = Date.now();
-                    const img = new Image();
-                    
-                    const timeout = setTimeout(() => {
-                        resolve(999);
-                    }, 3000);
-                    
-                    img.onload = () => {
-                        clearTimeout(timeout);
-                        const ping = Date.now() - start;
-                        resolve(ping);
-                    };
-                    
-                    img.onerror = () => {
-                        clearTimeout(timeout);
-                        resolve(999);
-                    };
-                    
-                    // Используем Cloudflare CDN
-                    img.src = 'https://cloudflare.com/favicon.ico?v=' + Date.now() + Math.random();
                 });
             }
 
-            measureDownload(size) {
-                return new Promise((resolve) => {
-                    const url = this.cfTestUrls[size];
-                    const bytes = parseInt(url.match(/bytes=(\d+)/)[1]);
-                    
-                    const start = Date.now();
-                    const xhr = new XMLHttpRequest();
-                    
-                    xhr.onprogress = (event) => {
-                        if (event.lengthComputable) {
-                            const loaded = event.loaded;
-                            const timeElapsed = (Date.now() - start) / 1000;
-                            const speedBps = (loaded * 8) / timeElapsed;
-                            const speedMbps = speedBps / (1024 * 1024);
-                            
-                            // Обновляем скорость в реальном времени
-                            this.downloadEl.textContent = speedMbps.toFixed(1);
-                        }
-                    };
-                    
-                    xhr.onload = () => {
-                        const duration = (Date.now() - start) / 1000;
-                        const speedMbps = (bytes * 8) / (1024 * 1024) / duration;
-                        resolve(speedMbps);
-                    };
-                    
-                    xhr.onerror = () => {
-                        resolve(25 + Math.random() * 50); // Резервное значение
-                    };
-                    
-                    xhr.open('GET', url + '&t=' + Date.now(), true);
-                    xhr.send();
-                });
-            }
-
-            measureUpload() {
-                return new Promise((resolve) => {
-                    // Создаем тестовые данные (1MB)
-                    const testData = new Blob([new ArrayBuffer(1024 * 1024)]);
-                    
-                    const start = Date.now();
-                    const xhr = new XMLHttpRequest();
-                    
-                    xhr.upload.onprogress = (event) => {
-                        if (event.lengthComputable) {
-                            const loaded = event.loaded;
-                            const timeElapsed = (Date.now() - start) / 1000;
-                            const speedBps = (loaded * 8) / timeElapsed;
-                            const speedMbps = speedBps / (1024 * 1024);
-                            
-                            this.uploadEl.textContent = speedMbps.toFixed(1);
-                        }
-                    };
-                    
-                    xhr.onload = () => {
-                        const duration = (Date.now() - start) / 1000;
-                        const speedMbps = (testData.size * 8) / (1024 * 1024) / duration;
-                        resolve(speedMbps);
-                    };
-                    
-                    xhr.onerror = () => {
-                        // Резервное значение на основе download скорости
-                        const download = parseFloat(this.downloadEl.textContent) || 30;
-                        resolve(download * 0.7);
-                    };
-                    
-                    xhr.open('POST', this.cfTestUrls.upload, true);
-                    xhr.send(testData);
-                });
-            }
-
-            measurePacketLoss() {
-                return new Promise((resolve) => {
-                    // Симуляция потери пакетов на основе пинга
-                    const ping = parseInt(this.pingEl.textContent) || 50;
-                    
-                    let loss;
-                    if (ping < 30) loss = 0.1;
-                    else if (ping < 60) loss = 0.5;
-                    else if (ping < 100) loss = 1.0;
-                    else loss = 2.5;
-                    
-                    setTimeout(() => resolve(loss), 500);
-                });
-            }
-
-            calculatePingStats(pings) {
-                const validPings = pings.filter(p => p < 1000);
-                if (validPings.length === 0) {
-                    return { min: 0, max: 0, avg: 0, jitter: 0 };
+            updateResults(data) {
+                // Парсим результаты из iframe
+                if (data.download) {
+                    const downloadMbps = (data.download / 1000000).toFixed(1);
+                    this.downloadEl.innerHTML = `${downloadMbps} <span>Мбит/с</span>`;
                 }
                 
-                const min = Math.min(...validPings);
-                const max = Math.max(...validPings);
-                const avg = Math.round(validPings.reduce((a, b) => a + b, 0) / validPings.length);
-                
-                // Расчет джиттера
-                let jitterSum = 0;
-                for (let i = 1; i < validPings.length; i++) {
-                    jitterSum += Math.abs(validPings[i] - validPings[i-1]);
-                }
-                const jitter = Math.round(jitterSum / (validPings.length - 1));
-                
-                return { min, max, avg, jitter };
-            }
-
-            updateLatencyInfo(stats) {
-                this.latencyMin.textContent = stats.min;
-                this.latencyAvg.textContent = stats.avg;
-                this.latencyMax.textContent = stats.max;
-                this.latencyJitter.textContent = stats.jitter;
-                
-                // Добавляем цветной бейдж для джиттера
-                const jitterValue = stats.jitter;
-                let jitterClass = 'jitter-good';
-                let jitterText = 'Стабильно';
-                
-                if (jitterValue > 30) {
-                    jitterClass = 'jitter-bad';
-                    jitterText = 'Нестабильно';
-                } else if (jitterValue > 15) {
-                    jitterClass = 'jitter-ok';
-                    jitterText = 'Средне';
+                if (data.upload) {
+                    const uploadMbps = (data.upload / 1000000).toFixed(1);
+                    this.uploadEl.innerHTML = `${uploadMbps} <span>Мбит/с</span>`;
                 }
                 
-                // Можно добавить бейдж рядом с джиттером
+                if (data.ping) {
+                    this.pingEl.innerHTML = `${data.ping} <span>мс</span>`;
+                }
+
+                // Сохраняем текущий результат
+                this.currentResult = {
+                    download: data.download ? (data.download / 1000000).toFixed(1) : '—',
+                    upload: data.upload ? (data.upload / 1000000).toFixed(1) : '—',
+                    ping: data.ping || '—',
+                    time: new Date().toLocaleTimeString(),
+                    date: new Date().toLocaleDateString()
+                };
             }
 
-            updateProgress(percent, stage, detail) {
-                this.progressFill.style.width = percent + '%';
-                this.progressStage.textContent = stage;
-                this.progressPercent.textContent = percent + '%';
-                this.currentStatus.textContent = detail;
-            }
+            saveCurrentResult() {
+                if (!this.currentResult) {
+                    alert('Сначала проведите тест скорости!');
+                    return;
+                }
 
-            sleep(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
-
-            addToHistory(result) {
-                this.history.unshift(result);
+                this.history.unshift(this.currentResult);
+                
+                // Оставляем только последние 10 записей
                 if (this.history.length > 10) {
                     this.history.pop();
                 }
+                
+                this.saveHistory();
                 this.renderHistory();
+            }
+
+            saveHistory() {
+                localStorage.setItem('speedtest_history', JSON.stringify(this.history));
+            }
+
+            loadHistory() {
+                const saved = localStorage.getItem('speedtest_history');
+                return saved ? JSON.parse(saved) : [];
             }
 
             renderHistory() {
                 if (this.history.length === 0) {
-                    this.historyList.innerHTML = '<li class="history-item"><span>Ещё нет данных</span><span>—</span></li>';
+                    this.historyList.innerHTML = '<li class="history-item"><span class="time">Ещё нет данных</span><span class="results">—</span></li>';
                     return;
                 }
                 
                 this.historyList.innerHTML = this.history.map(item => `
                     <li class="history-item">
-                        <span>${item.date} ${item.time}</span>
-                        <span>
-                            ⚡${item.ping}мс | 
-                            ⬇️${item.download.toFixed(1)} | 
-                            ⬆️${item.upload.toFixed(1)} | 
-                            📊${item.packetLoss}%
-                        </span>
+                        <span class="time">${item.date} ${item.time}</span>
+                        <span class="results">⬇️ ${item.download} | ⬆️ ${item.upload} | ⚡ ${item.ping}</span>
                     </li>
                 `).join('');
             }
 
-            resetTest() {
-                this.history = [];
-                this.pingEl.textContent = '—';
-                this.downloadEl.textContent = '—';
-                this.uploadEl.textContent = '—';
-                this.packetLossEl.textContent = '—';
-                this.latencyMin.textContent = '—';
-                this.latencyAvg.textContent = '—';
-                this.latencyMax.textContent = '—';
-                this.latencyJitter.textContent = '—';
-                this.currentStatus.textContent = 'Готов к тестированию';
-                this.renderHistory();
+            clearHistory() {
+                if (confirm('Очистить всю историю тестов?')) {
+                    this.history = [];
+                    localStorage.removeItem('speedtest_history');
+                    this.renderHistory();
+                }
             }
         }
 
+        // Дополнительный вариант: кнопка для ручного ввода результатов
+        class ManualResult {
+            constructor() {
+                this.addManualInput();
+            }
+
+            addManualInput() {
+                const container = document.querySelector('.results-summary');
+                if (!container) return;
+
+                const manualDiv = document.createElement('div');
+                manualDiv.style.marginTop = '20px';
+                manualDiv.style.padding = '20px';
+                manualDiv.style.background = '#f0f0f0';
+                manualDiv.style.borderRadius = '10px';
+                manualDiv.innerHTML = `
+                    <h4 style="margin:0 0 15px; color:#1e3c72;">✏️ Ручной ввод</h4>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:15px;">
+                        <input type="number" id="manual-download" placeholder="Загрузка Мбит/с" style="padding:8px; border:1px solid #ccc; border-radius:5px;">
+                        <input type="number" id="manual-upload" placeholder="Отдача Мбит/с" style="padding:8px; border:1px solid #ccc; border-radius:5px;">
+                        <input type="number" id="manual-ping" placeholder="Пинг мс" style="padding:8px; border:1px solid #ccc; border-radius:5px;">
+                    </div>
+                    <button id="manual-save" style="background:#1e3c72; color:white; border:none; padding:8px 20px; border-radius:5px; cursor:pointer;">Сохранить</button>
+                `;
+                
+                container.appendChild(manualDiv);
+
+                document.getElementById('manual-save').addEventListener('click', () => {
+                    const download = document.getElementById('manual-download').value;
+                    const upload = document.getElementById('manual-upload').value;
+                    const ping = document.getElementById('manual-ping').value;
+
+                    if (download && upload && ping) {
+                        const result = {
+                            download: download,
+                            upload: upload,
+                            ping: ping,
+                            time: new Date().toLocaleTimeString(),
+                            date: new Date().toLocaleDateString()
+                        };
+
+                        // Используем глобальный экземпляр SpeedtestWidget
+                        if (window.speedtest) {
+                            window.speedtest.currentResult = result;
+                            window.speedtest.saveCurrentResult();
+                            
+                            // Очищаем поля
+                            document.getElementById('manual-download').value = '';
+                            document.getElementById('manual-upload').value = '';
+                            document.getElementById('manual-ping').value = '';
+                        }
+                    } else {
+                        alert('Заполните все поля!');
+                    }
+                });
+            }
+        }
+
+        // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', () => {
-            new CloudflareSpeedTest();
+            window.speedtest = new SpeedtestWidget();
+            new ManualResult();
         });
     </script>
 </body>

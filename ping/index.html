@@ -85,6 +85,18 @@
             font-size: 0.9em;
         }
 
+        .ping-good {
+            color: #27ae60 !important;
+        }
+        
+        .ping-ok {
+            color: #f39c12 !important;
+        }
+        
+        .ping-bad {
+            color: #e74c3c !important;
+        }
+
         .control-panel {
             display: flex;
             gap: 15px;
@@ -195,18 +207,18 @@
 
     <div class="speedtest-container">
         <h1>📡 Пинг и скорость</h1>
-        <div class="subtitle">Измерение задержки и скорости загрузки</div>
+        <div class="subtitle">Измерение задержки до Яндекса и скорости загрузки</div>
 
         <!-- Информация о тестовом файле -->
         <div class="file-info">
-            <strong>Тестовый файл:</strong> samokat.ru/images/logo.svg
+            <strong>Тестовый файл:</strong> Яндекс.jQuery (30KB)
         </div>
 
-        <!-- Метрики: только пинг и скорость -->
+        <!-- Метрики -->
         <div class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-icon">⚡</div>
-                <div class="metric-label">ПИНГ</div>
+                <div class="metric-label">ПИНГ (МИН)</div>
                 <div class="metric-value" id="ping-value">—</div>
                 <div class="metric-unit">миллисекунды</div>
             </div>
@@ -257,10 +269,11 @@
     <script>
         class PingSpeedTest {
             constructor() {
-                // Твой тестовый файл с samokat.ru
+                // Тестовый файл Яндекса
                 this.testFile = {
                     url: 'https://yastatic.net/jquery/3.3.1/jquery.min.js',
-                    name: 'jquery.min.js'
+                    name: 'jquery.min.js',
+                    size: 30 * 1024 // 30KB
                 };
                 
                 this.history = JSON.parse(localStorage.getItem('ping_history')) || [];
@@ -269,9 +282,6 @@
                 this.initElements();
                 this.addEventListeners();
                 this.renderHistory();
-                
-                // Получаем размер файла при загрузке
-                this.getFileSize();
             }
 
             initElements() {
@@ -292,24 +302,6 @@
                 this.clearBtn.addEventListener('click', () => this.clearHistory());
             }
 
-            async getFileSize() {
-                try {
-                    // Пробуем узнать размер файла через HEAD-запрос
-                    const response = await fetch(this.testFile.url, { method: 'HEAD' });
-                    const size = response.headers.get('content-length');
-                    
-                    if (size) {
-                        this.fileSize = parseInt(size);
-                        this.testFile.size = this.fileSize;
-                        console.log('Размер файла:', this.fileSize, 'байт');
-                    }
-                } catch (error) {
-                    console.log('Не удалось получить размер файла, используем оценку');
-                    // Если не получилось, используем типичный размер SVG
-                    this.fileSize = 15 * 1024; // 15KB (примерно)
-                }
-            }
-
             async runTest() {
                 if (this.testInProgress) return;
                 
@@ -317,7 +309,7 @@
                 this.startBtn.disabled = true;
                 
                 try {
-                    // 1. ТЕСТ ПИНГА (5 замеров)
+                    // 1. ТЕСТ ПИНГА (5 замеров, показываем минимальный)
                     await this.runPingTest();
                     
                     // 2. ТЕСТ СКОРОСТИ
@@ -346,27 +338,31 @@
             }
 
             async runPingTest() {
-                this.statusText.textContent = '📡 Измеряем пинг...';
-                this.progressDetail.textContent = 'Замер 1/5';
+                this.statusText.textContent = '📡 Измеряем пинг до Яндекса...';
                 
                 const pings = [];
+                const attempts = 5;
                 
-                for (let i = 0; i < 5; i++) {
+                for (let i = 0; i < attempts; i++) {
                     const ping = await this.measurePing();
                     pings.push(ping);
                     
-                    // Показываем средний пинг в реальном времени
-                    const avgPing = Math.round(pings.reduce((a, b) => a + b, 0) / pings.length);
-                    this.pingEl.textContent = avgPing;
+                    // Показываем МИНИМАЛЬНЫЙ пинг (как в Яндекс.Интернетометре)
+                    const minPing = Math.min(...pings);
+                    this.pingEl.textContent = minPing;
                     
-                    this.progressFill.style.width = (i * 20) + '%';
-                    this.progressDetail.textContent = `Замер ${i+1}/5 (${ping} мс)`;
+                    // Добавляем цвет в зависимости от пинга
+                    this.colorizePing(minPing);
                     
-                    await this.sleep(300);
+                    this.progressFill.style.width = ((i + 1) * 8) + '%';
+                    this.progressDetail.textContent = `Замер ${i+1}/${attempts} (текущий: ${ping} мс, мин: ${minPing} мс)`;
+                    
+                    await this.sleep(200);
                 }
                 
-                const finalPing = Math.round(pings.reduce((a, b) => a + b, 0) / pings.length);
+                const finalPing = Math.min(...pings);
                 this.pingEl.textContent = finalPing;
+                this.colorizePing(finalPing);
                 this.progressFill.style.width = '40%';
             }
 
@@ -376,8 +372,8 @@
                     const img = new Image();
                     
                     const timeout = setTimeout(() => {
-                        resolve(999);
-                    }, 3000);
+                        resolve(1000); // Таймаут - плохой пинг
+                    }, 2000);
                     
                     img.onload = () => {
                         clearTimeout(timeout);
@@ -390,21 +386,28 @@
                         resolve(999);
                     };
                     
-                    // Используем разные URL для избежания кеша
-                    const urls = [
-                        'https://ya.ru/favicon.ico',
-                        'https://mail.ru/favicon.ico',
-                        'https://github.com/favicon.ico'
-                    ];
-                    
-                    const url = urls[Math.floor(Math.random() * urls.length)];
-                    img.src = url + '?v=' + Date.now();
+                    // Используем favicon Яндекса (очень легкий файл)
+                    img.src = 'https://yastatic.net/favicon.ico?v=' + Date.now() + Math.random();
                 });
+            }
+
+            colorizePing(ping) {
+                // Убираем предыдущие классы
+                this.pingEl.classList.remove('ping-good', 'ping-ok', 'ping-bad');
+                
+                // Добавляем класс в зависимости от пинга
+                if (ping < 30) {
+                    this.pingEl.classList.add('ping-good'); // Зеленый
+                } else if (ping < 70) {
+                    this.pingEl.classList.add('ping-ok'); // Оранжевый
+                } else {
+                    this.pingEl.classList.add('ping-bad'); // Красный
+                }
             }
 
             async runSpeedTest() {
                 this.statusText.textContent = '⬇️ Измеряем скорость...';
-                this.progressDetail.textContent = 'Загрузка файла...';
+                this.progressDetail.textContent = 'Загрузка jQuery...';
                 
                 return new Promise((resolve, reject) => {
                     const start = Date.now();
@@ -412,29 +415,26 @@
                     const xhr = new XMLHttpRequest();
                     
                     xhr.onprogress = (event) => {
-                        if (event.lengthComputable && this.fileSize) {
-                            const percent = (event.loaded / this.fileSize) * 40 + 40; // 40-80%
+                        if (event.lengthComputable) {
+                            const percent = (event.loaded / this.testFile.size) * 40 + 40;
                             this.progressFill.style.width = percent + '%';
                             
-                            // Показываем текущую скорость
                             const timeElapsed = (Date.now() - start) / 1000;
                             const currentSpeed = (event.loaded * 8) / (1024 * 1024) / timeElapsed;
-                            this.speedEl.textContent = currentSpeed.toFixed(1);
+                            if (currentSpeed > 0 && currentSpeed < 1000) {
+                                this.speedEl.textContent = currentSpeed.toFixed(1);
+                            }
                         }
                     };
                     
                     xhr.onload = () => {
                         const duration = (Date.now() - start) / 1000;
                         
-                        // Пытаемся получить размер из заголовков
+                        // Получаем реальный размер из заголовков
+                        let fileSize = this.testFile.size;
                         const contentLength = xhr.getResponseHeader('content-length');
-                        let fileSize = this.fileSize;
-                        
                         if (contentLength) {
                             fileSize = parseInt(contentLength);
-                        } else {
-                            // Если не получилось, используем размер ответа
-                            fileSize = xhr.responseText.length;
                         }
                         
                         const speedMbps = (fileSize * 8) / (1024 * 1024) / duration;
@@ -488,6 +488,7 @@
 
             resetTest() {
                 this.pingEl.textContent = '—';
+                this.pingEl.classList.remove('ping-good', 'ping-ok', 'ping-bad');
                 this.speedEl.textContent = '—';
                 this.statusText.textContent = 'Нажмите "Начать тест"';
                 this.progressFill.style.width = '0%';

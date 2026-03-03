@@ -39,7 +39,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto 60px auto;
         }
 
@@ -90,7 +90,6 @@
             margin-top: 15px;
         }
 
-        /* ПУСТОЙ БЛОК ДЛЯ РЕКЛАМЫ — ТЫ САМ ЗАПОЛНИШЬ ПОТОМ */
         .ad-space {
             max-width: 1000px;
             margin: 40px auto 0 auto;
@@ -116,6 +115,11 @@
             .hero h1 {
                 font-size: 2.5em;
             }
+            
+            .main-nav {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
     </style>
 </head>
@@ -127,6 +131,17 @@
         <p>Тесты для геймеров и не только 🎮</p>
 
         <div class="features-grid">
+            <!-- Пинг -->
+            <a href="/ping/" class="feature-card">
+                <div class="feature-icon">📡</div>
+                <div class="feature-title">Пинг и скорость</div>
+                <div class="feature-desc">
+                    Проверка задержки и скорости интернета.
+                    Реальные замеры!
+                </div>
+                <div class="feature-tag">Интернет</div>
+            </a>
+
             <!-- CPS ЛКМ -->
             <a href="/cps-lkm/" class="feature-card">
                 <div class="feature-icon">🖱️</div>
@@ -158,6 +173,28 @@
                     Быстрый тест за 10 кликов!
                 </div>
                 <div class="feature-tag">Диагностика</div>
+            </a>
+
+            <!-- Тест реакции -->
+            <a href="/reaction/" class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Тест реакции</div>
+                <div class="feature-desc">
+                    Измерь скорость своей реакции.
+                    Жди смены цвета и кликай!
+                </div>
+                <div class="feature-tag">Новый</div>
+            </a>
+
+            <!-- Автокликеры -->
+            <a href="/autoclickers/" class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <div class="feature-title">Автокликеры</div>
+                <div class="feature-desc">
+                    Программы для автоматических кликов.
+                    Скачать и настроить.
+                </div>
+                <div class="feature-tag">Софт</div>
             </a>
         </div>
 

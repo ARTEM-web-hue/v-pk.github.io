@@ -63,17 +63,10 @@
 
         .click-button:active {
             transform: scale(0.95);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.6);
         }
 
         .click-button.waiting {
             background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-            cursor: not-allowed;
-        }
-
-        .click-button.ready {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            cursor: pointer;
         }
 
         .click-button.active {
@@ -213,7 +206,7 @@
         .stability-fill {
             height: 100%;
             background: linear-gradient(90deg, #27ae60, #f1c40f, #e74c3c);
-            width: 0%;
+            width: 100%;
             transition: width 0.3s;
         }
 
@@ -249,13 +242,6 @@
             font-weight: bold;
         }
 
-        .control-panel {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin: 20px 0;
-        }
-
         .btn {
             padding: 12px 30px;
             font-size: 1.1em;
@@ -264,6 +250,7 @@
             cursor: pointer;
             transition: all 0.3s;
             font-weight: bold;
+            margin: 5px;
         }
 
         .btn-primary {
@@ -306,13 +293,13 @@
 
     <div class="cps-container">
         <h1>🖱️ CPS ЛКМ тест</h1>
-        <div class="subtitle">Проверь скорость кликов левой кнопкой мыши</div>
+        <div class="subtitle">Просто начни кликать по кнопке</div>
 
         <!-- Основное игровое поле -->
         <div class="game-area">
             <div class="click-button" id="click-button">
                 <div class="main-text" id="main-text">10s</div>
-                <div class="sub-text" id="sub-text">Нажми, чтобы начать</div>
+                <div class="sub-text" id="sub-text">Кликни чтобы начать</div>
             </div>
         </div>
 
@@ -377,10 +364,9 @@
             <div class="stability-text" id="stability-text">Отлично!</div>
         </div>
 
-        <!-- Кнопки управления -->
-        <div class="control-panel">
-            <button class="btn btn-primary" id="start-test">🚀 Начать тест</button>
-            <button class="btn btn-secondary" id="reset-test">🔄 Сбросить</button>
+        <!-- Кнопка сброса (старт убрали) -->
+        <div style="text-align: center;">
+            <button class="btn btn-secondary" id="reset-test">🔄 Сбросить тест</button>
         </div>
 
         <!-- Последние результаты -->
@@ -397,25 +383,25 @@
     <script>
         class CPSTest {
             constructor() {
-                this.mode = 'time'; // 'time' или 'clicks'
-                this.testDuration = 10; // секунд
-                this.targetClicks = 100; // для режима "100 кликов"
+                this.mode = 'time';
+                this.testDuration = 10;
+                this.targetClicks = 100;
                 
                 this.testActive = false;
                 this.testFinished = false;
                 this.startTime = null;
                 this.clicks = 0;
                 this.clickTimes = [];
-                
-                // Для стабильности
                 this.intervals = [];
                 
-                // История
                 this.history = JSON.parse(localStorage.getItem('cps_history')) || [];
                 
                 this.initElements();
                 this.addEventListeners();
                 this.renderHistory();
+                
+                this.record = localStorage.getItem('cps_record') || 0;
+                this.recordCps.textContent = this.record;
             }
 
             initElements() {
@@ -436,20 +422,13 @@
                 this.stabilityFill = document.getElementById('stability-fill');
                 this.stabilityText = document.getElementById('stability-text');
                 
-                this.startBtn = document.getElementById('start-test');
                 this.resetBtn = document.getElementById('reset-test');
-                
                 this.timeButtons = document.querySelectorAll('.time-btn');
                 this.historyList = document.getElementById('history-list');
-                
-                // Загружаем рекорд
-                this.record = localStorage.getItem('cps_record') || 0;
-                this.recordCps.textContent = this.record;
             }
 
             addEventListeners() {
-                this.button.addEventListener('click', () => this.handleClick());
-                this.startBtn.addEventListener('click', () => this.startTest());
+                this.button.addEventListener('click', (e) => this.handleClick(e));
                 this.resetBtn.addEventListener('click', () => this.resetTest());
                 
                 this.timeButtons.forEach(btn => {
@@ -458,6 +437,8 @@
             }
 
             setTimeMode(e) {
+                if (this.testActive) return;
+                
                 this.timeButtons.forEach(btn => btn.classList.remove('active'));
                 e.target.classList.add('active');
                 
@@ -473,14 +454,25 @@
                     this.mainText.textContent = time + 's';
                 }
                 
-                this.subText.textContent = 'Нажми, чтобы начать';
-                this.button.classList.remove('active', 'waiting');
-                this.button.classList.add('ready');
+                this.resetTest();
+            }
+
+            handleClick(e) {
+                // Предотвращаем выделение текста
+                e.preventDefault();
+                
+                // Если тест не активен и не завершён - запускаем
+                if (!this.testActive && !this.testFinished) {
+                    this.startTest();
+                }
+                
+                // Если тест активен - считаем клик
+                if (this.testActive) {
+                    this.registerClick();
+                }
             }
 
             startTest() {
-                if (this.testActive) return;
-                
                 this.testActive = true;
                 this.testFinished = false;
                 this.clicks = 0;
@@ -488,37 +480,30 @@
                 this.intervals = [];
                 this.startTime = Date.now();
                 
-                this.button.classList.remove('ready');
+                this.button.classList.remove('waiting');
                 this.button.classList.add('active');
-                this.subText.textContent = 'Кликай!';
+                this.subText.textContent = 'Кликай быстрее!';
                 
                 this.resultsSection.style.display = 'none';
                 
-                // Запускаем обновление метрик
                 this.updateInterval = setInterval(() => this.updateMetrics(), 50);
                 
-                // Таймер окончания для режима времени
                 if (this.mode === 'time') {
                     setTimeout(() => this.finishTest(), this.testDuration * 1000);
                 }
             }
 
-            handleClick() {
-                if (!this.testActive) return;
-                
+            registerClick() {
                 const now = Date.now();
                 this.clicks++;
                 this.clickTimes.push(now);
                 
-                // Обновляем счетчик кликов
                 this.totalClicks.textContent = this.clicks;
                 
-                // Проверка окончания для режима "100 кликов"
                 if (this.mode === 'clicks' && this.clicks >= this.targetClicks) {
                     this.finishTest();
                 }
                 
-                // Добавляем эффект нажатия
                 this.button.style.transform = 'scale(0.95)';
                 setTimeout(() => {
                     this.button.style.transform = '';
@@ -531,36 +516,30 @@
                 const now = Date.now();
                 const elapsed = (now - this.startTime) / 1000;
                 
-                // Обновляем прошедшее время
                 this.timeElapsed.textContent = elapsed.toFixed(1);
                 
-                // Считаем CPS за последнюю секунду
                 const lastSecond = this.clickTimes.filter(t => now - t <= 1000);
                 const cps = lastSecond.length;
                 this.currentCps.textContent = cps;
                 
-                // Собираем интервалы для стабильности
                 if (this.clickTimes.length > 1) {
                     const lastInterval = this.clickTimes[this.clickTimes.length - 1] - 
                                         this.clickTimes[this.clickTimes.length - 2];
-                    if (lastInterval < 1000) { // Игнорируем паузы > 1 сек
+                    if (lastInterval < 1000) {
                         this.intervals.push(lastInterval);
                     }
                 }
                 
-                // Обновляем стабильность
                 this.updateStability();
             }
 
             updateStability() {
                 if (this.intervals.length < 2) return;
                 
-                // Считаем средний интервал и отклонение
                 const avg = this.intervals.reduce((a, b) => a + b, 0) / this.intervals.length;
                 const deviations = this.intervals.map(i => Math.abs(i - avg));
                 const avgDeviation = deviations.reduce((a, b) => a + b, 0) / deviations.length;
                 
-                // Стабильность: чем меньше отклонение, тем лучше
                 const stability = Math.max(0, Math.min(100, 100 - (avgDeviation / avg) * 50));
                 
                 this.stabilityFill.style.width = stability + '%';
@@ -586,12 +565,10 @@
                 const elapsed = (Date.now() - this.startTime) / 1000;
                 const finalCps = (this.clicks / elapsed).toFixed(1);
                 
-                // Показываем результаты
                 this.finalCps.textContent = finalCps;
                 this.finalClicks.textContent = this.clicks;
                 this.finalTime.textContent = elapsed.toFixed(1) + ' сек';
                 
-                // Проверяем рекорд
                 if (finalCps > this.record) {
                     this.record = finalCps;
                     localStorage.setItem('cps_record', this.record);
@@ -601,13 +578,11 @@
                 
                 this.resultsSection.style.display = 'block';
                 
-                // Меняем вид кнопки
                 this.button.classList.remove('active');
-                this.button.classList.add('ready');
+                this.button.classList.add('waiting');
                 this.mainText.textContent = this.mode === 'time' ? this.testDuration + 's' : '100 кликов';
-                this.subText.textContent = 'Ещё раз?';
+                this.subText.textContent = 'Ещё раз? Кликни';
                 
-                // Сохраняем в историю
                 this.saveToHistory({
                     cps: finalCps,
                     clicks: this.clicks,
@@ -666,10 +641,9 @@
                 
                 this.resultsSection.style.display = 'none';
                 
-                this.button.classList.remove('active');
-                this.button.classList.add('ready');
+                this.button.classList.remove('active', 'waiting');
                 this.mainText.textContent = this.mode === 'time' ? this.testDuration + 's' : '100 кликов';
-                this.subText.textContent = 'Нажми, чтобы начать';
+                this.subText.textContent = 'Кликни чтобы начать';
             }
         }
 

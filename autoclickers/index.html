@@ -151,24 +151,107 @@
             font-weight: bold;
         }
 
+        /* КНОПКА С ПРЕДУПРЕЖДЕНИЕМ */
+        .download-section {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+        }
+
         .download-btn {
             background: linear-gradient(135deg, #e94560, #0f3460);
             color: white;
             border: none;
-            padding: 15px 40px;
-            border-radius: 30px;
+            padding: 20px 60px;
+            border-radius: 50px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
             text-decoration: none;
             display: inline-block;
-            font-size: 1.2em;
-            margin-top: 20px;
+            font-size: 1.5em;
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.5);
+            border: 2px solid #00ff9d;
+            position: relative;
+            z-index: 2;
         }
 
         .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(233, 69, 96, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(233, 69, 96, 0.7);
+        }
+
+        .warning-tooltip {
+            background: #2c3e50;
+            border: 2px solid #f39c12;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px auto 0;
+            max-width: 500px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .warning-tooltip::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 10px;
+            border-style: solid;
+            border-color: transparent transparent #f39c12 transparent;
+        }
+
+        .warning-title {
+            color: #f39c12;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .warning-text {
+            color: white;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .warning-highlight {
+            background: #34495e;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            color: #f39c12;
+            margin: 15px 0;
+        }
+
+        .steps {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .step {
+            background: #0f3460;
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .step-number {
+            background: #e94560;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
         }
 
         /* Фишки программы */
@@ -321,6 +404,10 @@
                 flex-direction: column;
                 text-align: center;
             }
+            
+            .steps {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -365,28 +452,59 @@
                     <li><span>✓</span> Полное завершение при закрытии (не виснет в фоне)</li>
                 </ul>
 
-                <div style="text-align: center;">
+                <!-- КНОПКА С ПРЕДУПРЕЖДЕНИЕМ -->
+                <div class="download-section">
                     <a href="/downloads/GameAutoClick_v2.0.0.exe" class="download-btn">
                         ⬇️ СКАЧАТЬ (12 МБ)
                     </a>
+                    
+                    <div class="warning-tooltip">
+                        <div class="warning-title">⚠️ ВАЖНО! ПРОЧТИ ПЕРЕД СКАЧИВАНИЕМ</div>
+                        
+                        <div class="warning-text">
+                            <strong>Разработчик не умеет подписывать файлы</strong> (это дорого и сложно), 
+                            поэтому Windows может ругаться. Это <strong style="color: #00ff9d;">НЕ ВИРУС</strong>, 
+                            просто самописная программа.
+                        </div>
+                        
+                        <div class="warning-highlight">
+                            🔴 Система Windows защитила ваш компьютер<br>
+                            Фильтр SmartScreen предотвратил запуск...
+                        </div>
+                        
+                        <div class="steps">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                <span>Нажми "Подробнее"</span>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                <span>"Выполнить в любом случае"</span>
+                            </div>
+                        </div>
+                        
+                        <div style="color: #f39c12; font-size: 0.9em;">
+                            ✅ ВСЁ РАБОТАЕТ! Просто разрешай запуск.
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Системные требования -->
-            <div class="requirements">
-                <h4>🖥️ Системные требования</h4>
-                <div class="requirements-grid">
-                    <div class="req-item">
-                        <div class="label">ОС</div>
-                        <div class="value">Windows 7/8/10/11</div>
-                    </div>
-                    <div class="req-item">
-                        <div class="label">Размер</div>
-                        <div class="value">~12 МБ</div>
-                    </div>
-                    <div class="req-item">
-                        <div class="label">Язык</div>
-                        <div class="value">Русский</div>
+                <!-- Системные требования -->
+                <div class="requirements">
+                    <h4>🖥️ Системные требования</h4>
+                    <div class="requirements-grid">
+                        <div class="req-item">
+                            <div class="label">ОС</div>
+                            <div class="value">Windows 7/8/10/11</div>
+                        </div>
+                        <div class="req-item">
+                            <div class="label">Размер</div>
+                            <div class="value">~12 МБ</div>
+                        </div>
+                        <div class="req-item">
+                            <div class="label">Язык</div>
+                            <div class="value">Русский</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -429,23 +547,23 @@
                 </li>
                 <li>
                     <span class="step-number">2</span>
-                    Настрой CPS (клики в секунду) для ЛКМ и ПКМ
+                    Если Windows ругается → нажми <strong>"Подробнее" → "Выполнить в любом случае"</strong>
                 </li>
                 <li>
                     <span class="step-number">3</span>
-                    Включи анти-детект если нужно (рекомендуется для игр)
+                    Настрой CPS (клики в секунду) для ЛКМ и ПКМ
                 </li>
                 <li>
                     <span class="step-number">4</span>
-                    Нажми <span class="hotkey">F6</span> для ЛКМ, <span class="hotkey">F7</span> для ПКМ
+                    Включи анти-детект если нужно (рекомендуется для игр)
                 </li>
                 <li>
                     <span class="step-number">5</span>
-                    Нажми <span class="hotkey">F8</span> чтобы остановить всё
+                    Нажми <span class="hotkey">F6</span> для ЛКМ, <span class="hotkey">F7</span> для ПКМ
                 </li>
                 <li>
                     <span class="step-number">6</span>
-                    Закрой окно — программа полностью выключится
+                    Нажми <span class="hotkey">F8</span> чтобы остановить всё
                 </li>
             </ol>
             <div style="margin-top: 20px; padding: 15px; background: #0f3460; border-radius: 15px;">
@@ -455,7 +573,7 @@
 
         <!-- Кнопка наверх -->
         <div style="text-align: center; margin-top: 40px;">
-            <a href="#" class="download-btn" style="background: #0f3460;">↑ Наверх</a>
+            <a href="#" class="download-btn" style="background: #0f3460; font-size: 1.2em; padding: 15px 40px;">↑ Наверх</a>
         </div>
     </div>
 

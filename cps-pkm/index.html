@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPS ЛКМ - В ПК!</title>
+    <title>CPS ПКМ - В ПК!</title>
     
     <link rel="stylesheet" href="/assets/css/top-panel.css">
     
@@ -11,7 +11,7 @@
         body {
             margin: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
             min-height: 100vh;
         }
 
@@ -26,7 +26,7 @@
 
         h1 {
             text-align: center;
-            color: #2c3e50;
+            color: #c0392b;
             font-size: 2.5em;
             margin-bottom: 10px;
         }
@@ -37,7 +37,6 @@
             margin-bottom: 30px;
         }
 
-        /* Игровая зона */
         .game-area {
             text-align: center;
             margin: 30px 0;
@@ -47,14 +46,14 @@
             width: 300px;
             height: 300px;
             margin: 0 auto;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
             border-radius: 50%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
             transition: all 0.1s;
             color: white;
             border: 4px solid rgba(255,255,255,0.3);
@@ -70,7 +69,7 @@
         }
 
         .click-button.active {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            background: linear-gradient(135deg, #3498db, #2980b9);
             animation: pulse 1s infinite;
         }
 
@@ -91,7 +90,6 @@
             opacity: 0.9;
         }
 
-        /* Метрики */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -121,7 +119,7 @@
         .metric-value {
             font-size: 2.5em;
             font-weight: bold;
-            color: #2c3e50;
+            color: #c0392b;
             margin: 5px 0;
         }
 
@@ -130,7 +128,6 @@
             font-size: 0.8em;
         }
 
-        /* Настройки времени */
         .time-settings {
             display: flex;
             justify-content: center;
@@ -141,9 +138,9 @@
 
         .time-btn {
             padding: 10px 25px;
-            border: 2px solid #667eea;
+            border: 2px solid #e74c3c;
             background: transparent;
-            color: #667eea;
+            color: #e74c3c;
             border-radius: 25px;
             cursor: pointer;
             font-weight: bold;
@@ -151,16 +148,15 @@
         }
 
         .time-btn:hover {
-            background: #667eea;
+            background: #e74c3c;
             color: white;
         }
 
         .time-btn.active {
-            background: #667eea;
+            background: #e74c3c;
             color: white;
         }
 
-        /* Результаты */
         .results-section {
             background: #f8f9fa;
             border-radius: 15px;
@@ -186,15 +182,9 @@
 
         .result-value {
             font-weight: bold;
-            color: #2c3e50;
+            color: #c0392b;
         }
 
-        .cps-highlight {
-            color: #667eea;
-            font-size: 1.5em;
-        }
-
-        /* Стабильность */
         .stability-bar {
             height: 10px;
             background: #e0e0e0;
@@ -210,13 +200,6 @@
             transition: width 0.3s;
         }
 
-        .stability-text {
-            text-align: center;
-            color: #7f8c8d;
-            margin: 5px 0;
-        }
-
-        /* История */
         .history-section {
             margin-top: 40px;
             border-top: 2px solid #e0e0e0;
@@ -237,11 +220,6 @@
             border-radius: 10px;
         }
 
-        .history-item .best {
-            color: #f1c40f;
-            font-weight: bold;
-        }
-
         .btn {
             padding: 12px 30px;
             font-size: 1.1em;
@@ -251,16 +229,6 @@
             transition: all 0.3s;
             font-weight: bold;
             margin: 5px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
 
         .btn-secondary {
@@ -292,18 +260,16 @@
     <div id="top-panel-placeholder"></div>
 
     <div class="cps-container">
-        <h1>🖱️ CPS ЛКМ тест</h1>
-        <div class="subtitle">Просто начни кликать по кнопке</div>
+        <h1>👆 CPS ПКМ тест</h1>
+        <div class="subtitle">Просто начни кликать правой кнопкой по кружку</div>
 
-        <!-- Основное игровое поле -->
         <div class="game-area">
-            <div class="click-button" id="click-button">
+            <div class="click-button" id="click-button" oncontextmenu="return false;">
                 <div class="main-text" id="main-text">10s</div>
-                <div class="sub-text" id="sub-text">Кликни чтобы начать</div>
+                <div class="sub-text" id="sub-text">Кликни ПКМ чтобы начать</div>
             </div>
         </div>
 
-        <!-- Настройки времени -->
         <div class="time-settings">
             <button class="time-btn active" data-time="10">10 секунд</button>
             <button class="time-btn" data-time="30">30 секунд</button>
@@ -311,7 +277,6 @@
             <button class="time-btn" data-time="100">100 кликов</button>
         </div>
 
-        <!-- Основные метрики -->
         <div class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-icon">⚡</div>
@@ -335,7 +300,6 @@
             </div>
         </div>
 
-        <!-- Результаты теста -->
         <div class="results-section" id="results-section" style="display: none;">
             <div class="result-row">
                 <span class="result-label">Итоговый CPS</span>
@@ -355,7 +319,6 @@
             </div>
         </div>
 
-        <!-- Стабильность кликов -->
         <div class="results-section">
             <h3>📈 Стабильность кликов</h3>
             <div class="stability-bar">
@@ -364,12 +327,10 @@
             <div class="stability-text" id="stability-text">Отлично!</div>
         </div>
 
-        <!-- Кнопка сброса (старт убрали) -->
         <div style="text-align: center;">
             <button class="btn btn-secondary" id="reset-test">🔄 Сбросить тест</button>
         </div>
 
-        <!-- Последние результаты -->
         <div class="history-section">
             <h3>📜 Последние результаты</h3>
             <ul class="history-list" id="history-list">
@@ -394,13 +355,13 @@
                 this.clickTimes = [];
                 this.intervals = [];
                 
-                this.history = JSON.parse(localStorage.getItem('cps_history')) || [];
+                this.history = JSON.parse(localStorage.getItem('cps_pkm_history')) || [];
                 
                 this.initElements();
                 this.addEventListeners();
                 this.renderHistory();
                 
-                this.record = localStorage.getItem('cps_record') || 0;
+                this.record = localStorage.getItem('cps_pkm_record') || 0;
                 this.recordCps.textContent = this.record;
             }
 
@@ -428,7 +389,13 @@
             }
 
             addEventListeners() {
-                this.button.addEventListener('click', (e) => this.handleClick(e));
+                this.button.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    if (e.button === 2) { // Правая кнопка
+                        this.handleClick(e);
+                    }
+                });
+                
                 this.resetBtn.addEventListener('click', () => this.resetTest());
                 
                 this.timeButtons.forEach(btn => {
@@ -458,15 +425,12 @@
             }
 
             handleClick(e) {
-                // Предотвращаем выделение текста
                 e.preventDefault();
                 
-                // Если тест не активен и не завершён - запускаем
                 if (!this.testActive && !this.testFinished) {
                     this.startTest();
                 }
                 
-                // Если тест активен - считаем клик
                 if (this.testActive) {
                     this.registerClick();
                 }
@@ -482,7 +446,7 @@
                 
                 this.button.classList.remove('waiting');
                 this.button.classList.add('active');
-                this.subText.textContent = 'Кликай быстрее!';
+                this.subText.textContent = 'Кликай ПКМ быстрее!';
                 
                 this.resultsSection.style.display = 'none';
                 
@@ -571,7 +535,7 @@
                 
                 if (finalCps > this.record) {
                     this.record = finalCps;
-                    localStorage.setItem('cps_record', this.record);
+                    localStorage.setItem('cps_pkm_record', this.record);
                     this.recordCps.textContent = this.record;
                     this.recordCps.style.color = '#f1c40f';
                 }
@@ -581,7 +545,7 @@
                 this.button.classList.remove('active');
                 this.button.classList.add('waiting');
                 this.mainText.textContent = this.mode === 'time' ? this.testDuration + 's' : '100 кликов';
-                this.subText.textContent = 'Ещё раз? Кликни';
+                this.subText.textContent = 'Ещё раз? Кликни ПКМ';
                 
                 this.saveToHistory({
                     cps: finalCps,
@@ -603,7 +567,7 @@
                     this.history.pop();
                 }
                 
-                localStorage.setItem('cps_history', JSON.stringify(this.history));
+                localStorage.setItem('cps_pkm_history', JSON.stringify(this.history));
                 this.renderHistory();
             }
 
@@ -643,7 +607,7 @@
                 
                 this.button.classList.remove('active', 'waiting');
                 this.mainText.textContent = this.mode === 'time' ? this.testDuration + 's' : '100 кликов';
-                this.subText.textContent = 'Кликни чтобы начать';
+                this.subText.textContent = 'Кликни ПКМ чтобы начать';
             }
         }
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Интернетометр - В ПК!</title>
+    <title>Пинг и скорость - В ПК!</title>
     
     <link rel="stylesheet" href="/assets/css/top-panel.css">
     
@@ -16,7 +16,7 @@
         }
 
         .speedtest-container {
-            max-width: 900px;
+            max-width: 800px;
             margin: 40px auto;
             padding: 30px;
             background: rgba(255, 255, 255, 0.95);
@@ -35,7 +35,6 @@
             text-align: center;
             color: #666;
             margin-bottom: 30px;
-            font-size: 1.1em;
         }
 
         .file-info {
@@ -43,82 +42,47 @@
             border-radius: 15px;
             padding: 15px;
             margin-bottom: 30px;
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .file-info-item {
             text-align: center;
-        }
-
-        .file-info-label {
-            color: #666;
-            font-size: 0.8em;
-            text-transform: uppercase;
-        }
-
-        .file-info-value {
-            font-weight: bold;
+            font-size: 0.95em;
             color: #1e3c72;
-            font-size: 1.2em;
         }
 
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: 1fr 1fr;
             gap: 20px;
             margin-bottom: 30px;
         }
 
         .metric-card {
             background: white;
-            padding: 20px;
+            padding: 25px;
             border-radius: 15px;
             text-align: center;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-        }
-
-        .metric-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
 
         .metric-icon {
-            font-size: 32px;
+            font-size: 36px;
             margin-bottom: 10px;
         }
 
         .metric-label {
             color: #666;
-            font-size: 0.8em;
+            font-size: 0.9em;
             text-transform: uppercase;
         }
 
         .metric-value {
-            font-size: 2em;
+            font-size: 2.5em;
             font-weight: bold;
             color: #1e3c72;
-            margin: 5px 0;
+            margin: 10px 0;
         }
 
         .metric-unit {
             color: #999;
-            font-size: 0.8em;
-        }
-
-        .ping-card {
-            grid-column: span 3;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-        }
-
-        .ping-card .metric-label,
-        .ping-card .metric-value,
-        .ping-card .metric-unit {
-            color: white;
+            font-size: 0.9em;
         }
 
         .control-panel {
@@ -129,8 +93,8 @@
         }
 
         .btn {
-            padding: 12px 30px;
-            font-size: 1.1em;
+            padding: 12px 40px;
+            font-size: 1.2em;
             border: none;
             border-radius: 25px;
             cursor: pointer;
@@ -141,18 +105,16 @@
         .btn-primary {
             background: linear-gradient(135deg, #1e3c72, #2a5298);
             color: white;
-            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.3);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(30, 60, 114, 0.4);
+            box-shadow: 0 10px 20px rgba(30, 60, 114, 0.3);
         }
 
         .btn-primary:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
 
         .btn-secondary {
@@ -171,13 +133,6 @@
             margin: 20px 0;
         }
 
-        .current-status {
-            font-size: 1.2em;
-            color: #1e3c72;
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-
         .progress-bar {
             height: 20px;
             background: #e0e0e0;
@@ -191,33 +146,20 @@
             background: linear-gradient(90deg, #1e3c72, #2a5298);
             width: 0%;
             transition: width 0.3s;
-            border-radius: 10px;
         }
 
-        .progress-stats {
-            display: flex;
-            justify-content: space-between;
-            color: #666;
-            font-size: 0.9em;
-        }
-
-        .real-time-speed {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #1e3c72;
+        .status-text {
             text-align: center;
+            font-size: 1.1em;
+            color: #1e3c72;
             margin: 15px 0;
+            min-height: 60px;
         }
 
         .history-section {
             margin-top: 40px;
             border-top: 2px solid #e0e0e0;
             padding-top: 30px;
-        }
-
-        .history-title {
-            color: #1e3c72;
-            margin-bottom: 20px;
         }
 
         .history-list {
@@ -234,40 +176,16 @@
             background: #f8f9fa;
             margin-bottom: 8px;
             border-radius: 10px;
-            color: #333;
-            font-size: 0.95em;
         }
 
-        .history-item .time {
-            color: #666;
-        }
-
-        .history-item .results {
-            font-weight: bold;
-            color: #1e3c72;
-        }
-
-        @media (max-width: 700px) {
+        @media (max-width: 600px) {
             .metrics-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            .ping-card {
-                grid-column: span 1;
             }
             
             .speedtest-container {
                 margin: 20px;
                 padding: 20px;
-            }
-            
-            h1 {
-                font-size: 2em;
-            }
-
-            .file-info {
-                flex-direction: column;
-                align-items: center;
             }
         }
     </style>
@@ -276,74 +194,47 @@
     <div id="top-panel-placeholder"></div>
 
     <div class="speedtest-container">
-        <h1>📡 Интернетометр В ПК!</h1>
-        <div class="subtitle">Честный тест на твоём файле</div>
+        <h1>📡 Пинг и скорость</h1>
+        <div class="subtitle">Измерение задержки и скорости загрузки</div>
 
         <!-- Информация о тестовом файле -->
         <div class="file-info">
-            <div class="file-info-item">
-                <div class="file-info-label">Тестовый файл</div>
-                <div class="file-info-value">text.txt</div>
-            </div>
-            <div class="file-info-item">
-                <div class="file-info-label">Размер</div>
-                <div class="file-info-value" id="file-size">7.41 МБ</div>
-            </div>
-            <div class="file-info-item">
-                <div class="file-info-label">Источник</div>
-                <div class="file-info-value">GitHub</div>
-            </div>
+            <strong>Тестовый файл:</strong> samokat.ru/images/logo.svg
         </div>
 
-        <!-- Основные метрики -->
+        <!-- Метрики: только пинг и скорость -->
         <div class="metrics-grid">
-            <div class="metric-card ping-card">
+            <div class="metric-card">
                 <div class="metric-icon">⚡</div>
                 <div class="metric-label">ПИНГ</div>
                 <div class="metric-value" id="ping-value">—</div>
-                <div class="metric-unit">мс</div>
+                <div class="metric-unit">миллисекунды</div>
             </div>
 
             <div class="metric-card">
                 <div class="metric-icon">⬇️</div>
-                <div class="metric-label">ВХОДЯЩАЯ</div>
-                <div class="metric-value" id="download-value">—</div>
+                <div class="metric-label">СКОРОСТЬ</div>
+                <div class="metric-value" id="speed-value">—</div>
                 <div class="metric-unit">Мбит/с</div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-icon">⬆️</div>
-                <div class="metric-label">ИСХОДЯЩАЯ</div>
-                <div class="metric-value" id="upload-value">—</div>
-                <div class="metric-unit">Мбит/с</div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-icon">📊</div>
-                <div class="metric-label">ДЖИТТЕР</div>
-                <div class="metric-value" id="jitter-value">—</div>
-                <div class="metric-unit">мс</div>
             </div>
         </div>
 
-        <!-- Панель прогресса -->
+        <!-- Статус и прогресс -->
         <div class="progress-section">
-            <div class="current-status" id="current-status">Готов к тестированию</div>
-            
-            <div class="real-time-speed" id="real-time-speed">0 Мбит/с</div>
+            <div class="status-text" id="status-text">
+                Нажмите "Начать тест"
+            </div>
             
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
             
-            <div class="progress-stats">
-                <span id="progress-stage">Ожидание</span>
-                <span id="progress-percent">0%</span>
-                <span id="progress-time">0 с</span>
+            <div style="text-align: center; color: #666;" id="progress-detail">
+                Готов
             </div>
         </div>
 
-        <!-- Кнопки управления -->
+        <!-- Кнопки -->
         <div class="control-panel">
             <button class="btn btn-primary" id="start-test">🚀 Начать тест</button>
             <button class="btn btn-secondary" id="reset-test">🔄 Сбросить</button>
@@ -351,15 +242,12 @@
 
         <!-- История тестов -->
         <div class="history-section">
-            <h3 class="history-title">📜 История тестов</h3>
+            <h3>📜 Последние тесты</h3>
             <ul class="history-list" id="history-list">
-                <li class="history-item">
-                    <span class="time">Ещё нет данных</span>
-                    <span class="results">—</span>
-                </li>
+                <li class="history-item">Ещё нет данных</li>
             </ul>
             <div style="text-align: right; margin-top: 10px;">
-                <button class="btn btn-secondary" id="clear-history">Очистить историю</button>
+                <button class="btn btn-secondary" id="clear-history">Очистить</button>
             </div>
         </div>
     </div>
@@ -367,41 +255,34 @@
     <script src="/assets/js/top-panel.js"></script>
     
     <script>
-        class Internetometer {
+        class PingSpeedTest {
             constructor() {
-                // Твой тестовый файл
+                // Твой тестовый файл с samokat.ru
                 this.testFile = {
-                    url: 'https://raw.githubusercontent.com/ARTEM-web-hue/v-pk.github.io/refs/heads/ARTEM-web-hue-patch-1/text.txt',
-                    size: 7.41 * 1024 * 1024, // 7.41 МБ в байтах
-                    name: 'text.txt'
+                    url: 'https://yastatic.net/jquery/3.3.1/jquery.min.js',
+                    name: 'jquery.min.js'
                 };
                 
-                this.history = this.loadHistory() || [];
+                this.history = JSON.parse(localStorage.getItem('ping_history')) || [];
                 this.testInProgress = false;
-                this.startTime = null;
                 
                 this.initElements();
                 this.addEventListeners();
                 this.renderHistory();
+                
+                // Получаем размер файла при загрузке
+                this.getFileSize();
             }
 
             initElements() {
                 this.pingEl = document.getElementById('ping-value');
-                this.downloadEl = document.getElementById('download-value');
-                this.uploadEl = document.getElementById('upload-value');
-                this.jitterEl = document.getElementById('jitter-value');
-                
+                this.speedEl = document.getElementById('speed-value');
                 this.startBtn = document.getElementById('start-test');
                 this.resetBtn = document.getElementById('reset-test');
                 this.clearBtn = document.getElementById('clear-history');
-                
-                this.currentStatus = document.getElementById('current-status');
-                this.realTimeSpeed = document.getElementById('real-time-speed');
+                this.statusText = document.getElementById('status-text');
                 this.progressFill = document.getElementById('progress-fill');
-                this.progressStage = document.getElementById('progress-stage');
-                this.progressPercent = document.getElementById('progress-percent');
-                this.progressTime = document.getElementById('progress-time');
-                
+                this.progressDetail = document.getElementById('progress-detail');
                 this.historyList = document.getElementById('history-list');
             }
 
@@ -411,6 +292,24 @@
                 this.clearBtn.addEventListener('click', () => this.clearHistory());
             }
 
+            async getFileSize() {
+                try {
+                    // Пробуем узнать размер файла через HEAD-запрос
+                    const response = await fetch(this.testFile.url, { method: 'HEAD' });
+                    const size = response.headers.get('content-length');
+                    
+                    if (size) {
+                        this.fileSize = parseInt(size);
+                        this.testFile.size = this.fileSize;
+                        console.log('Размер файла:', this.fileSize, 'байт');
+                    }
+                } catch (error) {
+                    console.log('Не удалось получить размер файла, используем оценку');
+                    // Если не получилось, используем типичный размер SVG
+                    this.fileSize = 15 * 1024; // 15KB (примерно)
+                }
+            }
+
             async runTest() {
                 if (this.testInProgress) return;
                 
@@ -418,77 +317,60 @@
                 this.startBtn.disabled = true;
                 
                 try {
-                    // Сбрасываем предыдущие результаты
-                    this.resetDisplay();
-                    
                     // 1. ТЕСТ ПИНГА (5 замеров)
                     await this.runPingTest();
                     
-                    // 2. ТЕСТ СКОРОСТИ ЗАГРУЗКИ
-                    await this.runDownloadTest();
+                    // 2. ТЕСТ СКОРОСТИ
+                    await this.runSpeedTest();
                     
-                    // 3. ОЦЕНКА ИСХОДЯЩЕЙ СКОРОСТИ
-                    this.estimateUploadSpeed();
-                    
-                    // 4. Сохраняем результат
+                    // 3. Сохраняем результат
                     this.saveResult();
                     
-                    this.currentStatus.textContent = '✅ Тест завершен!';
+                    this.statusText.textContent = '✅ Тест завершен!';
                     
                 } catch (error) {
-                    console.error('Ошибка теста:', error);
-                    this.currentStatus.textContent = '❌ Ошибка тестирования';
+                    console.error('Ошибка:', error);
+                    this.statusText.textContent = '❌ Ошибка теста';
                 } finally {
                     this.testInProgress = false;
                     this.startBtn.disabled = false;
                     
                     setTimeout(() => {
+                        if (this.statusText.textContent !== '❌ Ошибка теста') {
+                            this.statusText.textContent = 'Готов к новому тесту';
+                        }
                         this.progressFill.style.width = '0%';
-                        this.progressStage.textContent = 'Ожидание';
-                        this.progressPercent.textContent = '0%';
-                        this.progressTime.textContent = '0 с';
-                        this.realTimeSpeed.textContent = '0 Мбит/с';
+                        this.progressDetail.textContent = 'Готов';
                     }, 2000);
                 }
             }
 
             async runPingTest() {
-                this.updateStatus('Измерение пинга...', 10);
+                this.statusText.textContent = '📡 Измеряем пинг...';
+                this.progressDetail.textContent = 'Замер 1/5';
                 
                 const pings = [];
-                const servers = [
-                    'https://ya.ru/favicon.ico',
-                    'https://mail.ru/favicon.ico',
-                    'https://github.com/favicon.ico',
-                    'https://www.google.com/favicon.ico'
-                ];
                 
-                for (let i = 0; i < 8; i++) {
-                    const server = servers[i % servers.length];
-                    const ping = await this.measurePing(server);
+                for (let i = 0; i < 5; i++) {
+                    const ping = await this.measurePing();
                     pings.push(ping);
                     
+                    // Показываем средний пинг в реальном времени
                     const avgPing = Math.round(pings.reduce((a, b) => a + b, 0) / pings.length);
                     this.pingEl.textContent = avgPing;
                     
-                    this.updateStatus(
-                        `Пинг: замер ${i+1}/8`, 
-                        10 + (i * 5),
-                        `Текущий: ${ping} мс`
-                    );
+                    this.progressFill.style.width = (i * 20) + '%';
+                    this.progressDetail.textContent = `Замер ${i+1}/5 (${ping} мс)`;
                     
-                    await this.sleep(200);
+                    await this.sleep(300);
                 }
                 
-                // Рассчитываем финальный пинг и джиттер
-                const avgPing = Math.round(pings.reduce((a, b) => a + b, 0) / pings.length);
-                const jitter = this.calculateJitter(pings);
-                
-                this.pingEl.textContent = avgPing;
-                this.jitterEl.textContent = jitter;
+                const finalPing = Math.round(pings.reduce((a, b) => a + b, 0) / pings.length);
+                this.pingEl.textContent = finalPing;
+                this.progressFill.style.width = '40%';
             }
 
-            measurePing(url) {
+            measurePing() {
                 return new Promise((resolve) => {
                     const start = Date.now();
                     const img = new Image();
@@ -508,56 +390,63 @@
                         resolve(999);
                     };
                     
-                    img.src = url + '?v=' + Date.now() + Math.random();
+                    // Используем разные URL для избежания кеша
+                    const urls = [
+                        'https://ya.ru/favicon.ico',
+                        'https://mail.ru/favicon.ico',
+                        'https://github.com/favicon.ico'
+                    ];
+                    
+                    const url = urls[Math.floor(Math.random() * urls.length)];
+                    img.src = url + '?v=' + Date.now();
                 });
             }
 
-            async runDownloadTest() {
-                this.updateStatus('Загрузка тестового файла...', 30);
+            async runSpeedTest() {
+                this.statusText.textContent = '⬇️ Измеряем скорость...';
+                this.progressDetail.textContent = 'Загрузка файла...';
                 
                 return new Promise((resolve, reject) => {
                     const start = Date.now();
-                    this.startTime = start;
                     
                     const xhr = new XMLHttpRequest();
                     
-                    // Отслеживаем прогресс загрузки
                     xhr.onprogress = (event) => {
-                        if (event.lengthComputable) {
-                            const loaded = event.loaded;
-                            const timeElapsed = (Date.now() - start) / 1000;
-                            
-                            // Текущая скорость в реальном времени
-                            const currentSpeedMbps = (loaded * 8) / (1024 * 1024) / timeElapsed;
-                            this.realTimeSpeed.textContent = currentSpeedMbps.toFixed(1) + ' Мбит/с';
-                            
-                            // Прогресс в процентах
-                            const percent = (loaded / this.testFile.size) * 100;
+                        if (event.lengthComputable && this.fileSize) {
+                            const percent = (event.loaded / this.fileSize) * 40 + 40; // 40-80%
                             this.progressFill.style.width = percent + '%';
-                            this.progressPercent.textContent = Math.round(percent) + '%';
-                            this.progressTime.textContent = timeElapsed.toFixed(1) + ' с';
                             
-                            // Обновляем текущую скорость на дисплее
-                            this.downloadEl.textContent = currentSpeedMbps.toFixed(1);
+                            // Показываем текущую скорость
+                            const timeElapsed = (Date.now() - start) / 1000;
+                            const currentSpeed = (event.loaded * 8) / (1024 * 1024) / timeElapsed;
+                            this.speedEl.textContent = currentSpeed.toFixed(1);
                         }
                     };
                     
                     xhr.onload = () => {
                         const duration = (Date.now() - start) / 1000;
-                        const speedMbps = (this.testFile.size * 8) / (1024 * 1024) / duration;
                         
-                        this.downloadEl.textContent = speedMbps.toFixed(1);
-                        this.realTimeSpeed.textContent = speedMbps.toFixed(1) + ' Мбит/с';
-                        this.progressFill.style.width = '100%';
-                        this.progressPercent.textContent = '100%';
-                        this.progressTime.textContent = duration.toFixed(1) + ' с';
+                        // Пытаемся получить размер из заголовков
+                        const contentLength = xhr.getResponseHeader('content-length');
+                        let fileSize = this.fileSize;
                         
-                        this.updateStatus('Загрузка завершена!', 70);
-                        resolve(speedMbps);
+                        if (contentLength) {
+                            fileSize = parseInt(contentLength);
+                        } else {
+                            // Если не получилось, используем размер ответа
+                            fileSize = xhr.responseText.length;
+                        }
+                        
+                        const speedMbps = (fileSize * 8) / (1024 * 1024) / duration;
+                        
+                        this.speedEl.textContent = speedMbps.toFixed(1);
+                        this.progressFill.style.width = '80%';
+                        this.progressDetail.textContent = `Скорость: ${speedMbps.toFixed(1)} Мбит/с`;
+                        
+                        resolve();
                     };
                     
                     xhr.onerror = () => {
-                        this.updateStatus('Ошибка загрузки', 70);
                         reject();
                     };
                     
@@ -566,106 +455,49 @@
                 });
             }
 
-            estimateUploadSpeed() {
-                this.updateStatus('Оценка исходящей скорости...', 80);
-                
-                // Оцениваем upload на основе download и пинга
-                const download = parseFloat(this.downloadEl.textContent) || 30;
-                const ping = parseInt(this.pingEl.textContent) || 50;
-                
-                let upload;
-                if (ping < 30) {
-                    upload = download * 0.9;
-                } else if (ping < 60) {
-                    upload = download * 0.7;
-                } else if (ping < 100) {
-                    upload = download * 0.5;
-                } else {
-                    upload = download * 0.3;
-                }
-                
-                this.uploadEl.textContent = upload.toFixed(1);
-                this.updateStatus('Оценка завершена', 90);
-            }
-
-            calculateJitter(pings) {
-                if (pings.length < 2) return 0;
-                let sum = 0;
-                for (let i = 1; i < pings.length; i++) {
-                    sum += Math.abs(pings[i] - pings[i-1]);
-                }
-                return Math.round(sum / (pings.length - 1));
-            }
-
             saveResult() {
                 const result = {
                     ping: this.pingEl.textContent,
-                    download: this.downloadEl.textContent,
-                    upload: this.uploadEl.textContent,
-                    jitter: this.jitterEl.textContent,
+                    speed: this.speedEl.textContent,
                     time: new Date().toLocaleTimeString(),
                     date: new Date().toLocaleDateString()
                 };
                 
                 this.history.unshift(result);
-                if (this.history.length > 10) {
+                if (this.history.length > 5) {
                     this.history.pop();
                 }
                 
-                localStorage.setItem('internetometer_history', JSON.stringify(this.history));
+                localStorage.setItem('ping_history', JSON.stringify(this.history));
                 this.renderHistory();
-            }
-
-            loadHistory() {
-                const saved = localStorage.getItem('internetometer_history');
-                return saved ? JSON.parse(saved) : [];
             }
 
             renderHistory() {
                 if (this.history.length === 0) {
-                    this.historyList.innerHTML = '<li class="history-item"><span class="time">Ещё нет данных</span><span class="results">—</span></li>';
+                    this.historyList.innerHTML = '<li class="history-item">Ещё нет данных</li>';
                     return;
                 }
                 
                 this.historyList.innerHTML = this.history.map(item => `
                     <li class="history-item">
-                        <span class="time">${item.date} ${item.time}</span>
-                        <span class="results">⚡${item.ping} ⬇️${item.download} ⬆️${item.upload}</span>
+                        <span>${item.date} ${item.time}</span>
+                        <span>⚡${item.ping}мс | ⬇️${item.speed}Мбит/с</span>
                     </li>
                 `).join('');
             }
 
-            updateStatus(message, percent, detail = '') {
-                this.currentStatus.textContent = message;
-                if (percent !== undefined) {
-                    this.progressFill.style.width = percent + '%';
-                    this.progressPercent.textContent = percent + '%';
-                }
-                if (detail) {
-                    this.progressStage.textContent = detail;
-                }
-            }
-
-            resetDisplay() {
-                this.pingEl.textContent = '—';
-                this.downloadEl.textContent = '—';
-                this.uploadEl.textContent = '—';
-                this.jitterEl.textContent = '—';
-                this.realTimeSpeed.textContent = '0 Мбит/с';
-                this.progressFill.style.width = '0%';
-                this.progressPercent.textContent = '0%';
-                this.progressTime.textContent = '0 с';
-            }
-
             resetTest() {
-                this.resetDisplay();
-                this.currentStatus.textContent = 'Готов к тестированию';
+                this.pingEl.textContent = '—';
+                this.speedEl.textContent = '—';
+                this.statusText.textContent = 'Нажмите "Начать тест"';
+                this.progressFill.style.width = '0%';
+                this.progressDetail.textContent = 'Готов';
             }
 
             clearHistory() {
-                if (confirm('Очистить всю историю тестов?')) {
+                if (confirm('Очистить историю?')) {
                     this.history = [];
-                    localStorage.removeItem('internetometer_history');
+                    localStorage.removeItem('ping_history');
                     this.renderHistory();
                 }
             }
@@ -676,7 +508,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            new Internetometer();
+            new PingSpeedTest();
         });
     </script>
 </body>

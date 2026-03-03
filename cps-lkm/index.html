@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPS ЛКМ - В ПК!</title>
+    
+    <link rel="stylesheet" href="/assets/css/top-panel.css">
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .cps-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+
+        /* Игровая зона */
+        .game-area {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .click-button {
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: all 0.1s;
+            color: white;
+            border: 4px solid rgba(255,255,255,0.3);
+            user-select: none;
+        }
+
+        .click-button:active {
+            transform: scale(0.95);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.6);
+        }
+
+        .click-button.waiting {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            cursor: not-allowed;
+        }
+
+        .click-button.ready {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+        }
+
+        .click-button.active {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .main-text {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .sub-text {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        /* Метрики */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .metric-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            color: #7f8c8d;
+            font-size: 0.8em;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 5px 0;
+        }
+
+        .metric-unit {
+            color: #95a5a6;
+            font-size: 0.8em;
+        }
+
+        /* Настройки времени */
+        .time-settings {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .time-btn {
+            padding: 10px 25px;
+            border: 2px solid #667eea;
+            background: transparent;
+            color: #667eea;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .time-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .time-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Результаты */
+        .results-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 1.2em;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #7f8c8d;
+        }
+
+        .result-value {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .cps-highlight {
+            color: #667eea;
+            font-size: 1.5em;
+        }
+
+        /* Стабильность */
+        .stability-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .stability-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #f1c40f, #e74c3c);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .stability-text {
+            text-align: center;
+            color: #7f8c8d;
+            margin: 5px 0;
+        }
+
+        /* История */
+        .history-section {
+            margin-top: 40px;
+            border-top: 2px solid #e0e0e0;
+            padding-top: 30px;
+        }
+
+        .history-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: #f8f9fa;
+            margin-bottom: 8px;
+            border-radius: 10px;
+        }
+
+        .history-item .best {
+            color: #f1c40f;
+            font-weight: bold;
+        }
+
+        .control-panel {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        @media (max-width: 600px) {
+            .click-button {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .main-text {
+                font-size: 36px;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="top-panel-placeholder"></div>
+
+    <div class="cps-container">
+        <h1>🖱️ CPS ЛКМ тест</h1>
+        <div class="subtitle">Проверь скорость кликов левой кнопкой мыши</div>
+
+        <!-- Основное игровое поле -->
+        <div class="game-area">
+            <div class="click-button" id="click-button">
+                <div class="main-text" id="main-text">10s</div>
+                <div class="sub-text" id="sub-text">Нажми, чтобы начать</div>
+            </div>
+        </div>
+
+        <!-- Настройки времени -->
+        <div class="time-settings">
+            <button class="time-btn active" data-time="10">10 секунд</button>
+            <button class="time-btn" data-time="30">30 секунд</button>
+            <button class="time-btn" data-time="60">60 секунд</button>
+            <button class="time-btn" data-time="100">100 кликов</button>
+        </div>
+
+        <!-- Основные метрики -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon">⚡</div>
+                <div class="metric-label">ТЕКУЩИЙ CPS</div>
+                <div class="metric-value" id="current-cps">0</div>
+                <div class="metric-unit">кликов/сек</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">📊</div>
+                <div class="metric-label">ВСЕГО КЛИКОВ</div>
+                <div class="metric-value" id="total-clicks">0</div>
+                <div class="metric-unit">кликов</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">⏱️</div>
+                <div class="metric-label">ПРОШЛО ВРЕМЕНИ</div>
+                <div class="metric-value" id="time-elapsed">0.0</div>
+                <div class="metric-unit">секунд</div>
+            </div>
+        </div>
+
+        <!-- Результаты теста -->
+        <div class="results-section" id="results-section" style="display: none;">
+            <div class="result-row">
+                <span class="result-label">Итоговый CPS</span>
+                <span class="result-value" id="final-cps">0</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Всего кликов</span>
+                <span class="result-value" id="final-clicks">0</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Время теста</span>
+                <span class="result-value" id="final-time">0</span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Рекорд</span>
+                <span class="result-value" id="record-cps">0</span>
+            </div>
+        </div>
+
+        <!-- Стабильность кликов -->
+        <div class="results-section">
+            <h3>📈 Стабильность кликов</h3>
+            <div class="stability-bar">
+                <div class="stability-fill" id="stability-fill" style="width: 100%;"></div>
+            </div>
+            <div class="stability-text" id="stability-text">Отлично!</div>
+        </div>
+
+        <!-- Кнопки управления -->
+        <div class="control-panel">
+            <button class="btn btn-primary" id="start-test">🚀 Начать тест</button>
+            <button class="btn btn-secondary" id="reset-test">🔄 Сбросить</button>
+        </div>
+
+        <!-- Последние результаты -->
+        <div class="history-section">
+            <h3>📜 Последние результаты</h3>
+            <ul class="history-list" id="history-list">
+                <li class="history-item">Ещё нет данных</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="/assets/js/top-panel.js"></script>
+    
+    <script>
+        class CPSTest {
+            constructor() {
+                this.mode = 'time'; // 'time' или 'clicks'
+                this.testDuration = 10; // секунд
+                this.targetClicks = 100; // для режима "100 кликов"
+                
+                this.testActive = false;
+                this.testFinished = false;
+                this.startTime = null;
+                this.clicks = 0;
+                this.clickTimes = [];
+                
+                // Для стабильности
+                this.intervals = [];
+                
+                // История
+                this.history = JSON.parse(localStorage.getItem('cps_history')) || [];
+                
+                this.initElements();
+                this.addEventListeners();
+                this.renderHistory();
+            }
+
+            initElements() {
+                this.button = document.getElementById('click-button');
+                this.mainText = document.getElementById('main-text');
+                this.subText = document.getElementById('sub-text');
+                
+                this.currentCps = document.getElementById('current-cps');
+                this.totalClicks = document.getElementById('total-clicks');
+                this.timeElapsed = document.getElementById('time-elapsed');
+                
+                this.resultsSection = document.getElementById('results-section');
+                this.finalCps = document.getElementById('final-cps');
+                this.finalClicks = document.getElementById('final-clicks');
+                this.finalTime = document.getElementById('final-time');
+                this.recordCps = document.getElementById('record-cps');
+                
+                this.stabilityFill = document.getElementById('stability-fill');
+                this.stabilityText = document.getElementById('stability-text');
+                
+                this.startBtn = document.getElementById('start-test');
+                this.resetBtn = document.getElementById('reset-test');
+                
+                this.timeButtons = document.querySelectorAll('.time-btn');
+                this.historyList = document.getElementById('history-list');
+                
+                // Загружаем рекорд
+                this.record = localStorage.getItem('cps_record') || 0;
+                this.recordCps.textContent = this.record;
+            }
+
+            addEventListeners() {
+                this.button.addEventListener('click', () => this.handleClick());
+                this.startBtn.addEventListener('click', () => this.startTest());
+                this.resetBtn.addEventListener('click', () => this.resetTest());
+                
+                this.timeButtons.forEach(btn => {
+                    btn.addEventListener('click', (e) => this.setTimeMode(e));
+                });
+            }
+
+            setTimeMode(e) {
+                this.timeButtons.forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                
+                const time = parseInt(e.target.dataset.time);
+                
+                if (time === 100) {
+                    this.mode = 'clicks';
+                    this.targetClicks = 100;
+                    this.mainText.textContent = '100 кликов';
+                } else {
+                    this.mode = 'time';
+                    this.testDuration = time;
+                    this.mainText.textContent = time + 's';
+                }
+                
+                this.subText.textContent = 'Нажми, чтобы начать';
+                this.button.classList.remove('active', 'waiting');
+                this.button.classList.add('ready');
+            }
+
+            startTest() {
+                if (this.testActive) return;
+                
+                this.testActive = true;
+                this.testFinished = false;
+                this.clicks = 0;
+                this.clickTimes = [];
+                this.intervals = [];
+                this.startTime = Date.now();
+                
+                this.button.classList.remove('ready');
+                this.button.classList.add('active');
+                this.subText.textContent = 'Кликай!';
+                
+                this.resultsSection.style.display = 'none';
+                
+                // Запускаем обновление метрик
+                this.updateInterval = setInterval(() => this.updateMetrics(), 50);
+                
+                // Таймер окончания для режима времени
+                if (this.mode === 'time') {
+                    setTimeout(() => this.finishTest(), this.testDuration * 1000);
+                }
+            }
+
+            handleClick() {
+                if (!this.testActive) return;
+                
+                const now = Date.now();
+                this.clicks++;
+                this.clickTimes.push(now);
+                
+                // Обновляем счетчик кликов
+                this.totalClicks.textContent = this.clicks;
+                
+                // Проверка окончания для режима "100 кликов"
+                if (this.mode === 'clicks' && this.clicks >= this.targetClicks) {
+                    this.finishTest();
+                }
+                
+                // Добавляем эффект нажатия
+                this.button.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.button.style.transform = '';
+                }, 50);
+            }
+
+            updateMetrics() {
+                if (!this.testActive) return;
+                
+                const now = Date.now();
+                const elapsed = (now - this.startTime) / 1000;
+                
+                // Обновляем прошедшее время
+                this.timeElapsed.textContent = elapsed.toFixed(1);
+                
+                // Считаем CPS за последнюю секунду
+                const lastSecond = this.clickTimes.filter(t => now - t <= 1000);
+                const cps = lastSecond.length;
+                this.currentCps.textContent = cps;
+                
+                // Собираем интервалы для стабильности
+                if (this.clickTimes.length > 1) {
+                    const lastInterval = this.clickTimes[this.clickTimes.length - 1] - 
+                                        this.clickTimes[this.clickTimes.length - 2];
+                    if (lastInterval < 1000) { // Игнорируем паузы > 1 сек
+                        this.intervals.push(lastInterval);
+                    }
+                }
+                
+                // Обновляем стабильность
+                this.updateStability();
+            }
+
+            updateStability() {
+                if (this.intervals.length < 2) return;
+                
+                // Считаем средний интервал и отклонение
+                const avg = this.intervals.reduce((a, b) => a + b, 0) / this.intervals.length;
+                const deviations = this.intervals.map(i => Math.abs(i - avg));
+                const avgDeviation = deviations.reduce((a, b) => a + b, 0) / deviations.length;
+                
+                // Стабильность: чем меньше отклонение, тем лучше
+                const stability = Math.max(0, Math.min(100, 100 - (avgDeviation / avg) * 50));
+                
+                this.stabilityFill.style.width = stability + '%';
+                
+                if (stability > 80) {
+                    this.stabilityText.textContent = '🎯 Идеальная стабильность!';
+                } else if (stability > 60) {
+                    this.stabilityText.textContent = '👍 Хорошая стабильность';
+                } else if (stability > 40) {
+                    this.stabilityText.textContent = '👌 Средняя стабильность';
+                } else {
+                    this.stabilityText.textContent = '⚠️ Низкая стабильность';
+                }
+            }
+
+            finishTest() {
+                if (this.testFinished) return;
+                
+                this.testActive = false;
+                this.testFinished = true;
+                clearInterval(this.updateInterval);
+                
+                const elapsed = (Date.now() - this.startTime) / 1000;
+                const finalCps = (this.clicks / elapsed).toFixed(1);
+                
+                // Показываем результаты
+                this.finalCps.textContent = finalCps;
+                this.finalClicks.textContent = this.clicks;
+                this.finalTime.textContent = elapsed.toFixed(1) + ' сек';
+                
+                // Проверяем рекорд
+                if (finalCps > this.record) {
+                    this.record = finalCps;
+                    localStorage.setItem('cps_record', this.record);
+                    this.recordCps.textContent = this.record;
+                    this.recordCps.style.color = '#f1c40f';
+                }
+                
+                this.resultsSection.style.display = 'block';
+                
+                // Меняем вид кнопки
+                this.button.classList.remove('active');
+                this.button.classList.add('ready');
+                this.mainText.textContent = this.mode === 'time' ? this.testDuration + 's' : '100 кликов';
+                this.subText.textContent = 'Ещё раз?';
+                
+                // Сохраняем в историю
+                this.saveToHistory({
+                    cps: finalCps,
+                    clicks: this.clicks,
+                    time: elapsed.toFixed(1),
+                    mode: this.mode === 'time' ? `${this.testDuration}с` : '100 кликов'
+                });
+            }
+
+            saveToHistory(result) {
+                const historyItem = {
+                    ...result,
+                    date: new Date().toLocaleDateString(),
+                    time: new Date().toLocaleTimeString()
+                };
+                
+                this.history.unshift(historyItem);
+                if (this.history.length > 10) {
+                    this.history.pop();
+                }
+                
+                localStorage.setItem('cps_history', JSON.stringify(this.history));
+                this.renderHistory();
+            }
+
+            renderHistory() {
+                if (this.history.length === 0) {
+                    this.historyList.innerHTML = '<li class="history-item">Ещё нет данных</li>';
+                    return;
+                }
+                
+                this.historyList.innerHTML = this.history.map(item => `
+                    <li class="history-item">
+                        <span>${item.date} ${item.time}</span>
+                        <span class="${item.cps >= this.record ? 'best' : ''}">
+                            ${item.cps} CPS (${item.clicks} кликов)
+                        </span>
+                    </li>
+                `).join('');
+            }
+
+            resetTest() {
+                this.testActive = false;
+                this.testFinished = false;
+                clearInterval(this.updateInterval);
+                
+                this.clicks = 0;
+                this.clickTimes = [];
+                this.intervals = [];
+                
+                this.currentCps.textContent = '0';
+                this.totalClicks.textContent = '0';
+                this.timeElapsed.textContent = '0.0';
+                
+                this.stabilityFill.style.width = '100%';
+                this.stabilityText.textContent = 'Отлично!';
+                
+                this.resultsSection.style.display = 'none';
+                
+                this.button.classList.remove('active');
+                this.button.classList.add('ready');
+                this.mainText.textContent = this.mode === 'time' ? this.testDuration + 's' : '100 кликов';
+                this.subText.textContent = 'Нажми, чтобы начать';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new CPSTest();
+        });
+    </script>
+</body>
+</html>

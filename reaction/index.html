@@ -52,13 +52,20 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             transition: all 0.1s;
             color: white;
             border: 4px solid rgba(255,255,255,0.3);
             user-select: none;
             font-weight: bold;
+        }
+
+        /* Курсор: песочные часы для всех состояний */
+        .reaction-button.waiting,
+        .reaction-button.ready,
+        .reaction-button.active,
+        .reaction-button.success {
+            cursor: wait !important;
         }
 
         .reaction-button.waiting {
@@ -77,10 +84,22 @@
             animation: pulse-red 0.5s infinite;
         }
 
+        .reaction-button.false-start {
+            background: #95a5a6;
+            box-shadow: 0 20px 40px rgba(149, 165, 166, 0.5);
+            animation: shake 0.3s;
+        }
+
         @keyframes pulse-red {
             0% { transform: scale(1); }
             50% { transform: scale(1.02); }
             100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
 
         .reaction-button.success {
@@ -274,6 +293,11 @@
             color: #f1c40f;
         }
 
+        .history-item .false-start-item {
+            color: #e74c3c;
+            font-style: italic;
+        }
+
         @media (max-width: 700px) {
             .reaction-button {
                 width: 280px;
@@ -303,7 +327,7 @@
 
     <div class="reaction-container">
         <h1>⚡ Тест реакции</h1>
-        <div class="subtitle">Жди красного цвета и быстро кликай!</div>
+        <div class="subtitle">Жди красного цвета и быстро кликай! (Ложный старт = фол)</div>
 
         <!-- Основное игровое поле -->
         <div class="game-area">
@@ -331,16 +355,16 @@
 
             <div class="metric-card">
                 <div class="metric-icon">🎯</div>
-                <div class="metric-label">ПОПЫТОК</div>
-                <div class="metric-value" id="attempts">0</div>
+                <div class="metric-label">УСПЕШНО</div>
+                <div class="metric-value" id="successful">0</div>
                 <div class="metric-unit">раз</div>
             </div>
 
             <div class="metric-card">
-                <div class="metric-icon">⏱️</div>
-                <div class="metric-label">ПОСЛЕДНЯЯ</div>
-                <div class="metric-value" id="last-time">—</div>
-                <div class="metric-unit">мс</div>
+                <div class="metric-icon">⚠️</div>
+                <div class="metric-label">ФОЛОВ</div>
+                <div class="metric-value" id="false-starts">0</div>
+                <div class="metric-unit">раз</div>
             </div>
         </div>
 
@@ -362,8 +386,8 @@
                     <div class="stat-value" id="result-avg">—</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-label">Попыток</div>
-                    <div class="stat-value" id="result-attempts">0</div>
+                    <div class="stat-label">Успешно</div>
+                    <div class="stat-value" id="result-successful">0</div>
                 </div>
             </div>
         </div>
@@ -388,9 +412,11 @@
         class ReactionTest {
             constructor() {
                 this.testActive = false;
-                this.waitingForGreen = false;
+                this.waitingForRed = false;
                 this.startTime = null;
                 this.reactionTimes = [];
+                this.falseStarts = 0;
+                this.successfulAttempts = 0;
                 
                 // Загрузка истории
                 this.history = JSON.parse(localStorage.getItem('reaction_history')) || [];
@@ -408,8 +434,8 @@
                 
                 this.bestTimeEl = document.getElementById('best-time');
                 this.avgTimeEl = document.getElementById('avg-time');
-                this.attemptsEl = document.getElementById('attempts');
-                this.lastTimeEl = document.getElementById('last-time');
+                this.successfulEl = document.getElementById('successful');
+                this.falseStartsEl = document.getElementById('false-starts');
                 
                 this.resultsSection = document.getElementById('results-section');
                 this.resultTime = document.getElementById('result-time');
@@ -417,7 +443,7 @@
                 this.resultDescription = document.getElementById('result-description');
                 this.resultBest = document.getElementById('result-best');
                 this.resultAvg = document.getElementById('result-avg');
-                this.resultAttempts = document.getElementById('result-attempts');
+                this.resultSuccessful = document.getElementById('result-successful');
                 
                 this.resetBtn = document.getElementById('reset-test');
                 this.historyList = document.getElementById('history-list');
@@ -430,13 +456,20 @@
 
             handleClick() {
                 // Если тест не активен - запускаем
-                if (!this.testActive && !this.waitingForGreen) {
+                if (!this.testActive && !this.waitingForRed) {
                     this.startTest();
                     return;
                 }
 
-                // Если ждем зеленый (красный) - фиксируем реакцию
-                if (this.waitingForGreen) {
+                // Если ждем красный - проверяем, не фол ли это
+                if (this.testActive && !this.waitingForRed) {
+                    // ФОЛ! Кликнули до появления красного
+                    this.handleFalseStart();
+                    return;
+                }
+
+                // Если ждем красный И он уже появился - фиксируем реакцию
+                if (this.waitingForRed) {
                     const reactionTime = Date.now() - this.startTime;
                     this.finishTest(reactionTime);
                 }
@@ -444,17 +477,18 @@
 
             startTest() {
                 this.testActive = true;
-                this.waitingForGreen = false;
+                this.waitingForRed = false;
                 
-                this.button.classList.remove('waiting', 'active', 'success');
+                this.button.classList.remove('waiting', 'active', 'success', 'false-start');
                 this.button.classList.add('ready');
                 this.mainText.textContent = '⏳';
-                this.subText.textContent = 'Жди...';
+                this.subText.textContent = 'Жди красного...';
                 
                 // Случайный интервал от 1.5 до 7.5 секунд
                 const delay = 1500 + Math.random() * 6000; // 1500-7500 мс
                 
-                setTimeout(() => {
+                // Сохраняем таймаут, чтобы можно было его отменить при фоле
+                this.redTimeout = setTimeout(() => {
                     if (this.testActive) {
                         this.turnRed();
                     }
@@ -462,7 +496,7 @@
             }
 
             turnRed() {
-                this.waitingForGreen = true;
+                this.waitingForRed = true;
                 this.startTime = Date.now();
                 
                 this.button.classList.remove('ready');
@@ -471,13 +505,58 @@
                 this.subText.textContent = 'КЛИКАЙ!';
             }
 
+            handleFalseStart() {
+                // Отменяем таймаут появления красного
+                clearTimeout(this.redTimeout);
+                
+                this.testActive = false;
+                this.waitingForRed = false;
+                this.falseStarts++;
+                
+                // Показываем фол
+                this.button.classList.remove('ready', 'active', 'success');
+                this.button.classList.add('false-start');
+                this.mainText.textContent = '❌';
+                this.subText.textContent = 'ФОЛ! Рано нажал';
+                
+                // Сохраняем в историю
+                this.history.unshift({
+                    type: 'false',
+                    time: 'Фол',
+                    date: new Date().toLocaleDateString(),
+                    timeStr: new Date().toLocaleTimeString()
+                });
+                
+                if (this.history.length > 20) {
+                    this.history.pop();
+                }
+                localStorage.setItem('reaction_history', JSON.stringify(this.history));
+                
+                this.updateStats();
+                this.renderHistory();
+                
+                // Скрываем секцию результатов
+                this.resultsSection.style.display = 'none';
+                
+                // Через 1 секунду возвращаем в исходное состояние
+                setTimeout(() => {
+                    this.button.classList.remove('false-start');
+                    this.button.classList.add('waiting');
+                    this.mainText.textContent = '👆';
+                    this.subText.textContent = 'Нажми, чтобы начать';
+                }, 1000);
+            }
+
             finishTest(reactionTime) {
-                this.waitingForGreen = false;
+                this.waitingForRed = false;
                 this.testActive = false;
                 
                 // Сохраняем результат
                 this.reactionTimes.push(reactionTime);
+                this.successfulAttempts++;
+                
                 this.history.unshift({
+                    type: 'success',
                     time: reactionTime,
                     date: new Date().toLocaleDateString(),
                     timeStr: new Date().toLocaleTimeString()
@@ -495,7 +574,7 @@
                 this.renderHistory();
                 
                 // Меняем кнопку
-                this.button.classList.remove('active');
+                this.button.classList.remove('active', 'false-start');
                 this.button.classList.add('success');
                 this.mainText.textContent = '✅';
                 this.subText.textContent = 'Ещё раз? Нажми';
@@ -505,7 +584,7 @@
                 this.resultsSection.style.display = 'block';
                 this.resultTime.textContent = time + ' мс';
                 
-                // Определяем сообщение в зависимости от времени
+                // Определяем сообщение в зависимости от времени (обновлённые пороги)
                 let message, description;
                 
                 if (time <= 10) {
@@ -523,6 +602,9 @@
                 } else if (time <= 300) {
                     message = '👌 НОРМАЛЬНО';
                     description = 'Средний результат';
+                } else if (time <= 350) {
+                    message = '🤔 ТАК СЕБЕ';
+                    description = 'Можно и побыстрее';
                 } else if (time <= 500) {
                     message = '🐢 ТОРМОЗОВАТО';
                     description = 'Сорян, но чёт задумался?';
@@ -542,39 +624,35 @@
                 if (this.reactionTimes.length === 0) {
                     this.bestTimeEl.textContent = '—';
                     this.avgTimeEl.textContent = '—';
-                    this.lastTimeEl.textContent = '—';
-                    this.attemptsEl.textContent = '0';
+                } else {
+                    const best = Math.min(...this.reactionTimes);
+                    const avg = Math.round(this.reactionTimes.reduce((a, b) => a + b, 0) / this.reactionTimes.length);
                     
-                    this.resultBest.textContent = '—';
-                    this.resultAvg.textContent = '—';
-                    this.resultAttempts.textContent = '0';
-                    return;
+                    this.bestTimeEl.textContent = best;
+                    this.avgTimeEl.textContent = avg;
+                    
+                    this.resultBest.textContent = best + ' мс';
+                    this.resultAvg.textContent = avg + ' мс';
                 }
                 
-                const best = Math.min(...this.reactionTimes);
-                const avg = Math.round(this.reactionTimes.reduce((a, b) => a + b, 0) / this.reactionTimes.length);
-                const last = this.reactionTimes[this.reactionTimes.length - 1];
+                this.successfulEl.textContent = this.successfulAttempts;
+                this.falseStartsEl.textContent = this.falseStarts;
                 
-                this.bestTimeEl.textContent = best;
-                this.avgTimeEl.textContent = avg;
-                this.lastTimeEl.textContent = last;
-                this.attemptsEl.textContent = this.reactionTimes.length;
-                
-                this.resultBest.textContent = best + ' мс';
-                this.resultAvg.textContent = avg + ' мс';
-                this.resultAttempts.textContent = this.reactionTimes.length;
+                this.resultSuccessful.textContent = this.successfulAttempts;
             }
 
             resetStats() {
                 if (confirm('Сбросить всю статистику реакции?')) {
                     this.reactionTimes = [];
+                    this.falseStarts = 0;
+                    this.successfulAttempts = 0;
                     this.history = [];
                     localStorage.removeItem('reaction_history');
                     this.updateStats();
                     this.renderHistory();
                     this.resultsSection.style.display = 'none';
                     
-                    this.button.classList.remove('success', 'active');
+                    this.button.classList.remove('success', 'active', 'false-start');
                     this.button.classList.add('waiting');
                     this.mainText.textContent = '👆';
                     this.subText.textContent = 'Нажми, чтобы начать';
@@ -587,17 +665,29 @@
                     return;
                 }
                 
-                // Находим лучший результат
-                const bestTime = Math.min(...this.history.map(h => h.time));
+                // Находим лучший успешный результат
+                const successfulTimes = this.history.filter(h => h.type === 'success').map(h => h.time);
+                const bestTime = successfulTimes.length > 0 ? Math.min(...successfulTimes) : null;
                 
-                this.historyList.innerHTML = this.history.slice(0, 10).map(item => `
-                    <li class="history-item">
-                        <span class="time">${item.date} ${item.timeStr}</span>
-                        <span class="reaction ${item.time === bestTime ? 'best' : ''}">
-                            ${item.time} мс
-                        </span>
-                    </li>
-                `).join('');
+                this.historyList.innerHTML = this.history.slice(0, 10).map(item => {
+                    if (item.type === 'false') {
+                        return `
+                            <li class="history-item">
+                                <span class="time">${item.date} ${item.timeStr}</span>
+                                <span class="false-start-item">❌ ФОЛ</span>
+                            </li>
+                        `;
+                    } else {
+                        return `
+                            <li class="history-item">
+                                <span class="time">${item.date} ${item.timeStr}</span>
+                                <span class="reaction ${item.time === bestTime ? 'best' : ''}">
+                                    ${item.time} мс
+                                </span>
+                            </li>
+                        `;
+                    }
+                }).join('');
             }
         }
 

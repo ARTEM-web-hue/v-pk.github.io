@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game AutoClicker - В ПК!</title>
+    
+    <link rel="stylesheet" href="/assets/css/top-panel.css">
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
+        }
+
+        /* Заголовок */
+        .hero {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #e94560, #0f3460);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(233, 69, 96, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            color: #8a8f9e;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Карточка программы */
+        .program-card {
+            background: rgba(26, 26, 46, 0.95);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 1px solid #0f3460;
+            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
+        }
+
+        .program-header {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .program-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #e94560, #0f3460);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);
+        }
+
+        .program-title h2 {
+            font-size: 2.5em;
+            margin: 0 0 10px 0;
+            color: #e94560;
+        }
+
+        .program-title .badge {
+            background: #0f3460;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #00ff9d;
+            display: inline-block;
+        }
+
+        /* Информация о версии */
+        .version-card {
+            background: #16213e;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 1px solid #0f3460;
+        }
+
+        .version-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .version-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #00ff9d;
+        }
+
+        .version-date {
+            color: #8a8f9e;
+            font-size: 1.1em;
+        }
+
+        .version-stable {
+            background: #00ff9d;
+            color: #0f0f1a;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .changes-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .changes-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #0f3460;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .changes-list li:last-child {
+            border-bottom: none;
+        }
+
+        .changes-list li span {
+            color: #00ff9d;
+            font-weight: bold;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #e94560, #0f3460);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(233, 69, 96, 0.3);
+        }
+
+        /* Фишки программы */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 50px 0;
+        }
+
+        .feature-item {
+            background: #16213e;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid #0f3460;
+            transition: all 0.3s;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            border-color: #e94560;
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #e94560;
+            margin-bottom: 10px;
+        }
+
+        .feature-desc {
+            color: #8a8f9e;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        /* Инструкция */
+        .instructions {
+            background: #16213e;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0;
+            border: 1px solid #0f3460;
+        }
+
+        .instructions h3 {
+            color: #e94560;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .instructions ol {
+            list-style: none;
+            padding: 0;
+        }
+
+        .instructions li {
+            padding: 15px;
+            border-bottom: 1px solid #0f3460;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .instructions li:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: #e94560;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .hotkey {
+            background: #0f3460;
+            padding: 3px 10px;
+            border-radius: 10px;
+            color: #00ff9d;
+            font-family: monospace;
+            font-size: 1.1em;
+        }
+
+        /* Системные требования */
+        .requirements {
+            background: #0f3460;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .requirements h4 {
+            color: #e94560;
+            margin: 0 0 15px 0;
+            font-size: 1.3em;
+        }
+
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .req-item {
+            text-align: center;
+        }
+
+        .req-item .label {
+            color: #8a8f9e;
+            font-size: 0.9em;
+        }
+
+        .req-item .value {
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 700px) {
+            .hero h1 {
+                font-size: 2.5em;
+            }
+            
+            .program-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .requirements-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .version-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="top-panel-placeholder"></div>
+
+    <div class="container">
+        <!-- Шапка -->
+        <div class="hero">
+            <h1>🎮 GAME AUTOCLICKER</h1>
+            <p>Профессиональный автокликер для игр с анти-детектом и гибкими настройками</p>
+        </div>
+
+        <!-- Основная карточка программы -->
+        <div class="program-card">
+            <div class="program-header">
+                <div class="program-icon">⚡</div>
+                <div class="program-title">
+                    <h2>Game AutoClicker</h2>
+                    <span class="badge">⚡ Стабильная версия</span>
+                </div>
+            </div>
+
+            <!-- Информация о версии -->
+            <div class="version-card">
+                <div class="version-header">
+                    <div>
+                        <span class="version-number">v2.0.0</span>
+                        <span style="margin-left: 15px; color: #8a8f9e;">|</span>
+                        <span class="version-date">03.03.2026</span>
+                    </div>
+                    <span class="version-stable">✅ СТАБИЛЬНАЯ</span>
+                </div>
+
+                <h4 style="color: #e94560; margin: 20px 0 10px 0;">Что нового:</h4>
+                <ul class="changes-list">
+                    <li><span>✓</span> Полная стабильность работы</li>
+                    <li><span>✓</span> Работает даже при зажатых WASD + горячие клавиши</li>
+                    <li><span>✓</span> Анти-детект с случайными вариациями CPS</li>
+                    <li><span>✓</span> Горячие клавиши настраиваются (по умолчанию F6/F7/F8)</li>
+                    <li><span>✓</span> Автосохранение настроек каждые 3 секунды</li>
+                    <li><span>✓</span> Полное завершение при закрытии (не виснет в фоне)</li>
+                </ul>
+
+                <div style="text-align: center;">
+                    <a href="/downloads/GameAutoClick_v2.0.0.exe" class="download-btn">
+                        ⬇️ СКАЧАТЬ (12 МБ)
+                    </a>
+                </div>
+            </div>
+
+            <!-- Системные требования -->
+            <div class="requirements">
+                <h4>🖥️ Системные требования</h4>
+                <div class="requirements-grid">
+                    <div class="req-item">
+                        <div class="label">ОС</div>
+                        <div class="value">Windows 7/8/10/11</div>
+                    </div>
+                    <div class="req-item">
+                        <div class="label">Размер</div>
+                        <div class="value">~12 МБ</div>
+                    </div>
+                    <div class="req-item">
+                        <div class="label">Язык</div>
+                        <div class="value">Русский</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Фишки программы -->
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">🛡️</div>
+                <div class="feature-title">Анти-детект</div>
+                <div class="feature-desc">Случайные вариации CPS, чтобы не заблокировали в играх</div>
+            </div>
+
+            <div class="feature-item">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Мгновенный отклик</div>
+                <div class="feature-desc">Клавиши срабатывают моментально, без задержек</div>
+            </div>
+
+            <div class="feature-item">
+                <div class="feature-icon">⌨️</div>
+                <div class="feature-title">Гибкие клавиши</div>
+                <div class="feature-desc">Настрой любые клавиши для включения/выключения</div>
+            </div>
+
+            <div class="feature-item">
+                <div class="feature-icon">🎮</div>
+                <div class="feature-title">Для любых игр</div>
+                <div class="feature-desc">Работает даже при зажатых WASD и других клавишах</div>
+            </div>
+        </div>
+
+        <!-- Инструкция -->
+        <div class="instructions">
+            <h3>📖 Как пользоваться</h3>
+            <ol>
+                <li>
+                    <span class="step-number">1</span>
+                    Скачай и запусти <strong>GameAutoClick_v2.0.0.exe</strong>
+                </li>
+                <li>
+                    <span class="step-number">2</span>
+                    Настрой CPS (клики в секунду) для ЛКМ и ПКМ
+                </li>
+                <li>
+                    <span class="step-number">3</span>
+                    Включи анти-детект если нужно (рекомендуется для игр)
+                </li>
+                <li>
+                    <span class="step-number">4</span>
+                    Нажми <span class="hotkey">F6</span> для ЛКМ, <span class="hotkey">F7</span> для ПКМ
+                </li>
+                <li>
+                    <span class="step-number">5</span>
+                    Нажми <span class="hotkey">F8</span> чтобы остановить всё
+                </li>
+                <li>
+                    <span class="step-number">6</span>
+                    Закрой окно — программа полностью выключится
+                </li>
+            </ol>
+            <div style="margin-top: 20px; padding: 15px; background: #0f3460; border-radius: 15px;">
+                <span style="color: #00ff9d;">💡 Совет:</span> Настройки сохраняются автоматически в файл <code style="background: #1a1a2e; padding: 2px 8px; border-radius: 5px;">autoclicker_config.json</code> в папке с программой.
+            </div>
+        </div>
+
+        <!-- Кнопка наверх -->
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="#" class="download-btn" style="background: #0f3460;">↑ Наверх</a>
+        </div>
+    </div>
+
+    <script src="/assets/js/top-panel.js"></script>
+    
+    <script>
+        // Плавный скролл для якорей
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

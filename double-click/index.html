@@ -37,7 +37,6 @@
             margin-bottom: 30px;
         }
 
-        /* Тестовая зона */
         .test-area {
             text-align: center;
             margin: 40px 0;
@@ -61,6 +60,14 @@
             user-select: none;
         }
 
+        .test-button:active {
+            transform: scale(0.95);
+        }
+
+        .test-button.waiting {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+
         .test-button.active {
             animation: pulse-red 1s infinite;
         }
@@ -82,7 +89,6 @@
             opacity: 0.9;
         }
 
-        /* Результаты */
         .results-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -127,7 +133,6 @@
             100% { opacity: 1; }
         }
 
-        /* Статус мыши */
         .mouse-status {
             background: #f8f9fa;
             border-radius: 15px;
@@ -147,24 +152,12 @@
             margin-bottom: 10px;
         }
 
-        .status-description {
-            color: #7f8c8d;
-        }
-
         .mouse-good {
             color: #27ae60;
         }
 
         .mouse-bad {
             color: #e74c3c;
-        }
-
-        /* Кнопки */
-        .control-panel {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin: 30px 0;
         }
 
         .btn {
@@ -175,16 +168,7 @@
             cursor: pointer;
             transition: all 0.3s;
             font-weight: bold;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+            margin: 5px;
         }
 
         .btn-secondary {
@@ -196,7 +180,6 @@
             background: #d0d0d0;
         }
 
-        /* История */
         .history-section {
             margin-top: 40px;
             border-top: 2px solid #e0e0e0;
@@ -245,17 +228,15 @@
 
     <div class="doubleclick-container">
         <h1>🖱️ Тест на дабл-клик</h1>
-        <div class="subtitle">Проверь, не двоится ли твоя мышь</div>
+        <div class="subtitle">Просто начни кликать по кнопке</div>
 
-        <!-- Тестовая зона -->
         <div class="test-area">
             <div class="test-button" id="test-button">
                 <div class="main-text" id="main-text">Кликни</div>
-                <div class="sub-text" id="sub-text">Кликай здесь для теста</div>
+                <div class="sub-text" id="sub-text">Нажми чтобы начать</div>
             </div>
         </div>
 
-        <!-- Результаты -->
         <div class="results-grid">
             <div class="result-card">
                 <div class="result-icon">🖱️</div>
@@ -282,30 +263,18 @@
             </div>
         </div>
 
-        <!-- Статус мыши -->
         <div class="mouse-status" id="mouse-status">
             <div class="status-icon" id="status-icon">🖱️</div>
-            <div class="status-title" id="status-title">Нажми "Начать тест"</div>
+            <div class="status-title" id="status-title">Нажми на кнопку</div>
             <div class="status-description" id="status-description">
                 Кликай как обычно, мышь сама определит проблему
             </div>
         </div>
 
-        <!-- Кнопки управления -->
-        <div class="control-panel">
-            <button class="btn btn-primary" id="start-test">🚀 Начать тест</button>
-            <button class="btn btn-secondary" id="reset-test">🔄 Сбросить</button>
+        <div style="text-align: center;">
+            <button class="btn btn-secondary" id="reset-test">🔄 Сбросить тест</button>
         </div>
 
-        <!-- Информация о дабл-клике -->
-        <div style="background: #f0f4f8; border-radius: 15px; padding: 20px; margin: 20px 0;">
-            <h3>❓ Что такое дабл-клик?</h3>
-            <p>Дабл-клик (двойной клик) — это когда мышь отправляет два сигнала вместо одного. 
-            Обычно это происходит из-за износа микрика. Порог срабатывания — <strong>80 миллисекунд</strong>.</p>
-            <p>Если интервал между кликами меньше 80 мс, это считается дабл-кликом.</p>
-        </div>
-
-        <!-- Последние тесты -->
         <div class="history-section">
             <h3>📜 Последние тесты</h3>
             <ul class="history-list" id="history-list">
@@ -322,7 +291,7 @@
                 this.testActive = false;
                 this.clicks = [];
                 this.doubleClicks = 0;
-                this.doubleThreshold = 80; // 80 мс - порог дабл-клика
+                this.doubleThreshold = 80;
                 
                 this.history = JSON.parse(localStorage.getItem('doubleclick_history')) || [];
                 
@@ -345,46 +314,24 @@
                 this.statusTitle = document.getElementById('status-title');
                 this.statusDesc = document.getElementById('status-description');
                 
-                this.startBtn = document.getElementById('start-test');
                 this.resetBtn = document.getElementById('reset-test');
-                
                 this.historyList = document.getElementById('history-list');
             }
 
             addEventListeners() {
                 this.button.addEventListener('click', () => this.handleClick());
-                this.startBtn.addEventListener('click', () => this.startTest());
                 this.resetBtn.addEventListener('click', () => this.resetTest());
             }
 
-            startTest() {
-                if (this.testActive) return;
-                
-                this.testActive = true;
-                this.clicks = [];
-                this.doubleClicks = 0;
-                
-                this.button.classList.add('active');
-                this.mainText.textContent = 'Кликай!';
-                this.subText.textContent = 'Кликай как обычно';
-                
-                this.updateStats();
-                
-                // Обновляем статус
-                this.statusIcon.textContent = '⚡';
-                this.statusTitle.textContent = 'Тест идёт...';
-                this.statusDesc.textContent = 'Кликай в кнопку выше';
-            }
-
             handleClick() {
-                if (!this.testActive) return;
+                // Если тест не активен - запускаем
+                if (!this.testActive) {
+                    this.startTest();
+                }
                 
                 const now = Date.now();
-                
-                // Добавляем клик
                 this.clicks.push(now);
                 
-                // Проверяем на дабл-клик (сравниваем с предыдущим)
                 if (this.clicks.length > 1) {
                     const lastClick = this.clicks[this.clicks.length - 2];
                     const interval = now - lastClick;
@@ -392,7 +339,6 @@
                     if (interval < this.doubleThreshold) {
                         this.doubleClicks++;
                         
-                        // Визуальный эффект для дабл-клика
                         this.button.style.backgroundColor = '#ff6b6b';
                         setTimeout(() => {
                             this.button.style.backgroundColor = '';
@@ -400,13 +346,27 @@
                     }
                 }
                 
-                // Ограничиваем историю кликов (оставляем последние 50)
                 if (this.clicks.length > 50) {
                     this.clicks = this.clicks.slice(-50);
                 }
                 
                 this.updateStats();
                 this.checkMouseStatus();
+            }
+
+            startTest() {
+                this.testActive = true;
+                this.clicks = [];
+                this.doubleClicks = 0;
+                
+                this.button.classList.remove('waiting');
+                this.button.classList.add('active');
+                this.mainText.textContent = 'Кликай!';
+                this.subText.textContent = 'Продолжай кликать';
+                
+                this.statusIcon.textContent = '⚡';
+                this.statusTitle.textContent = 'Тест идёт...';
+                this.statusDesc.textContent = 'Кликай в кнопку выше';
             }
 
             updateStats() {
@@ -416,11 +376,9 @@
                 this.totalClicksEl.textContent = total;
                 this.doubleClicksEl.textContent = double;
                 
-                // Процент дабл-кликов
                 const percent = total > 0 ? ((double / total) * 100).toFixed(1) : 0;
                 this.doublePercentEl.textContent = percent + '%';
                 
-                // Средний интервал между кликами
                 if (total > 1) {
                     let sumIntervals = 0;
                     for (let i = 1; i < total; i++) {
@@ -429,7 +387,6 @@
                     const avg = Math.round(sumIntervals / (total - 1));
                     this.avgIntervalEl.textContent = avg + ' мс';
                     
-                    // Подсвечиваем если много дабл-кликов
                     if (percent > 5) {
                         this.doublePercentEl.classList.add('warning');
                     } else {
@@ -446,19 +403,16 @@
                 const doubleRate = (double / total) * 100;
                 
                 if (doubleRate > 15) {
-                    // Плохая мышь
                     this.statusIcon.textContent = '⚠️';
                     this.statusTitle.textContent = 'Мышь ДАБЛ-КЛИКАЕТ!';
                     this.statusTitle.className = 'mouse-bad';
                     this.statusDesc.textContent = 'Обнаружено много двойных кликов. Пора менять микрик!';
                 } else if (doubleRate > 5) {
-                    // Средняя
                     this.statusIcon.textContent = '🖱️';
                     this.statusTitle.textContent = 'Начинает двоиться';
                     this.statusTitle.className = '';
                     this.statusDesc.textContent = 'Изредка появляются двойные клики. Скоро потребуется замена.';
                 } else {
-                    // Хорошая
                     this.statusIcon.textContent = '✅';
                     this.statusTitle.textContent = 'Мышь в порядке';
                     this.statusTitle.className = 'mouse-good';
@@ -467,13 +421,18 @@
             }
 
             resetTest() {
+                if (this.clicks.length >= 5) {
+                    this.saveToHistory();
+                }
+                
                 this.testActive = false;
                 this.clicks = [];
                 this.doubleClicks = 0;
                 
                 this.button.classList.remove('active');
+                this.button.classList.add('waiting');
                 this.mainText.textContent = 'Кликни';
-                this.subText.textContent = 'Кликай здесь для теста';
+                this.subText.textContent = 'Нажми чтобы начать';
                 
                 this.totalClicksEl.textContent = '0';
                 this.doubleClicksEl.textContent = '0';
@@ -483,14 +442,9 @@
                 this.doublePercentEl.classList.remove('warning');
                 
                 this.statusIcon.textContent = '🖱️';
-                this.statusTitle.textContent = 'Нажми "Начать тест"';
+                this.statusTitle.textContent = 'Нажми на кнопку';
                 this.statusTitle.className = '';
                 this.statusDesc.textContent = 'Кликай как обычно, мышь сама определит проблему';
-                
-                // Сохраняем результат если было достаточно кликов
-                if (this.clicks.length >= 10) {
-                    this.saveToHistory();
-                }
             }
 
             saveToHistory() {

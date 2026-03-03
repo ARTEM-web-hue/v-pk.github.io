@@ -3,126 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Главная - В ПК!</title>
+    <title>В ПК! - Главная</title>
     
-    <!-- Подключаем стили топ-панели (ОДИН РАЗ) -->
     <link rel="stylesheet" href="/assets/css/top-panel.css">
     
-    <!-- Стили только для этой страницы -->
     <style>
         body {
             margin: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
-            background-color: #f0f2f5;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
-        
+
         .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
             text-align: center;
-            padding: 40px 20px 20px;
+            color: white;
         }
-        
+
         .hero h1 {
-            font-size: 2.5em;
-            color: #2c3e50;
-            margin-bottom: 10px;
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
-        
+
         .hero p {
-            font-size: 1.2em;
-            color: #7f8c8d;
-            margin-bottom: 40px;
+            font-size: 1.3em;
+            margin-bottom: 50px;
+            opacity: 0.95;
         }
-        
-        .buttons-grid {
+
+        .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
             max-width: 1000px;
             margin: 0 auto;
-            padding: 20px;
         }
-        
-        .big-button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px 25px;
             text-decoration: none;
-            background: white;
-            border-radius: 15px;
-            padding: 30px 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            color: #2c3e50;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
             border: 2px solid transparent;
         }
-        
-        .big-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            border-color: #3498db;
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border-color: white;
         }
-        
-        .button-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
+
+        .feature-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
         }
-        
-        .button-title {
-            font-size: 24px;
+
+        .feature-title {
+            font-size: 28px;
             font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 8px;
+            margin-bottom: 15px;
+            color: #667eea;
         }
-        
-        .button-desc {
-            font-size: 14px;
+
+        .feature-desc {
+            font-size: 16px;
             color: #7f8c8d;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .feature-tag {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        .stats-banner {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 60px auto 0;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-item {
             text-align: center;
         }
-        
-        .big-button:nth-child(1) .button-icon { color: #3498db; }
-        .big-button:nth-child(2) .button-icon { color: #e74c3c; }
-        .big-button:nth-child(3) .button-icon { color: #2ecc71; }
-        .big-button:nth-child(4) .button-icon { color: #f39c12; }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+            color: white;
+        }
+
+        @media (max-width: 700px) {
+            .hero h1 {
+                font-size: 2.5em;
+            }
+            
+            .stats-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Сюда вставится топ-панель -->
     <div id="top-panel-placeholder"></div>
 
-    <!-- Контент страницы -->
     <div class="hero">
         <h1>Добро пожаловать в В ПК!</h1>
-        <p>Выберите нужный инструмент</p>
-    </div>
-    
-    <div class="buttons-grid">
-        <a href="/ping/" class="big-button">
-            <span class="button-icon">📡</span>
-            <span class="button-title">Пинг</span>
-            <span class="button-desc">Проверка задержки до серверов</span>
-        </a>
-        
-        <a href="/cps-lkm/" class="big-button">
-            <span class="button-icon">🖱️</span>
-            <span class="button-title">CPS ЛКМ</span>
-            <span class="button-desc">Тест кликов левой кнопкой</span>
-        </a>
-        
-        <a href="/cps-pkm/" class="big-button">
-            <span class="button-icon">👆</span>
-            <span class="button-title">CPS ПКМ</span>
-            <span class="button-desc">Тест кликов правой кнопкой</span>
-        </a>
-        
-        <a href="/autoclickers/" class="big-button">
-            <span class="button-icon">⚡</span>
-            <span class="button-title">Автокликеры</span>
-            <span class="button-desc">Программы для авто-кликов</span>
-        </a>
+        <p>Тесты для геймеров и не только 🎮</p>
+
+        <div class="features-grid">
+            <!-- CPS ЛКМ -->
+            <a href="/cps-lkm/" class="feature-card">
+                <div class="feature-icon">🖱️</div>
+                <div class="feature-title">CPS ЛКМ</div>
+                <div class="feature-desc">
+                    Тест скорости кликов левой кнопкой мыши. 
+                    Узнай свой максимум!
+                </div>
+                <div class="feature-tag">Популярное</div>
+            </a>
+
+            <!-- CPS ПКМ -->
+            <a href="/cps-pkm/" class="feature-card">
+                <div class="feature-icon">👆</div>
+                <div class="feature-title">CPS ПКМ</div>
+                <div class="feature-desc">
+                    Тест скорости кликов правой кнопкой мыши.
+                    Проверь свою правую руку!
+                </div>
+                <div class="feature-tag">Новинка</div>
+            </a>
+
+            <!-- Дабл-клик тест -->
+            <a href="/double-click/" class="feature-card">
+                <div class="feature-icon">⚠️</div>
+                <div class="feature-title">Дабл-клик тест</div>
+                <div class="feature-desc">
+                    Проверь, не двоится ли твоя мышь. 
+                    Быстрый тест за 10 кликов!
+                </div>
+                <div class="feature-tag">Диагностика</div>
+            </a>
+        </div>
+
+        <!-- Статистика -->
+        <div class="stats-banner">
+            <div class="stat-item">
+                <div class="stat-number" id="total-users">1,234</div>
+                <div class="stat-label">тестов сегодня</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="avg-cps">8.5</div>
+                <div class="stat-label">средний CPS</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="record-cps">32</div>
+                <div class="stat-label">рекорд CPS</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="double-rate">12%</div>
+                <div class="stat-label">мышей с дабл-кликом</div>
+            </div>
+        </div>
     </div>
 
-    <!-- Подключаем скрипт топ-панели -->
     <script src="/assets/js/top-panel.js"></script>
+    
+    <script>
+        // Простая анимация счётчиков
+        document.addEventListener('DOMContentLoaded', () => {
+            const counters = [
+                { element: document.getElementById('total-users'), target: 1234, current: 1000 },
+                { element: document.getElementById('avg-cps'), target: 8.5, current: 7.2 },
+                { element: document.getElementById('record-cps'), target: 32, current: 28 },
+                { element: document.getElementById('double-rate'), target: 12, current: 8 }
+            ];
+            
+            counters.forEach(counter => {
+                const interval = setInterval(() => {
+                    if (counter.current < counter.target) {
+                        counter.current += (counter.target - counter.current) * 0.1;
+                        if (counter.element === document.getElementById('avg-cps') || 
+                            counter.element === document.getElementById('double-rate')) {
+                            counter.element.textContent = counter.current.toFixed(1) + 
+                                (counter.element === document.getElementById('double-rate') ? '%' : '');
+                        } else {
+                            counter.element.textContent = Math.round(counter.current);
+                        }
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, 50);
+            });
+        });
+    </script>
 </body>
 </html>

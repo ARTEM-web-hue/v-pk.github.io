@@ -751,57 +751,110 @@
         document.addEventListener('keyup', function(event) {
             const key = event.key;
             // Отмечаем клавишу как отпущенную
-            keysPressed[key] = false;
-        });
-
-        init();
-                 loadSound(); // Загружаем звук при инициализации
-                 
-                 // Основная функция рендеринга
-                 function render() {
-                     const container = document.getElementById('tile-container');
-                     container.innerHTML = ''; // Очищаем контейнер перед рендерингом
+                         keysPressed[key] = false;
+                     });
+            
+                     // Добавляем поддержку сенсорного управления для мобильных устройств
+                     let touchStartX = 0;
+                     let touchStartY = 0;
+            
+                     // Обработчик начала касания
+                              document.addEventListener('touchstart', function(event) {
+                                  if (event.touches.length === 1) {
+                                      touchStartX = event.touches[0].clientX;
+                                      touchStartY = event.touches[0].clientY;
+                                      event.preventDefault(); // Предотвращаем прокрутку страницы
+                                  }
+                              }, { passive: false }); // passive: false позволяет использовать preventDefault
+            
+                     // Обработчик окончания касания
+                              document.addEventListener('touchend', function(event) {
+                                  if (event.changedTouches.length === 1) {
+                                      const touchEndX = event.changedTouches[0].clientX;
+                                      const touchEndY = event.changedTouches[0].clientY;
+                                      
+                                      const deltaX = touchEndX - touchStartX;
+                                      const deltaY = touchEndY - touchStartY;
+                                      
+                                      // Определяем минимальное расстояние для срабатывания свайпа
+                                      const minSwipeDistance = 30;
+                                      
+                                      // Проверяем, что движение было достаточным для свайпа
+                                      if (Math.abs(deltaX) > minSwipeDistance || Math.abs(deltaY) > minSwipeDistance) {
+                                          // Определяем направление свайпа
+                                          if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                                              // Горизонтальный свайп
+                                              if (deltaX > 0) {
+                                                  // Свайп вправо
+                                                  move('right');
+                                              } else {
+                                                  // Свайп влево
+                                                  move('left');
+                                              }
+                                          } else {
+                                              // Вертикальный свайп
+                                              if (deltaY > 0) {
+                                                  // Свайп вниз
+                                                  move('down');
+                                              } else {
+                                                  // Свайп вверх
+                                                  move('up');
+                                              }
+                                          }
+                                      }
+                                      
+                                      event.preventDefault(); // Предотвращаем прокрутку страницы
+                                  }
+                              }, { passive: false }); // passive: false позволяет использовать preventDefault
+            
+                     init();
+                     loadSound(); // Загружаем звук при инициализации
                      
-                     for (let i = 0; i < SIZE; i++) {
-                         for (let j = 0; j < SIZE; j++) {
-                             if (board[i][j] !== 0) {
-                                 const tile = document.createElement('div');
-                                 tile.className = `tile tile-${board[i][j]} pos-${i}-${j}`;
-                                 tile.textContent = board[i][j];
-                                 container.appendChild(tile);
-                             }
-                         }
-                     }
-                 }
-                 
-                 // Функция рендеринга с анимацией объединения
-                 function renderWithMergeAnimation(mergedTiles) {
-                     const container = document.getElementById('tile-container');
-                     container.innerHTML = ''; // Очищаем контейнер перед рендерингом
-                     
-                     for (let i = 0; i < SIZE; i++) {
-                         for (let j = 0; j < SIZE; j++) {
-                             if (board[i][j] !== 0) {
-                                 const tile = document.createElement('div');
-                                 tile.className = `tile tile-${board[i][j]} pos-${i}-${j}`;
-                                 
-                                 // Проверяем, была ли эта плитка объединена
-                                 const isMerged = mergedTiles.some(pos => pos.x === i && pos.y === j);
-                                 if (isMerged) {
-                                     tile.classList.add('merged');
+                     // Основная функция рендеринга
+                     function render() {
+                         const container = document.getElementById('tile-container');
+                         container.innerHTML = ''; // Очищаем контейнер перед рендерингом
+                         
+                         for (let i = 0; i < SIZE; i++) {
+                             for (let j = 0; j < SIZE; j++) {
+                                 if (board[i][j] !== 0) {
+                                     const tile = document.createElement('div');
+                                     tile.className = `tile tile-${board[i][j]} pos-${i}-${j}`;
+                                     tile.textContent = board[i][j];
+                                     container.appendChild(tile);
                                  }
-                                 
-                                 tile.textContent = board[i][j];
-                                 container.appendChild(tile);
                              }
                          }
                      }
                      
-                     // Удаляем класс merged немедленно
-                                  const mergedElements = document.querySelectorAll('.tile.merged');
-                                  mergedElements.forEach(el => el.classList.remove('merged'));
-                 }
-                 
-                 </script>
-                                  </body>
-                                  </html>
+                     // Функция рендеринга с анимацией объединения
+                     function renderWithMergeAnimation(mergedTiles) {
+                         const container = document.getElementById('tile-container');
+                         container.innerHTML = ''; // Очищаем контейнер перед рендерингом
+                         
+                         for (let i = 0; i < SIZE; i++) {
+                             for (let j = 0; j < SIZE; j++) {
+                                 if (board[i][j] !== 0) {
+                                     const tile = document.createElement('div');
+                                     tile.className = `tile tile-${board[i][j]} pos-${i}-${j}`;
+                                     
+                                     // Проверяем, была ли эта плитка объединена
+                                     const isMerged = mergedTiles.some(pos => pos.x === i && pos.y === j);
+                                     if (isMerged) {
+                                         tile.classList.add('merged');
+                                     }
+                                     
+                                     tile.textContent = board[i][j];
+                                     container.appendChild(tile);
+                                 }
+                             }
+                         }
+                         
+                         // Удаляем класс merged немедленно
+                         const mergedElements = document.querySelectorAll('.tile.merged');
+                         mergedElements.forEach(el => el.classList.remove('merged'));
+                     }
+                     
+                     </script>
+                                      </body>
+                                      </html>

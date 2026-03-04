@@ -1,16 +1,29 @@
-// Функция для загрузки топ-панели
+// top-panel.js
 async function loadTopPanel() {
     try {
-        // Загружаем HTML панели
         const response = await fetch('/top-panel.html');
         const html = await response.text();
         document.getElementById('top-panel-placeholder').innerHTML = html;
     } catch (error) {
         console.error('Ошибка загрузки топ-панели:', error);
-        document.getElementById('top-panel-placeholder').innerHTML = 
-            '<div style="background: #2c3e50; color:white; padding:10px; text-align:center;">Ошибка загрузки панели</div>';
     }
 }
 
-// Загружаем после загрузки страницы
-document.addEventListener('DOMContentLoaded', loadTopPanel);
+// Добавляем иконку при загрузке
+function addFavicon() {
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.type = 'image/png';
+    link.href = '/assets/logo.png';
+    document.head.appendChild(link);
+    
+    const appleLink = document.createElement('link');
+    appleLink.rel = 'apple-touch-icon';
+    appleLink.href = '/assets/logo.png';
+    document.head.appendChild(appleLink);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadTopPanel();
+    addFavicon();
+});

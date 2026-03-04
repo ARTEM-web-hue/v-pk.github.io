@@ -1,3 +1,135 @@
+/* ======= ТОП-ПАНЕЛЬ (ЛОГОТИП СЛЕВА) ======= */
+.vpk-top-panel {
+    background-color: #0a0e1a !important;
+    color: white !important;
+    padding: 8px 0 !important;
+    box-shadow: 0 4px 20px rgba(0, 255, 249, 0.2) !important;
+    border-bottom: 2px solid #00fff9 !important;
+    position: relative !important;
+    z-index: 1000 !important;
+}
+
+.vpk-container {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 30px !important;
+}
+
+.vpk-panel-content {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: 20px !important;
+}
+
+/* Логотип слева */
+.vpk-logo {
+    display: flex !important;
+    align-items: center !important;
+    text-decoration: none !important;
+    color: white !important;
+    gap: 10px !important;
+    transition: all 0.3s !important;
+    flex-shrink: 0 !important; /* Не сжимается */
+}
+
+.vpk-logo:hover {
+    transform: scale(1.02) !important;
+    text-shadow: 0 0 10px #00fff9 !important;
+}
+
+.vpk-logo-img {
+    height: 40px !important;
+    width: auto !important;
+    filter: drop-shadow(0 0 5px #00fff9) !important;
+}
+
+.vpk-site-title {
+    font-size: 24px !important;
+    font-weight: bold !important;
+    background: linear-gradient(135deg, #00fff9, #b829e6) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    white-space: nowrap !important;
+}
+
+/* Меню справа */
+.vpk-main-nav {
+    display: flex !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+    justify-content: flex-end !important;
+    flex: 1 !important; /* Занимает оставшееся место */
+}
+
+.vpk-nav-link {
+    color: white !important;
+    text-decoration: none !important;
+    padding: 6px 12px !important;
+    border-radius: 20px !important;
+    transition: all 0.3s !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    border: 1px solid transparent !important;
+    white-space: nowrap !important;
+}
+
+.vpk-nav-link:hover {
+    background: rgba(0, 255, 249, 0.1) !important;
+    border-color: #00fff9 !important;
+    box-shadow: 0 0 15px rgba(0, 255, 249, 0.3) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Для средних экранов */
+@media (max-width: 1000px) {
+    .vpk-panel-content {
+        flex-wrap: wrap !important;
+    }
+    
+    .vpk-logo {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    
+    .vpk-main-nav {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+}
+
+/* Для мобильных */
+@media (max-width: 600px) {
+    .vpk-container {
+        padding: 0 15px !important;
+    }
+    
+    .vpk-nav-link {
+        padding: 5px 8px !important;
+        font-size: 13px !important;
+    }
+    
+    .vpk-site-title {
+        font-size: 20px !important;
+    }
+    
+    .vpk-logo-img {
+        height: 35px !important;
+    }
+}
+
+/* Для очень маленьких */
+@media (max-width: 400px) {
+    .vpk-main-nav {
+        gap: 5px !important;
+    }
+    
+    .vpk-nav-link {
+        padding: 4px 6px !important;
+        font-size: 12px !important;
+    }
+}
 /* ======= ВЫПАДАЮЩЕЕ МЕНЮ ======= */
 .vpk-dropdown {
     position: relative !important;
@@ -17,7 +149,7 @@
     display: flex !important;
     align-items: center !important;
     gap: 5px !important;
-    font-family: inherit !important;
+    font-family: inherit !important;я
 }
 
 .vpk-dropdown-btn:hover {

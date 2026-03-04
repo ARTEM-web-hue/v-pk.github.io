@@ -280,20 +280,18 @@
         let history = JSON.parse(localStorage.getItem('ai_history')) || [];
         renderHistory();
 
-        async function generateSite() {
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-            const targetUrl = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completion';
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('generate-btn').disabled = true;
-            document.getElementById('message-container').innerHTML = '';
+async function generateSite() {
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('generate-btn').disabled = true;
+    document.getElementById('message-container').innerHTML = '';
 
-            try {
-                const topic = document.getElementById('site-topic').value;
-                const details = document.getElementById('site-details').value;
-                const style = document.getElementById('site-style').value;
+    try {
+        const topic = document.getElementById('site-topic').value;
+        const details = document.getElementById('site-details').value;
+        const style = document.getElementById('site-style').value;
 
-                const prompt = `Создай ПОЛНЫЙ HTML код для сайта на тему: "${topic}".
-                
+        const prompt = `Создай ПОЛНЫЙ HTML код для сайта на тему: "${topic}".
+        
 Детали: ${details}
 Стиль: ${style}
 
@@ -301,57 +299,55 @@
 - Красивый современный дизайн
 - Адаптивная вёрстка
 - CSS стили внутри тега <style>
-- Минимум JavaScript (только для красоты)
 - Всё должно быть в одном файле
 
-Верни ТОЛЬКО HTML код, без объяснений, без markdown.`;
+Верни ТОЛЬКО HTML код, без объяснений.`;
 
-                const response = await fetch(proxyUrl + targetUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Api-Key ${API_KEY}`,
-                        'x-folder-id': FOLDER_ID
-                    },
-                    body: JSON.stringify({
-                        modelUri: `gpt://${FOLDER_ID}/yandexgpt-lite`,
-                        completionOptions: { 
-                            stream: false, 
-                            temperature: 0.6,
-                            maxTokens: 2000
-                        },
-                        messages: [
-                            {
-                                role: 'user',
-                                text: prompt
-                            }
-                        ]
-                    })
-                });
+        // Отправляем запрос на свой API
+        const response = await fetch('/api/yandex', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                modelUri: `gpt://${FOLDER_ID}/yandexgpt-lite`,
+                completionOptions: { 
+                    stream: false, 
+                    temperature: 0.6,
+                    maxTokens: 2000
+                },
+                messages: [
+                    {
+                        role: 'user',
+                        text: prompt
+                    }
+                ]
+            })
+        });
 
-                const data = await response.json();
+        const data = await response.json();
 
-                if (data.error) {
-                    throw new Error(data.error.message || 'Ошибка API');
-                }
-
-                let htmlCode = data.result.alternatives[0].message.text;
-                htmlCode = htmlCode.replace(/```html/g, '').replace(/```/g, '').trim();
-
-                document.getElementById('preview').srcdoc = htmlCode;
-                document.getElementById('code-output').textContent = htmlCode;
-                
-                showMessage('✅ Сайт успешно сгенерирован!', 'success');
-                saveToHistory(topic, htmlCode);
-
-            } catch (error) {
-                console.error('Ошибка:', error);
-                showMessage('❌ Ошибка: ' + error.message, 'error');
-            } finally {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('generate-btn').disabled = false;
-            }
+        if (data.error) {
+            throw new Error(data.error.message || 'Ошибка API');
         }
+
+        let htmlCode = data.result.alternatives[0].message.text;
+        htmlCode = htmlCode.replace(/```html/g, '').replace(/```/g, '').trim();
+
+        document.getElementById('preview').srcdoc = htmlCode;
+        document.getElementById('code-output').textContent = htmlCode;
+        
+        showMessage('✅ Сайт успешно сгенерирован!', 'success');
+        saveToHistory(topic, htmlCode);
+
+    } catch (error) {
+        console.error('Ошибка:', error);
+        showMessage('❌ Ошибка: ' + error.message, 'error');
+    } finally {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('generate-btn').disabled = false;
+    }
+}
 
         function showMessage(text, type) {
             const container = document.getElementById('message-container');

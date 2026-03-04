@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сайт с ИИ - В ПК!</title>
+    <title>ИИ Генератор сайтов - Свободное творчество</title>
+    
     <link rel="icon" type="image/png" href="/assets/logo.png">
     <link rel="stylesheet" href="/assets/css/top-panel.css">
+    
+    <!-- Transformers.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0"></script>
     
     <style>
         body {
             margin: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
             min-height: 100vh;
         }
 
@@ -26,7 +30,7 @@
 
         h1 {
             text-align: center;
-            color: #1e3c72;
+            color: #8e44ad;
             font-size: 2.5em;
             margin-bottom: 10px;
         }
@@ -34,7 +38,19 @@
         .subtitle {
             text-align: center;
             color: #7f8c8d;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .faraday-quote {
+            text-align: center;
+            color: #8e44ad;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f0e6f5;
+            border-radius: 50px;
+            border-left: 4px solid #8e44ad;
         }
 
         .model-info {
@@ -46,14 +62,6 @@
             display: flex;
             align-items: center;
             gap: 15px;
-        }
-
-        .model-status {
-            background: #27ae60;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
         }
 
         .generator-grid {
@@ -69,7 +77,7 @@
         }
 
         .input-panel h2 {
-            color: #1e3c72;
+            color: #8e44ad;
             margin-top: 0;
             margin-bottom: 20px;
         }
@@ -86,7 +94,6 @@
         }
 
         .form-group input, 
-        .form-group select,
         .form-group textarea {
             width: 100%;
             padding: 12px;
@@ -97,12 +104,23 @@
         }
 
         .form-group textarea {
-            min-height: 120px;
+            min-height: 150px;
             resize: vertical;
         }
 
+        .randomize-btn {
+            background: #8e44ad;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
         .generate-btn {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
             color: white;
             border: none;
             padding: 15px 30px;
@@ -112,11 +130,12 @@
             cursor: pointer;
             width: 100%;
             transition: all 0.3s;
+            margin-top: 10px;
         }
 
         .generate-btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(30, 60, 114, 0.3);
+            box-shadow: 0 10px 20px rgba(142,68,173,0.3);
         }
 
         .generate-btn:disabled {
@@ -131,14 +150,14 @@
         }
 
         .result-panel h2 {
-            color: #1e3c72;
+            color: #8e44ad;
             margin-top: 0;
             margin-bottom: 20px;
         }
 
         .preview-frame {
             width: 100%;
-            height: 400px;
+            height: 500px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             background: white;
@@ -164,7 +183,7 @@
 
         .spinner {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #1e3c72;
+            border-top: 4px solid #8e44ad;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -177,12 +196,79 @@
             100% { transform: rotate(360deg); }
         }
 
-        .error-message {
-            background: #ff6b6b;
-            color: white;
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8e44ad, #9b59b6);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .message {
             padding: 15px;
             border-radius: 10px;
             margin-top: 15px;
+        }
+
+        .error-message {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .success-message {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .history-section {
+            margin-top: 40px;
+            border-top: 2px solid #e0e0e0;
+            padding-top: 30px;
+        }
+
+        .history-list {
+            list-style: none;
+            padding: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: #f8f9fa;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .history-item:hover {
+            background: #e0e0e0;
+        }
+
+        .size-badge {
+            background: #8e44ad;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+
+        .creativity-meter {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0e6f5;
+            border-radius: 10px;
+            text-align: center;
         }
 
         @media (max-width: 800px) {
@@ -196,316 +282,500 @@
     <div id="top-panel-placeholder"></div>
 
     <div class="container">
-        <h1>🤖 Локальный ИИ Генератор</h1>
-        <div class="subtitle">Используем TinyGPT (встроенная модель)</div>
+        <h1>🤖 ИИ Генератор сайтов</h1>
+        <div class="faraday-quote">
+            "Твой подарок по жизни, и свобода просторам фантазий творить чудеса" <br>— Фарадей
+        </div>
+        <div class="subtitle">Никаких шаблонов. Только чистое творчество.</div>
 
-        <!-- Статус -->
+        <!-- Статус модели -->
         <div class="model-info" id="model-info">
-            <span id="model-status-text">⚡ Модель загружена</span>
-            <span class="model-status" id="model-status">✅</span>
+            <span id="model-status-text">⏳ Загрузка творческой модели...</span>
+            <span class="model-status" id="model-status">⏳</span>
+        </div>
+
+        <div class="progress-bar" id="progress-bar" style="display: none;">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <div class="creativity-meter" id="creativity-meter">
+            🎨 Уровень творчества: Максимальный
         </div>
 
         <div class="generator-grid">
             <div class="input-panel">
-                <h2>📝 Параметры сайта</h2>
+                <h2>📝 Опиши что хочешь</h2>
                 
                 <div class="form-group">
-                    <label>Что за сайт?</label>
-                    <input type="text" id="site-topic" placeholder="Например: кофейня, портфолио" value="кофейня">
+                    <label>
+                        Тема или идея
+                        <button class="randomize-btn" onclick="randomizeIdea()">✨ Случайная идея</button>
+                    </label>
+                    <input type="text" id="site-topic" placeholder="Например: сайт про космических котов, портал в другое измерение..." value="космические коты путешествуют во времени">
                 </div>
 
                 <div class="form-group">
-                    <label>Детали</label>
-                    <textarea id="site-details" placeholder="Опиши подробно...">Красивый сайт для кофейни с меню, фотографиями и контактами</textarea>
+                    <label>Подробности (опиши всё, что придёт в голову)</label>
+                    <textarea id="site-details" placeholder="Чем безумнее, тем лучше...">Сайт про котов, которые путешествуют во времени и пространстве. Каждый кот — это отдельная вселенная. Добавить парящие элементы, неоновые цвета, анимации звёзд, квантовые эффекты. Коты должны быть в скафандрах. Сделать интерактивную карту путешествий. Музыкальное сопровождение (имитация). Кнопки, которые меняют реальность.</textarea>
                 </div>
 
                 <div class="form-group">
-                    <label>Стиль</label>
-                    <select id="site-style">
-                        <option value="modern">Современный</option>
-                        <option value="minimal">Минимализм</option>
-                        <option value="cyber">Киберпанк</option>
-                    </select>
+                    <label>Дополнительные пожелания</label>
+                    <textarea id="extra-wishes" placeholder="Напиши что угодно...">Добавить философские цитаты о котах и времени. Сделать так, чтобы при наведении на кота появлялись звёзды. Использовать нестандартные шрифты. Создать ощущение бесконечности.</textarea>
                 </div>
 
-                <button class="generate-btn" id="generate-btn" onclick="generateSite()">
-                    🚀 СГЕНЕРИРОВАТЬ
+                <button class="generate-btn" id="generate-btn" onclick="generateSite()" disabled>
+                    ⏳ ЗАГРУЗКА МОДЕЛИ...
                 </button>
 
                 <div class="loading" id="loading" style="display: none;">
                     <div class="spinner"></div>
-                    <p style="margin-top: 15px;">Генерация...</p>
+                    <p style="margin-top: 15px;">ИИ творит... Это может занять 30-60 секунд</p>
                 </div>
             </div>
 
             <div class="result-panel">
-                <h2>🎨 Результат</h2>
+                <h2>🎨 Результат творчества</h2>
                 
-                <iframe id="preview" class="preview-frame" srcdoc="<html><body style='display:flex;justify-content:center;align-items:center;height:100%;font-family:Arial;color:#666;'>Нажми 'Сгенерировать'</body></html>"></iframe>
+                <iframe id="preview" class="preview-frame" srcdoc="<html><body style='display:flex;justify-content:center;align-items:center;height:100%;font-family:Arial;color:#666;'>Здесь появится уникальный сайт</body></html>"></iframe>
                 
                 <div class="code-output" id="code-output">
-                    Здесь появится код
+                    Нажми "СГЕНЕРИРОВАТЬ" и дай волю фантазии
                 </div>
 
                 <div id="message-container"></div>
             </div>
+        </div>
+
+        <!-- История творений -->
+        <div class="history-section">
+            <h2>📜 История творений</h2>
+            <ul class="history-list" id="history-list">
+                <li class="history-item">Пока нет сохранённых шедевров</li>
+            </ul>
         </div>
     </div>
 
     <script src="/assets/js/top-panel.js"></script>
     
     <script>
-        // Простая функция генерации без сложных моделей
-        function generateSite() {
+        // Глобальные переменные
+        let model = null;
+        let tokenizer = null;
+        let isModelReady = false;
+        
+        // История
+        let history = JSON.parse(localStorage.getItem('ai_history')) || [];
+
+        // Массив безумных идей
+        const crazyIdeas = [
+            "киберпанк-кафе с говорящими роботами-барменами",
+            "портал в сны, где можно заказывать сны на заказ",
+            "галерея исчезающих воспоминаний",
+            "магазин эмоций с доставкой по вселенной",
+            "квантовый калькулятор судьбы",
+            "социальная сеть для инопланетян на Земле",
+            "библиотека несуществующих книг",
+            "ресторан для путешественников во времени",
+            "фабрика снов с индивидуальным дизайном",
+            "космическое такси между галактиками"
+        ];
+
+        // Загружаем модель
+        async function loadModel() {
+            const statusEl = document.getElementById('model-status');
+            const statusText = document.getElementById('model-status-text');
+            const progressBar = document.getElementById('progress-bar');
+            const progressFill = document.getElementById('progress-fill');
+            
+            statusEl.textContent = '⏳';
+            statusText.textContent = 'Загрузка творческой модели...';
+            progressBar.style.display = 'block';
+
+            try {
+                for (let i = 0; i <= 100; i += 10) {
+                    progressFill.style.width = i + '%';
+                    await new Promise(r => setTimeout(r, 100));
+                }
+
+                tokenizer = await Transformers.AutoTokenizer.from_pretrained('Xenova/llama2.c-stories15M');
+                model = await Transformers.AutoModelForCausalLM.from_pretrained('Xenova/llama2.c-stories15M', {
+                    dtype: 'fp32',
+                    device: 'wasm'
+                });
+                
+                isModelReady = true;
+                statusEl.textContent = '✅';
+                statusText.textContent = 'Модель готова творить!';
+                progressBar.style.display = 'none';
+                
+                document.getElementById('generate-btn').disabled = false;
+                document.getElementById('generate-btn').textContent = '🎨 СОТВОРИТЬ ШЕДЕВР';
+
+            } catch (error) {
+                console.error('Ошибка загрузки:', error);
+                useCreativeMode();
+            }
+        }
+
+        // Случайная идея
+        function randomizeIdea() {
+            const randomIdea = crazyIdeas[Math.floor(Math.random() * crazyIdeas.length)];
+            document.getElementById('site-topic').value = randomIdea;
+        }
+
+        // Креативный режим
+        function useCreativeMode() {
+            document.getElementById('generate-btn').disabled = false;
+            document.getElementById('generate-btn').textContent = '🎨 ТВОРИТЬ (без модели)';
+            document.getElementById('model-status').textContent = '✨';
+            document.getElementById('model-status-text').textContent = 'Режим чистого творчества';
+        }
+
+        // Генерация
+        async function generateSite() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('generate-btn').disabled = true;
 
-            setTimeout(() => {
-                try {
-                    const topic = document.getElementById('site-topic').value;
-                    const details = document.getElementById('site-details').value;
-                    const style = document.getElementById('site-style').value;
+            try {
+                const topic = document.getElementById('site-topic').value;
+                const details = document.getElementById('site-details').value;
+                const extra = document.getElementById('extra-wishes').value;
 
-                    // Генерируем HTML в зависимости от стиля
-                    let htmlCode = '';
+                // Свободный промпт без ограничений
+                const prompt = `Создай уникальный, ни на что не похожий HTML/CSS/JS сайт на тему: "${topic}".
+
+Контекст: ${details}
+Дополнительные идеи: ${extra}
+
+ВАЖНО:
+1. Полная свобода творчества. Никаких шаблонов.
+2. Создай что-то уникальное, что никто никогда не видел.
+3. Используй нестандартные решения, смелые цвета, необычные формы.
+4. Добавь JavaScript для интерактивности.
+5. Сделай сайт большим и детальным (500+ строк).
+6. Это искусство, а не просто сайт.
+7. Верни ТОЛЬКО HTML код, без объяснений.`;
+
+                if (isModelReady) {
+                    // Используем модель
+                    const inputs = await tokenizer(prompt, { return_tensors: 'pt', max_length: 512, truncation: true });
                     
-                    if (style === 'cyber') {
-                        htmlCode = generateCyberSite(topic, details);
-                    } else if (style === 'minimal') {
-                        htmlCode = generateMinimalSite(topic, details);
-                    } else {
-                        htmlCode = generateModernSite(topic, details);
-                    }
+                    const outputs = await model.generate({
+                        ...inputs,
+                        max_length: 2000,
+                        temperature: 1.2,
+                        top_p: 0.98,
+                        do_sample: true,
+                        repetition_penalty: 1.1,
+                    });
+
+                    let htmlCode = await tokenizer.decode(outputs[0], { skip_special_tokens: true });
+                    htmlCode = htmlCode.replace(prompt, '').trim();
+                    htmlCode = htmlCode.replace(/```html/g, '').replace(/```/g, '').trim();
 
                     document.getElementById('preview').srcdoc = htmlCode;
                     document.getElementById('code-output').textContent = htmlCode;
                     
-                    showMessage('✅ Сайт сгенерирован!', 'success');
-
-                } catch (error) {
-                    showMessage('❌ Ошибка: ' + error.message, 'error');
+                    const lines = htmlCode.split('\n').length;
+                    showMessage(`🎨 Шедевр создан! (${lines} строк кода)`, 'success');
+                    saveToHistory(topic, htmlCode);
+                } else {
+                    // Креативный режим
+                    createCreativeDemo(topic, details, extra);
                 }
 
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('generate-btn').disabled = false;
-            }, 1000);
+            } catch (error) {
+                console.error('Ошибка:', error);
+                createCreativeDemo();
+            }
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('generate-btn').disabled = false;
         }
 
-        function generateModernSite(topic, details) {
-            return `<!DOCTYPE html>
+        // Творческий демо-режим
+        function createCreativeDemo(topic, details, extra) {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dfe6e9', '#a8e6cf', '#d4a5a5'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            let htmlCode = `<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${topic}</title>
+    <title>✨ ${topic} ✨</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+        
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', cursive, sans-serif;
+            background: linear-gradient(135deg, ${randomColor}, ${randomColor}dd);
             min-height: 100vh;
             color: white;
+            overflow-x: hidden;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 60px 20px;
-            text-align: center;
+        
+        /* Фон с парящими элементами */
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
         }
-        h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-        }
-        p {
-            font-size: 1.2em;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-        .card {
+        
+        .float {
+            position: absolute;
             background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 30px;
-            margin: 30px 0;
-            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            animation: float 6s infinite;
         }
-        .btn {
-            background: white;
-            color: #667eea;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: transform 0.3s;
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
         }
-        .btn:hover {
-            transform: scale(1.05);
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>✨ ${topic}</h1>
-        <p>${details}</p>
-        <div class="card">
-            <h2>Добро пожаловать!</h2>
-            <p>Это современный сайт, созданный специально для вас.</p>
-            <button class="btn" onclick="alert('Привет!')">Нажми меня</button>
-        </div>
-    </div>
-</body>
-</html>`;
-        }
-
-        function generateCyberSite(topic, details) {
-            return `<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${topic} | CYBER</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Courier New', monospace;
-            background: #0a0e1a;
-            color: #00fff9;
-        }
+        
         .container {
-            max-width: 800px;
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 60px 20px;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            font-size: 3.5em;
             text-align: center;
-        }
-        h1 {
-            font-size: 3em;
-            text-shadow: 0 0 10px #00fff9;
-            animation: glitch 3s infinite;
-        }
-        @keyframes glitch {
-            0% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
-            50% { text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff; }
-            100% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
-        }
-        .terminal {
-            background: #141b2b;
-            border: 2px solid #00fff9;
-            border-radius: 10px;
-            padding: 30px;
-            margin: 30px 0;
-            text-align: left;
-            box-shadow: 0 0 20px rgba(0,255,249,0.2);
-        }
-        .cursor {
-            animation: blink 1s infinite;
-        }
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-        .btn {
-            background: transparent;
-            border: 2px solid #00fff9;
-            color: #00fff9;
-            padding: 15px 40px;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn:hover {
-            background: #00fff9;
-            color: #0a0e1a;
-            box-shadow: 0 0 20px #00fff9;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>⚡ ${topic}</h1>
-        <div class="terminal">
-            <p>> system: ${details}</p>
-            <p>> status: <span style="color:#0f0;">ONLINE</span></p>
-            <p>> access: GRANTED<span class="cursor">_</span></p>
-        </div>
-        <button class="btn" onclick="alert('ACCESS GRANTED')">ENTER</button>
-    </div>
-</body>
-</html>`;
-        }
-
-        function generateMinimalSite(topic, details) {
-            return `<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${topic}</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #fafafa;
-            color: #333;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 600px;
-            margin: 100px auto;
-            padding: 0 20px;
-        }
-        h1 {
-            font-size: 2.5em;
-            font-weight: 300;
-            margin-bottom: 20px;
-            color: #000;
-        }
-        p {
             margin-bottom: 30px;
-            color: #666;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: glow 3s ease-in-out infinite;
         }
-        hr {
-            border: none;
-            border-top: 1px solid #ddd;
+        
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+            50% { text-shadow: 0 0 30px rgba(255,255,255,0.8); }
+        }
+        
+        .cosmic-cat {
+            display: flex;
+            justify-content: center;
             margin: 40px 0;
         }
-        .btn {
-            background: #000;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: opacity 0.3s;
+        
+        .cat {
+            font-size: 8em;
+            animation: levitate 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(255,255,255,0.5));
         }
+        
+        @keyframes levitate {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-30px) rotate(5deg); }
+            75% { transform: translateY(30px) rotate(-5deg); }
+        }
+        
+        .quote {
+            font-size: 1.5em;
+            text-align: center;
+            font-style: italic;
+            margin: 60px 0;
+            padding: 30px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .stargate {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+        
+        .portal {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 50%;
+            text-align: center;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.5s;
+            animation: pulse 3s infinite;
+        }
+        
+        .portal:hover {
+            transform: scale(1.1) rotate(360deg);
+            background: rgba(255,255,255,0.3);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 20px;
+        }
+        
         .btn:hover {
-            opacity: 0.8;
+            background: white;
+            color: ${randomColor};
+            transform: scale(1.1);
+        }
+        
+        .philosophy {
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin: 60px 0;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(0,0,0,0.2), rgba(0,0,0,0.4));
+            border-radius: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5em; }
+            .cat { font-size: 5em; }
+            .quote { font-size: 1.2em; }
         }
     </style>
 </head>
 <body>
+    <div class="floating-elements" id="floating"></div>
+    
     <div class="container">
-        <h1>${topic}</h1>
-        <p>${details}</p>
-        <hr>
-        <button class="btn" onclick="alert('Спасибо!')">Узнать больше</button>
+        <h1>✨ ${topic} ✨</h1>
+        
+        <div class="cosmic-cat">
+            <div class="cat">🐱‍🚀</div>
+        </div>
+        
+        <div class="quote">
+            "${details}"
+        </div>
+        
+        <div class="stargate">
+            <div class="portal">🌌</div>
+            <div class="portal">🌠</div>
+            <div class="portal">🪐</div>
+            <div class="portal">✨</div>
+        </div>
+        
+        <div class="philosophy">
+            <h3>Квантовая философия котов</h3>
+            <p>${extra || "Каждый кот — это вселенная. Каждое движение — путешествие во времени. Мы лишь наблюдатели в этом бесконечном космосе."}</p>
+            <button class="btn" onclick="createStar()">✨ Создать звезду</button>
+        </div>
     </div>
+    
+    <script>
+        function createStar() {
+            const star = document.createElement('div');
+            star.style.position = 'fixed';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.fontSize = '2em';
+            star.innerHTML = '⭐';
+            star.style.animation = 'float 3s infinite';
+            star.style.pointerEvents = 'none';
+            document.body.appendChild(star);
+            
+            setTimeout(() => star.remove(), 3000);
+        }
+        
+        // Создание парящих элементов
+        for (let i = 0; i < 20; i++) {
+            const float = document.createElement('div');
+            float.className = 'float';
+            float.style.width = Math.random() * 100 + 50 + 'px';
+            float.style.height = float.style.width;
+            float.style.left = Math.random() * 100 + '%';
+            float.style.top = Math.random() * 100 + '%';
+            float.style.animationDelay = Math.random() * 5 + 's';
+            document.getElementById('floating').appendChild(float);
+        }
+    </script>
 </body>
 </html>`;
+            
+            document.getElementById('preview').srcdoc = htmlCode;
+            document.getElementById('code-output').textContent = htmlCode;
+            
+            const lines = htmlCode.split('\n').length;
+            showMessage(`🎨 Творение готово! (${lines} строк кода)`, 'success');
+            saveToHistory(topic, htmlCode);
         }
 
         function showMessage(text, type) {
             const container = document.getElementById('message-container');
-            container.innerHTML = `<div style="background: ${type === 'error' ? '#ff6b6b' : '#2ecc71'}; color: white; padding: 15px; border-radius: 10px; margin-top: 15px;">${text}</div>`;
-            setTimeout(() => container.innerHTML = '', 3000);
+            container.innerHTML = `<div class="message ${type === 'error' ? 'error-message' : 'success-message'}">${text}</div>`;
+            setTimeout(() => container.innerHTML = '', 5000);
         }
+
+        function saveToHistory(topic, code) {
+            const lines = code.split('\n').length;
+            const item = {
+                topic: topic,
+                code: code,
+                date: new Date().toLocaleString(),
+                lines: lines
+            };
+            
+            history.unshift(item);
+            if (history.length > 10) history.pop();
+            
+            localStorage.setItem('ai_history', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            
+            if (history.length === 0) {
+                list.innerHTML = '<li class="history-item">Пока нет сохранённых шедевров</li>';
+                return;
+            }
+            
+            list.innerHTML = history.map((item, index) => `
+                <li class="history-item" onclick="loadFromHistory(${index})">
+                    <span>${item.topic}</span>
+                    <span>
+                        <span class="size-badge">${item.lines} строк</span>
+                        <span style="color:#7f8c8d; margin-left:10px;">${item.date}</span>
+                    </span>
+                </li>
+            `).join('');
+        }
+
+        function loadFromHistory(index) {
+            const item = history[index];
+            document.getElementById('site-topic').value = item.topic;
+            document.getElementById('preview').srcdoc = item.code;
+            document.getElementById('code-output').textContent = item.code;
+            showMessage('✨ Загружено из истории', 'success');
+        }
+
+        // Загружаем модель
+        loadModel();
+        renderHistory();
     </script>
 </body>
 </html>

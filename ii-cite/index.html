@@ -11,7 +11,7 @@
         body {
             margin: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
         }
 
@@ -26,7 +26,7 @@
 
         h1 {
             text-align: center;
-            color: #8e44ad;
+            color: #1e3c72;
             font-size: 2.5em;
             margin-bottom: 10px;
         }
@@ -51,7 +51,7 @@
         }
 
         .input-panel h2 {
-            color: #8e44ad;
+            color: #1e3c72;
             margin-top: 0;
             margin-bottom: 20px;
         }
@@ -82,9 +82,9 @@
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
-            border-color: #8e44ad;
+            border-color: #1e3c72;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.1);
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
         }
 
         .form-group textarea {
@@ -92,21 +92,8 @@
             resize: vertical;
         }
 
-        .checkbox-group {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: #2c3e50;
-        }
-
         .generate-btn {
-            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
             color: white;
             border: none;
             padding: 15px 30px;
@@ -121,7 +108,7 @@
 
         .generate-btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(142, 68, 173, 0.3);
+            box-shadow: 0 10px 20px rgba(30, 60, 114, 0.3);
         }
 
         .generate-btn:disabled {
@@ -137,7 +124,7 @@
         }
 
         .result-panel h2 {
-            color: #8e44ad;
+            color: #1e3c72;
             margin-top: 0;
             margin-bottom: 20px;
         }
@@ -170,7 +157,7 @@
 
         .spinner {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #8e44ad;
+            border-top: 4px solid #1e3c72;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -240,7 +227,7 @@
 
     <div class="container">
         <h1>🤖 Генератор сайтов с ИИ</h1>
-        <div class="subtitle">Опиши сайт, и нейросеть создаст его за секунды</div>
+        <div class="subtitle">На базе DeepSeek API — бесплатно и быстро</div>
 
         <div class="generator-grid">
             <!-- Левая панель - ввод -->
@@ -268,31 +255,13 @@
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label>Дополнительно</label>
-                    <div class="checkbox-group">
-                        <label class="checkbox-item">
-                            <input type="checkbox" id="adaptive" checked> Адаптивный
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" id="seo" checked> SEO
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" id="animations" checked> Анимации
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" id="dark-mode"> Тёмная тема
-                        </label>
-                    </div>
-                </div>
-
                 <button class="generate-btn" id="generate-btn" onclick="generateSite()">
                     🚀 СГЕНЕРИРОВАТЬ
                 </button>
 
                 <div class="loading" id="loading">
                     <div class="spinner"></div>
-                    <p style="margin-top: 15px;">ИИ думает... Это займёт около 30 секунд</p>
+                    <p style="margin-top: 15px;">DeepSeek думает... Это займёт несколько секунд</p>
                 </div>
             </div>
 
@@ -322,50 +291,124 @@
     <script src="/assets/js/top-panel.js"></script>
     
     <script>
-    // ТВОЙ КЛЮЧ
-    const API_KEY = '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';
-    
-    async function generateSite() {
-        document.getElementById('loading').style.display = 'block';
-        document.getElementById('generate-btn').disabled = true;
+        // ТВОЙ КЛЮЧ DeepSeek
+        const DEEPSEEK_KEY = 'sk-4582661f3a564d19ad037865670cc013';
+        
+        // История
+        let history = JSON.parse(localStorage.getItem('ai_history')) || [];
+        
+        renderHistory();
 
-        try {
-            const topic = document.getElementById('site-topic').value;
-            const details = document.getElementById('site-details').value;
-            
-            const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${API_KEY}`,
-                    'HTTP-Referer': 'https://v-pk.vercel.app',  // ТВОЙ САЙТ
-                    'X-Title': 'V-PK AI Generator',              // НАЗВАНИЕ
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: 'google/gemini-2.0-flash-exp:free',  // Бесплатная
-                    messages: [{
-                        role: 'user',
-                        content: `Создай HTML код для сайта: ${topic}. Детали: ${details}`
-                    }]
-                })
-            });
+        async function generateSite() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('generate-btn').disabled = true;
+            document.getElementById('message-container').innerHTML = '';
 
-            const data = await response.json();
-            
-            if (data.error) {
-                throw new Error(data.error.message);
+            try {
+                const topic = document.getElementById('site-topic').value;
+                const details = document.getElementById('site-details').value;
+                const style = document.getElementById('site-style').value;
+
+                const prompt = `Создай ПОЛНЫЙ HTML код для сайта на тему: "${topic}".
+                
+Детали: ${details}
+Стиль: ${style}
+
+Требования:
+- Красивый современный дизайн
+- Адаптивная вёрстка
+- CSS стили внутри тега <style>
+- Минимум JavaScript (только для красоты)
+- Всё должно быть в одном файле
+
+Верни ТОЛЬКО HTML код, без объяснений, без markdown, без \`\`\`.`;
+
+                const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${DEEPSEEK_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'deepseek-chat',
+                        messages: [
+                            { role: 'system', content: 'Ты профессиональный веб-разработчик. Создавай чистый, красивый HTML код.' },
+                            { role: 'user', content: prompt }
+                        ],
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error.message || 'Ошибка API');
+                }
+
+                if (!data.choices || !data.choices[0]) {
+                    throw new Error('Пустой ответ от API');
+                }
+
+                let htmlCode = data.choices[0].message.content;
+                htmlCode = htmlCode.replace(/```html/g, '').replace(/```/g, '').trim();
+
+                document.getElementById('preview').srcdoc = htmlCode;
+                document.getElementById('code-output').textContent = htmlCode;
+                
+                showMessage('✅ Сайт успешно сгенерирован!', 'success');
+                saveToHistory(topic, htmlCode);
+
+            } catch (error) {
+                console.error('Ошибка:', error);
+                showMessage('❌ Ошибка: ' + error.message, 'error');
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('generate-btn').disabled = false;
             }
-
-            const htmlCode = data.choices[0].message.content;
-            document.getElementById('preview').srcdoc = htmlCode;
-
-        } catch (error) {
-            alert('Ошибка: ' + error.message);
         }
 
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('generate-btn').disabled = false;
-    }
-</script>
+        function showMessage(text, type) {
+            const container = document.getElementById('message-container');
+            container.innerHTML = `<div class="${type === 'error' ? 'error-message' : 'success-message'}">${text}</div>`;
+        }
+
+        function saveToHistory(topic, code) {
+            const item = {
+                topic: topic,
+                code: code,
+                date: new Date().toLocaleString()
+            };
+            
+            history.unshift(item);
+            if (history.length > 10) history.pop();
+            
+            localStorage.setItem('ai_history', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            
+            if (history.length === 0) {
+                list.innerHTML = '<li class="history-item">Пока нет сохранённых сайтов</li>';
+                return;
+            }
+            
+            list.innerHTML = history.map((item, index) => `
+                <li class="history-item" onclick="loadFromHistory(${index})">
+                    <span>${item.topic}</span>
+                    <span style="color:#7f8c8d;">${item.date}</span>
+                </li>
+            `).join('');
+        }
+
+        function loadFromHistory(index) {
+            const item = history[index];
+            document.getElementById('site-topic').value = item.topic;
+            document.getElementById('preview').srcdoc = item.code;
+            document.getElementById('code-output').textContent = item.code;
+            showMessage('✅ Загружено из истории', 'success');
+        }
+    </script>
 </body>
 </html>

@@ -7,23 +7,44 @@
     
     <link rel="icon" type="image/png" href="/assets/logo.png">
     <link rel="stylesheet" href="/assets/css/top-panel.css">
-    
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
+         
+        <style>
+            body {
+                margin: 0;
+                font-family: 'Segoe UI', Arial, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
+            
+            /* Добавим стили для скроллбара */
+            ::-webkit-scrollbar {
+                width: 12px;
+            }
+            
+            ::-webkit-scrollbar-track {
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 10px;
+            }
+            
+            ::-webkit-scrollbar-thumb {
+                background: rgba(142, 122, 102, 0.5);
+                border-radius: 10px;
+            }
+            
+            ::-webkit-scrollbar-thumb:hover {
+                background: rgba(142, 122, 102, 0.7);
+            }
 
         .container {
-            max-width: 600px; /* Увеличено с 500px */
-            margin: 30px auto;
-            padding: 40px; /* Увеличено */
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
+                    max-width: 600px; /* Увеличено с 500px */
+                    margin: 30px auto;
+                    padding: 40px; /* Увеличено */
+                    background: rgba(255, 255, 255, 0.95);
+                    border-radius: 30px;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                    position: relative;
+                }
 
         h1 {
             text-align: center;
@@ -45,7 +66,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             flex-wrap: wrap;
             gap: 15px;
         }
@@ -71,16 +92,22 @@
         }
 
         .new-game-btn {
-            background: #8f7a66;
-            color: white;
-            border: none;
-            padding: 15px 30px; /* Увеличено */
-            border-radius: 15px;
-            font-size: 1.2em; /* Увеличено */
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+                    background: #8f7a66;
+                    color: white;
+                    border: none;
+                    padding: 15px 30px; /* Увеличено */
+                    border-radius: 15px;
+                    font-size: 1.2em; /* Увеличено */
+                    font-weight: bold;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    box-shadow: 0 4px 0 #6d5e4d;
+                }
+                
+                .new-game-btn:active {
+                    transform: translateY(4px);
+                    box-shadow: 0 0 0 #6d5e4d;
+                }
 
         .new-game-btn:hover {
             background: #9f8a76;
@@ -116,53 +143,69 @@
         }
 
         /* Контейнер для плиток */
-        .tile-container {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            bottom: 20px;
-            pointer-events: none;
-        }
+                .tile-container {
+                    position: absolute;
+                    top: 20px;
+                    left: 20px;
+                    right: 20px;
+                    bottom: 20px;
+                    pointer-events: none;
+                    overflow: hidden; /* Предотвращаем появление артефактов за пределами контейнера */
+                    border-radius: 15px; /* Добавляем скругление для соответствия сетке */
+                }
 
         /* Плитки с точными координатами */
-        .tile {
-            position: absolute;
-            width: calc((100% - 60px) / 4); /* 4 колонки с 3 промежутками по 20px */
-            height: calc((100% - 60px) / 4);
-            background: #eee4da;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #776e65;
-            transition: all 0.15s;
-            animation: appear 0.2s;
-            font-size: min(4.5vw, 40px); /* Увеличено */
-            box-sizing: border-box;
-        }
+                .tile {
+                    position: absolute;
+                    width: calc((100% - 60px) / 4);
+                    height: calc((100% - 60px) / 4);
+                    background: #eee4da;
+                    border-radius: 15px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                    color: #776e65;
+                    transition: all 0.05s; /* Уменьшаем продолжительность перехода */
+                    font-size: min(4.5vw, 40px);
+                    box-sizing: border-box;
+                    pointer-events: none;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                    /* Используем transform для позиционирования вместо top/left */
+                }
 
-        /* ТОЧНЫЕ ПОЗИЦИИ ДЛЯ КАЖДОЙ КЛЕТКИ */
-        .tile.pos-0-0 { top: 0; left: 0; }
-        .tile.pos-0-1 { top: 0; left: calc(25% + 15px); }  /* 20px * 3/4 = 15px */
-        .tile.pos-0-2 { top: 0; left: calc(50% + 30px); }
-        .tile.pos-0-3 { top: 0; left: calc(75% + 45px); }
+        /* Позиционирование плиток с использованием transform */
+                .tile.pos-0-0 { transform: translate(0, 0); }
+                .tile.pos-0-1 { transform: translate(calc(100% + 20px), 0); }
+                .tile.pos-0-2 { transform: translate(calc(200% + 40px), 0); }
+                .tile.pos-0-3 { transform: translate(calc(300% + 60px), 0); }
+                 
+                .tile.pos-1-0 { transform: translate(0, calc(100% + 20px)); }
+                .tile.pos-1-1 { transform: translate(calc(100% + 20px), calc(100% + 20px)); }
+                .tile.pos-1-2 { transform: translate(calc(200% + 40px), calc(100% + 20px)); }
+                .tile.pos-1-3 { transform: translate(calc(300% + 60px), calc(100% + 20px)); }
+                 
+                .tile.pos-2-0 { transform: translate(0, calc(200% + 40px)); }
+                .tile.pos-2-1 { transform: translate(calc(100% + 20px), calc(200% + 40px)); }
+                .tile.pos-2-2 { transform: translate(calc(200% + 40px), calc(200% + 40px)); }
+                .tile.pos-2-3 { transform: translate(calc(300% + 60px), calc(200% + 40px)); }
+                 
+                .tile.pos-3-0 { transform: translate(0, calc(300% + 60px)); }
+                .tile.pos-3-1 { transform: translate(calc(100% + 20px), calc(300% + 60px)); }
+                .tile.pos-3-2 { transform: translate(calc(200% + 40px), calc(300% + 60px)); }
+                .tile.pos-3-3 { transform: translate(calc(300% + 60px), calc(300% + 60px)); }
         
-        .tile.pos-1-0 { top: calc(25% + 15px); left: 0; }
-        .tile.pos-1-1 { top: calc(25% + 15px); left: calc(25% + 15px); }
-        .tile.pos-1-2 { top: calc(25% + 15px); left: calc(50% + 30px); }
-        .tile.pos-1-3 { top: calc(25% + 15px); left: calc(75% + 45px); }
-        
-        .tile.pos-2-0 { top: calc(50% + 30px); left: 0; }
-        .tile.pos-2-1 { top: calc(50% + 30px); left: calc(25% + 15px); }
-        .tile.pos-2-2 { top: calc(50% + 30px); left: calc(50% + 30px); }
-        .tile.pos-2-3 { top: calc(50% + 30px); left: calc(75% + 45px); }
-        
-        .tile.pos-3-0 { top: calc(75% + 45px); left: 0; }
-        .tile.pos-3-1 { top: calc(75% + 45px); left: calc(25% + 15px); }
-        .tile.pos-3-2 { top: calc(75% + 45px); left: calc(50% + 30px); }
-        .tile.pos-3-3 { top: calc(75% + 45px); left: calc(75% + 45px); }
+                /* Убираем анимацию объединения плиток */
+                                 .tile.merged {
+                                     /* Убираем анимацию, оставляем только визуальный эффект */
+                                     transform: scale(1.05);
+                                 }
+                                 
+                                 /* Убираем анимацию появления плиток */
+                                 @keyframes appear {
+                                     0% { opacity: 1; transform: scale(1); } /* Убираем начальное уменьшение */
+                                     100% { opacity: 1; transform: scale(1); }
+                                 }
 
         /* Цвета плиток */
         .tile-2 { background: #eee4da; }
@@ -183,14 +226,14 @@
         }
 
         @keyframes win {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); background: gold; }
-            100% { transform: scale(1); }
-        }
-
-        .tile.win {
-            animation: win 1s ease-in-out;
-        }
+                     0% { transform: scale(1); }
+                     100% { transform: scale(1); } /* Убираем анимацию масштабирования */
+                 }
+         
+                 .tile.win {
+                     /* Убираем анимацию победы */
+                     background: gold;
+                 }
 
         /* Управление */
         .controls-info {
@@ -276,64 +319,63 @@
         }
 
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
+                     0%, 100% { transform: translateY(0); } /* Убираем анимацию прыжка */
+                 }
 
         .game-over button, .game-win button {
-            background: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 15px;
-            font-size: 0.5em;
-            margin-top: 20px;
-            cursor: pointer;
-        }
+                    background: white;
+                    border: none;
+                    padding: 15px 30px;
+                    border-radius: 15px;
+                    font-size: 1.2em;
+                    margin-top: 20px;
+                    cursor: pointer;
+                }
 
         @media (max-width: 600px) {
-            .container {
-                margin: 20px;
-                padding: 20px;
-            }
-            
-            .key {
-                width: 50px;
-                height: 50px;
-                font-size: 1.3em;
-            }
-            
-            .game-container {
-                padding: 15px;
-                gap: 15px;
-            }
-            
-            .grid-container {
-                gap: 15px;
-            }
-            
-            .tile {
-                width: calc((100% - 45px) / 4);
-                height: calc((100% - 45px) / 4);
-                font-size: min(5vw, 30px);
-            }
-            
-            /* Корректировка позиций для мобильных */
-            .tile.pos-0-1 { left: calc(25% + 11.25px); }
-            .tile.pos-0-2 { left: calc(50% + 22.5px); }
-            .tile.pos-0-3 { left: calc(75% + 33.75px); }
-            .tile.pos-1-0 { top: calc(25% + 11.25px); }
-            .tile.pos-1-1 { top: calc(25% + 11.25px); left: calc(25% + 11.25px); }
-            .tile.pos-1-2 { top: calc(25% + 11.25px); left: calc(50% + 22.5px); }
-            .tile.pos-1-3 { top: calc(25% + 11.25px); left: calc(75% + 33.75px); }
-            .tile.pos-2-0 { top: calc(50% + 22.5px); }
-            .tile.pos-2-1 { top: calc(50% + 22.5px); left: calc(25% + 11.25px); }
-            .tile.pos-2-2 { top: calc(50% + 22.5px); left: calc(50% + 22.5px); }
-            .tile.pos-2-3 { top: calc(50% + 22.5px); left: calc(75% + 33.75px); }
-            .tile.pos-3-0 { top: calc(75% + 33.75px); }
-            .tile.pos-3-1 { top: calc(75% + 33.75px); left: calc(25% + 11.25px); }
-            .tile.pos-3-2 { top: calc(75% + 33.75px); left: calc(50% + 22.5px); }
-            .tile.pos-3-3 { top: calc(75% + 33.75px); left: calc(75% + 33.75px); }
-        }
+                    .container {
+                        margin: 20px;
+                        padding: 20px;
+                    }
+                    
+                    .key {
+                        width: 50px;
+                        height: 50px;
+                        font-size: 1.3em;
+                    }
+                    
+                    .game-container {
+                        padding: 15px;
+                        gap: 15px;
+                    }
+                    
+                    .grid-container {
+                        gap: 15px;
+                    }
+                    
+                    .tile {
+                        width: calc((100% - 45px) / 4);
+                        height: calc((100% - 45px) / 4);
+                        font-size: min(5vw, 30px);
+                    }
+                    
+                    /* Корректировка позиций для мобильных */
+                            .tile.pos-0-1 { transform: translate(calc(100% + 15px), 0); }
+                            .tile.pos-0-2 { transform: translate(calc(200% + 30px), 0); }
+                            .tile.pos-0-3 { transform: translate(calc(300% + 45px), 0); }
+                            .tile.pos-1-0 { transform: translate(0, calc(100% + 15px)); }
+                            .tile.pos-1-1 { transform: translate(calc(100% + 15px), calc(100% + 15px)); }
+                            .tile.pos-1-2 { transform: translate(calc(200% + 30px), calc(100% + 15px)); }
+                            .tile.pos-1-3 { transform: translate(calc(300% + 45px), calc(100% + 15px)); }
+                            .tile.pos-2-0 { transform: translate(0, calc(200% + 30px)); }
+                            .tile.pos-2-1 { transform: translate(calc(100% + 15px), calc(200% + 30px)); }
+                            .tile.pos-2-2 { transform: translate(calc(200% + 30px), calc(200% + 30px)); }
+                            .tile.pos-2-3 { transform: translate(calc(300% + 45px), calc(200% + 30px)); }
+                            .tile.pos-3-0 { transform: translate(0, calc(300% + 45px)); }
+                            .tile.pos-3-1 { transform: translate(calc(100% + 15px), calc(300% + 45px)); }
+                            .tile.pos-3-2 { transform: translate(calc(200% + 30px), calc(300% + 45px)); }
+                            .tile.pos-3-3 { transform: translate(calc(300% + 45px), calc(300% + 45px)); }
+                        }
     </style>
 </head>
 <body>
@@ -412,11 +454,46 @@
     <script src="/assets/js/top-panel.js"></script>
     
     <script>
-        const SIZE = 4;
-        let board = [];
-        let score = 0;
-        let best = localStorage.getItem('2048_best') || 0;
-        let gameWon = false;
+             const SIZE = 4;
+                                    let board = [];
+                                    let score = 0;
+                                    let best = localStorage.getItem('2048_best') || 0;
+                                    let gameWon = false;
+                                    let isMoving = false; // Флаг для предотвращения многократного срабатывания
+                                    let lastMoveTime = 0; // Время последнего хода
+                                    let moveDelay = 150; // Минимальная задержка между ходами в миллисекундах (0.15 сек)
+                                    let keysPressed = {}; // Объект для отслеживания нажатых клавиш
+                      
+                      // Загрузка звуковых файлов
+                      let moveSound = null;
+                      let mergeSound = null;
+                      
+                      function loadSound() {
+                          try {
+                              moveSound = new Audio('./move.mp3'); // Звук перемещения
+                              
+                              // Для звука объединения можно использовать тот же файл или другой
+                              mergeSound = new Audio('./move.mp3'); // Звук объединения
+                          } catch (e) {
+                              console.log("Web Audio не поддерживается в этой среде");
+                          }
+                      }
+                      
+                      // Проигрывание звука при перемещении
+                      function playMoveSound() {
+                          if (moveSound) {
+                              moveSound.currentTime = 0; // Перезапуск звука с начала
+                              moveSound.play().catch(e => console.log("Ошибка воспроизведения звука:", e));
+                          }
+                      }
+                      
+                      // Проигрывание звука при объединении
+                      function playMergeSound() {
+                          if (mergeSound) {
+                              mergeSound.currentTime = 0; // Перезапуск звука с начала
+                              mergeSound.play().catch(e => console.log("Ошибка воспроизведения звука:", e));
+                          }
+                      }
 
         function init() {
             board = Array(SIZE).fill().map(() => Array(SIZE).fill(0));
@@ -443,114 +520,111 @@
             }
         }
 
-        function render() {
-            const container = document.getElementById('tile-container');
-            container.innerHTML = '';
-            
-            for (let i = 0; i < SIZE; i++) {
-                for (let j = 0; j < SIZE; j++) {
-                    if (board[i][j] !== 0) {
-                        const tile = document.createElement('div');
-                        tile.className = `tile tile-${board[i][j]} pos-${i}-${j}`;
-                        tile.textContent = board[i][j];
-                        container.appendChild(tile);
-                    }
-                }
-            }
-        }
 
         function moveLeft() {
-            let moved = false;
-            for (let i = 0; i < SIZE; i++) {
-                const row = board[i].filter(val => val !== 0);
-                for (let j = 0; j < row.length - 1; j++) {
-                    if (row[j] === row[j + 1]) {
-                        row[j] *= 2;
-                        score += row[j];
-                        row.splice(j + 1, 1);
-                        moved = true;
+                    let moved = false;
+                    let mergedTiles = [];
+                    
+                    for (let i = 0; i < SIZE; i++) {
+                        const row = board[i].filter(val => val !== 0);
+                        for (let j = 0; j < row.length - 1; j++) {
+                            if (row[j] === row[j + 1]) {
+                                row[j] *= 2;
+                                score += row[j];
+                                row.splice(j + 1, 1);
+                                moved = true;
+                                mergedTiles.push({x: i, y: j});
+                            }
+                        }
+                        while (row.length < SIZE) row.push(0);
+                        for (let j = 0; j < SIZE; j++) {
+                            if (board[i][j] !== row[j]) moved = true;
+                            board[i][j] = row[j];
+                        }
                     }
+                    return {moved, mergedTiles};
                 }
-                while (row.length < SIZE) row.push(0);
-                for (let j = 0; j < SIZE; j++) {
-                    if (board[i][j] !== row[j]) moved = true;
-                    board[i][j] = row[j];
-                }
-            }
-            return moved;
-        }
 
         function moveRight() {
-            let moved = false;
-            for (let i = 0; i < SIZE; i++) {
-                const row = board[i].filter(val => val !== 0).reverse();
-                for (let j = 0; j < row.length - 1; j++) {
-                    if (row[j] === row[j + 1]) {
-                        row[j] *= 2;
-                        score += row[j];
-                        row.splice(j + 1, 1);
-                        moved = true;
+                    let moved = false;
+                    let mergedTiles = [];
+                    
+                    for (let i = 0; i < SIZE; i++) {
+                        const row = board[i].filter(val => val !== 0).reverse();
+                        for (let j = 0; j < row.length - 1; j++) {
+                            if (row[j] === row[j + 1]) {
+                                row[j] *= 2;
+                                score += row[j];
+                                row.splice(j + 1, 1);
+                                moved = true;
+                                mergedTiles.push({x: i, y: SIZE - 1 - j});
+                            }
+                        }
+                        while (row.length < SIZE) row.push(0);
+                        row.reverse();
+                        for (let j = 0; j < SIZE; j++) {
+                            if (board[i][j] !== row[j]) moved = true;
+                            board[i][j] = row[j];
+                        }
                     }
+                    return {moved, mergedTiles};
                 }
-                while (row.length < SIZE) row.push(0);
-                row.reverse();
-                for (let j = 0; j < SIZE; j++) {
-                    if (board[i][j] !== row[j]) moved = true;
-                    board[i][j] = row[j];
-                }
-            }
-            return moved;
-        }
 
         function moveUp() {
-            let moved = false;
-            for (let j = 0; j < SIZE; j++) {
-                const col = [];
-                for (let i = 0; i < SIZE; i++) {
-                    if (board[i][j] !== 0) col.push(board[i][j]);
-                }
-                for (let i = 0; i < col.length - 1; i++) {
-                    if (col[i] === col[i + 1]) {
-                        col[i] *= 2;
-                        score += col[i];
-                        col.splice(i + 1, 1);
-                        moved = true;
+                    let moved = false;
+                    let mergedTiles = [];
+                    
+                    for (let j = 0; j < SIZE; j++) {
+                        const col = [];
+                        for (let i = 0; i < SIZE; i++) {
+                            if (board[i][j] !== 0) col.push(board[i][j]);
+                        }
+                        for (let i = 0; i < col.length - 1; i++) {
+                            if (col[i] === col[i + 1]) {
+                                col[i] *= 2;
+                                score += col[i];
+                                col.splice(i + 1, 1);
+                                moved = true;
+                                mergedTiles.push({x: i, y: j});
+                            }
+                        }
+                        while (col.length < SIZE) col.push(0);
+                        for (let i = 0; i < SIZE; i++) {
+                            if (board[i][j] !== col[i]) moved = true;
+                            board[i][j] = col[i];
+                        }
                     }
+                    return {moved, mergedTiles};
                 }
-                while (col.length < SIZE) col.push(0);
-                for (let i = 0; i < SIZE; i++) {
-                    if (board[i][j] !== col[i]) moved = true;
-                    board[i][j] = col[i];
-                }
-            }
-            return moved;
-        }
 
         function moveDown() {
-            let moved = false;
-            for (let j = 0; j < SIZE; j++) {
-                const col = [];
-                for (let i = 0; i < SIZE; i++) {
-                    if (board[i][j] !== 0) col.push(board[i][j]);
-                }
-                col.reverse();
-                for (let i = 0; i < col.length - 1; i++) {
-                    if (col[i] === col[i + 1]) {
-                        col[i] *= 2;
-                        score += col[i];
-                        col.splice(i + 1, 1);
-                        moved = true;
+                    let moved = false;
+                    let mergedTiles = [];
+                    
+                    for (let j = 0; j < SIZE; j++) {
+                        const col = [];
+                        for (let i = 0; i < SIZE; i++) {
+                            if (board[i][j] !== 0) col.push(board[i][j]);
+                        }
+                        col.reverse();
+                        for (let i = 0; i < col.length - 1; i++) {
+                            if (col[i] === col[i + 1]) {
+                                col[i] *= 2;
+                                score += col[i];
+                                col.splice(i + 1, 1);
+                                moved = true;
+                                mergedTiles.push({x: SIZE - 1 - i, y: j});
+                            }
+                        }
+                        while (col.length < SIZE) col.push(0);
+                        col.reverse();
+                        for (let i = 0; i < SIZE; i++) {
+                            if (board[i][j] !== col[i]) moved = true;
+                            board[i][j] = col[i];
+                        }
                     }
+                    return {moved, mergedTiles};
                 }
-                while (col.length < SIZE) col.push(0);
-                col.reverse();
-                for (let i = 0; i < SIZE; i++) {
-                    if (board[i][j] !== col[i]) moved = true;
-                    board[i][j] = col[i];
-                }
-            }
-            return moved;
-        }
 
         function checkWin() {
             for (let i = 0; i < SIZE; i++) {
@@ -594,31 +668,67 @@
         }
 
         function move(direction) {
-            let moved = false;
-            switch(direction) {
-                case 'left': moved = moveLeft(); break;
-                case 'right': moved = moveRight(); break;
-                case 'up': moved = moveUp(); break;
-                case 'down': moved = moveDown(); break;
-            }
-            
-            if (moved) {
-                addNewTile();
-                render();
-                updateScore();
-                checkWin();
-                if (isGameOver() && !gameWon) {
-                    document.getElementById('game-over').classList.add('show');
-                }
-            }
-        }
+                                               // Проверяем, не выполняется ли уже перемещение
+                                               if (isMoving) return;
+                                               
+                                               // Проверяем, прошло ли достаточно времени с последнего хода
+                                               const currentTime = Date.now();
+                                               if (currentTime - lastMoveTime < moveDelay) {
+                                                   return; // Слишком быстро, выходим
+                                               }
+                                               
+                                               let result = {moved: false, mergedTiles: []};
+                                               switch(direction) {
+                                                   case 'left': result = moveLeft(); break;
+                                                   case 'right': result = moveRight(); break;
+                                                   case 'up': result = moveUp(); break;
+                                                   case 'down': result = moveDown(); break;
+                                               }
+                                               
+                                               if (result.moved) {
+                                                   lastMoveTime = currentTime; // Обновляем время последнего хода
+                                                   isMoving = true; // Устанавливаем флаг во время перемещения
+                                                   
+                                                   playMoveSound(); // Проигрываем звук при перемещении
+                                                   
+                                                   // Если были объединения, проигрываем звук объединения
+                                                   if (result.mergedTiles.length > 0) {
+                                                       playMergeSound();
+                                                   }
+                                                   
+                                                   addNewTile();
+                                                   renderWithMergeAnimation(result.mergedTiles);
+                                                   updateScore();
+                                                   checkWin();
+                                                   if (isGameOver() && !gameWon) {
+                                                       document.getElementById('game-over').classList.add('show');
+                                                   }
+                                                   
+                                                   // Сбрасываем флаг сразу без ожидания анимации
+                                                   isMoving = false;
+                                               }
+                                           }
 
         function newGame() {
             init();
         }
 
+        // Обработчик нажатия клавиш
         document.addEventListener('keydown', function(event) {
+            // Проверяем, не выполняется ли уже перемещение
+            if (isMoving) {
+                return;
+            }
+            
             const key = event.key;
+            // Проверяем, была ли клавиша уже нажата
+            if (keysPressed[key]) {
+                return;
+            }
+            
+            // Отмечаем клавишу как нажатую
+            keysPressed[key] = true;
+            
             if (key === 'ArrowLeft' || key === 'a' || key === 'A' || key === 'ф' || key === 'Ф') {
                 event.preventDefault();
                 move('left');
@@ -636,8 +746,62 @@
                 move('down');
             }
         });
+        
+        // Обработчик отпускания клавиш
+        document.addEventListener('keyup', function(event) {
+            const key = event.key;
+            // Отмечаем клавишу как отпущенную
+            keysPressed[key] = false;
+        });
 
         init();
-    </script>
-</body>
-</html>
+                 loadSound(); // Загружаем звук при инициализации
+                 
+                 // Основная функция рендеринга
+                 function render() {
+                     const container = document.getElementById('tile-container');
+                     container.innerHTML = ''; // Очищаем контейнер перед рендерингом
+                     
+                     for (let i = 0; i < SIZE; i++) {
+                         for (let j = 0; j < SIZE; j++) {
+                             if (board[i][j] !== 0) {
+                                 const tile = document.createElement('div');
+                                 tile.className = `tile tile-${board[i][j]} pos-${i}-${j}`;
+                                 tile.textContent = board[i][j];
+                                 container.appendChild(tile);
+                             }
+                         }
+                     }
+                 }
+                 
+                 // Функция рендеринга с анимацией объединения
+                 function renderWithMergeAnimation(mergedTiles) {
+                     const container = document.getElementById('tile-container');
+                     container.innerHTML = ''; // Очищаем контейнер перед рендерингом
+                     
+                     for (let i = 0; i < SIZE; i++) {
+                         for (let j = 0; j < SIZE; j++) {
+                             if (board[i][j] !== 0) {
+                                 const tile = document.createElement('div');
+                                 tile.className = `tile tile-${board[i][j]} pos-${i}-${j}`;
+                                 
+                                 // Проверяем, была ли эта плитка объединена
+                                 const isMerged = mergedTiles.some(pos => pos.x === i && pos.y === j);
+                                 if (isMerged) {
+                                     tile.classList.add('merged');
+                                 }
+                                 
+                                 tile.textContent = board[i][j];
+                                 container.appendChild(tile);
+                             }
+                         }
+                     }
+                     
+                     // Удаляем класс merged немедленно
+                                  const mergedElements = document.querySelectorAll('.tile.merged');
+                                  mergedElements.forEach(el => el.classList.remove('merged'));
+                 }
+                 
+                 </script>
+                                  </body>
+                                  </html>

@@ -50,7 +50,7 @@
             gap: 15px;
         }
 
-        .score-container {
+        .score-container, .best-container {
             background: #bbada0;
             padding: 10px 20px;
             border-radius: 10px;
@@ -68,15 +68,6 @@
         .score-value {
             font-size: 1.8em;
             font-weight: bold;
-        }
-
-        .best-container {
-            background: #bbada0;
-            padding: 10px 20px;
-            border-radius: 10px;
-            color: white;
-            text-align: center;
-            min-width: 80px;
         }
 
         .new-game-btn {
@@ -97,7 +88,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        /* Поле игры - фиксированный размер */
+        /* Поле игры - фиксированная сетка */
         .game-container {
             position: relative;
             background: #bbada0;
@@ -108,21 +99,25 @@
             box-sizing: border-box;
         }
 
+        /* Сетка фона */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 15px;
             background: #bbada0;
             border-radius: 10px;
+            position: relative;
+            z-index: 1;
         }
 
         .grid-cell {
             background: rgba(238, 228, 218, 0.35);
             border-radius: 10px;
-            padding-bottom: 100%; /* Соотношение 1:1 */
-            position: relative;
+            aspect-ratio: 1 / 1; /* Идеальный квадрат */
+            width: 100%;
         }
 
+        /* Контейнер для плиток - точно такого же размера как сетка */
         .tile-container {
             position: absolute;
             top: 15px;
@@ -133,8 +128,10 @@
             grid-template-columns: repeat(4, 1fr);
             gap: 15px;
             pointer-events: none;
+            z-index: 2;
         }
 
+        /* Плитки - идеально вписываются в ячейки */
         .tile {
             background: #eee4da;
             border-radius: 10px;
@@ -145,25 +142,12 @@
             color: #776e65;
             transition: all 0.15s;
             animation: appear 0.2s;
-            position: relative;
             width: 100%;
-            height: 0;
-            padding-bottom: 100%; /* Квадратная плитка */
+            aspect-ratio: 1 / 1; /* Идеальный квадрат */
+            font-size: min(5vw, 32px); /* Адаптивный размер */
         }
 
-        .tile span {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2.5vw; /* Относительный размер */
-        }
-
-        /* Фиксированные размеры шрифта через vw для адаптивности */
-        @media (min-width: 500px) {
-            .tile span { font-size: 32px; }
-        }
-        
+        /* Цвета плиток */
         .tile-2 { background: #eee4da; }
         .tile-4 { background: #ede0c8; }
         .tile-8 { background: #f2b179; color: white; }
@@ -300,6 +284,10 @@
                 height: 40px;
                 font-size: 1.2em;
             }
+            
+            .tile {
+                font-size: min(6vw, 24px);
+            }
         }
     </style>
 </head>
@@ -325,6 +313,7 @@
 
         <!-- Поле игры -->
         <div class="game-container">
+            <!-- Сетка фона -->
             <div class="grid-container">
                 <div class="grid-cell"></div>
                 <div class="grid-cell"></div>
@@ -343,11 +332,17 @@
                 <div class="grid-cell"></div>
                 <div class="grid-cell"></div>
             </div>
+            
+            <!-- Контейнер для плиток (поверх сетки) -->
             <div class="tile-container" id="tile-container"></div>
+            
+            <!-- Экран проигрыша -->
             <div class="game-over" id="game-over">
                 <div>😵 Игра окончена!</div>
                 <button onclick="newGame()">Новая игра</button>
             </div>
+            
+            <!-- Экран победы -->
             <div class="game-win" id="game-win">
                 <div class="win-emoji">🏆</div>
                 <div>ТЫ ПОБЕДИЛ!</div>
@@ -422,7 +417,7 @@
             }
         }
 
-        // Отрисовка
+        // Отрисовка плиток
         function render() {
             const container = document.getElementById('tile-container');
             container.innerHTML = '';
@@ -434,11 +429,7 @@
                         tile.className = `tile tile-${board[i][j]}`;
                         tile.style.gridRow = i + 1;
                         tile.style.gridColumn = j + 1;
-                        
-                        const span = document.createElement('span');
-                        span.textContent = board[i][j];
-                        tile.appendChild(span);
-                        
+                        tile.textContent = board[i][j];
                         container.appendChild(tile);
                     }
                 }
@@ -542,7 +533,7 @@
             return moved;
         }
 
-        // Проверка на победу (появление 2048)
+        // Проверка на победу
         function checkWin() {
             for (let i = 0; i < SIZE; i++) {
                 for (let j = 0; j < SIZE; j++) {
@@ -552,11 +543,8 @@
                         
                         // Подсветить победную плитку
                         setTimeout(() => {
-                            const tiles = document.querySelectorAll('.tile-2048 span');
-                            tiles.forEach(t => {
-                                const parent = t.parentNode;
-                                parent.classList.add('win');
-                            });
+                            const tiles = document.querySelectorAll('.tile-2048');
+                            tiles.forEach(t => t.classList.add('win'));
                         }, 100);
                         
                         return true;
@@ -621,23 +609,26 @@
             init();
         }
 
-        // Управление с клавиатуры (англ + рус)
+        // Управление с клавиатуры
         document.addEventListener('keydown', function(event) {
             const key = event.key;
             
-            // WASD + русские аналоги
+            // Лево
             if (key === 'ArrowLeft' || key === 'a' || key === 'A' || key === 'ф' || key === 'Ф') {
                 event.preventDefault();
                 move('left');
             }
+            // Право
             else if (key === 'ArrowRight' || key === 'd' || key === 'D' || key === 'в' || key === 'В') {
                 event.preventDefault();
                 move('right');
             }
+            // Вверх
             else if (key === 'ArrowUp' || key === 'w' || key === 'W' || key === 'ц' || key === 'Ц') {
                 event.preventDefault();
                 move('up');
             }
+            // Вниз
             else if (key === 'ArrowDown' || key === 's' || key === 'S' || key === 'ы' || key === 'Ы') {
                 event.preventDefault();
                 move('down');

@@ -12,10 +12,39 @@
                 <a href="/cps-pkm/" class="vpk-nav-link">👆 CPS ПКМ</a>
                 <a href="/double-click/" class="vpk-nav-link">⚠️ Дабл-клик</a>
                 <a href="/reaction/" class="vpk-nav-link">⚡ Реакция</a>
-                <a href="/ii-cite/" class="vpk-nav-link">🤖 ИИ Сайт</a>
-                <a href="/autoclickers/" class="vpk-nav-link">🤖 Автокликеры</a>
-                <a href="/counter/" class="vpk-nav-link">🧮 Счётчик кликов</a>
+                <a href="/counter/" class="vpk-nav-link">🧮 Счётчик</a>
+                
+                <!-- Кнопка Еще с выпадающим меню -->
+                <div class="vpk-dropdown">
+                    <button class="vpk-dropdown-btn" onclick="toggleDropdown()">
+                        ⋯ Еще <span class="vpk-dropdown-arrow">▼</span>
+                    </button>
+                    <div class="vpk-dropdown-content" id="vpk-dropdown-menu">
+                        <a href="/ii-cite/" class="vpk-dropdown-link">🤖 ИИ Сайт</a>
+                        <a href="/autoclickers/" class="vpk-dropdown-link">🤖 Автокликеры</a>
+                        <div class="vpk-dropdown-divider"></div>
+                        <a href="#" class="vpk-dropdown-link" onclick="alert('Скоро будет!')">⌨️ Перевести раскладку</a>
+                        <a href="#" class="vpk-dropdown-link" onclick="alert('Спасибо за идею! ✨')">💡 Предложить идею</a>
+                    </div>
+                </div>
             </nav>
         </div>
     </div>
 </div>
+
+<script>
+function toggleDropdown() {
+    const menu = document.getElementById('vpk-dropdown-menu');
+    menu.classList.toggle('show');
+}
+
+// Закрываем меню при клике вне его
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('vpk-dropdown-menu');
+    const button = document.querySelector('.vpk-dropdown-btn');
+    
+    if (!button.contains(event.target) && !menu.contains(event.target)) {
+        menu.classList.remove('show');
+    }
+});
+</script>

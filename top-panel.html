@@ -31,20 +31,3 @@
         </div>
     </div>
 </div>
-
-<script>
-function toggleDropdown() {
-    const menu = document.getElementById('vpk-dropdown-menu');
-    menu.classList.toggle('show');
-}
-
-// Закрываем меню при клике вне его
-document.addEventListener('click', function(event) {
-    const menu = document.getElementById('vpk-dropdown-menu');
-    const button = document.querySelector('.vpk-dropdown-btn');
-    
-    if (!button.contains(event.target) && !menu.contains(event.target)) {
-        menu.classList.remove('show');
-    }
-});
-</script>

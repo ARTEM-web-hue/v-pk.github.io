@@ -17,7 +17,7 @@ export default async function handler(req, res) {
     try {
         // Твои ключи (вставь сюда)
         const FOLDER_ID = 'b1gqd5f3qariceg4oqht';
-        const API_KEY = 'YCAJEOU3_ItuNmjc6jCtle_Uz';
+        const API_KEY = 'YCMk2YQ82fSUB1zwWPDQmxsYoWNSPurFjufEGuod';
 
         const response = await fetch('https://llm.api.cloud.yandex.net/foundationModels/v1/completion', {
             method: 'POST',

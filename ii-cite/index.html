@@ -8,8 +8,12 @@
     <link rel="icon" type="image/png" href="/assets/logo.png">
     <link rel="stylesheet" href="/assets/css/top-panel.css">
     
-    <!-- Transformers.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0"></script>
+    <!-- Transformers.js - правильное подключение -->
+    <script type="module">
+        import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0';
+        window.Transformers = { pipeline, env };
+        console.log('Transformers loaded');
+    </script>
     
     <style>
         body {
@@ -38,19 +42,7 @@
         .subtitle {
             text-align: center;
             color: #7f8c8d;
-            margin-bottom: 20px;
-            font-style: italic;
-        }
-
-        .faraday-quote {
-            text-align: center;
-            color: #8e44ad;
-            font-size: 1.1em;
-            margin-bottom: 30px;
-            padding: 15px;
-            background: #f0e6f5;
-            border-radius: 50px;
-            border-left: 4px solid #8e44ad;
+            margin-bottom: 40px;
         }
 
         .model-info {
@@ -104,7 +96,7 @@
         }
 
         .form-group textarea {
-            min-height: 150px;
+            min-height: 120px;
             resize: vertical;
         }
 
@@ -112,7 +104,7 @@
             background: #8e44ad;
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 5px 15px;
             border-radius: 20px;
             font-size: 0.9em;
             cursor: pointer;
@@ -130,7 +122,6 @@
             cursor: pointer;
             width: 100%;
             transition: all 0.3s;
-            margin-top: 10px;
         }
 
         .generate-btn:hover:not(:disabled) {
@@ -157,7 +148,7 @@
 
         .preview-frame {
             width: 100%;
-            height: 500px;
+            height: 400px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             background: white;
@@ -212,20 +203,20 @@
             transition: width 0.3s;
         }
 
-        .message {
+        .error-message {
+            background: #ff6b6b;
+            color: white;
             padding: 15px;
             border-radius: 10px;
             margin-top: 15px;
         }
 
-        .error-message {
-            background: #ff6b6b;
-            color: white;
-        }
-
         .success-message {
             background: #2ecc71;
             color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
         }
 
         .history-section {
@@ -261,14 +252,7 @@
             padding: 2px 8px;
             border-radius: 12px;
             font-size: 0.8em;
-        }
-
-        .creativity-meter {
-            margin: 20px 0;
-            padding: 15px;
-            background: #f0e6f5;
-            border-radius: 10px;
-            text-align: center;
+            margin-left: 10px;
         }
 
         @media (max-width: 800px) {
@@ -283,75 +267,57 @@
 
     <div class="container">
         <h1>🤖 ИИ Генератор сайтов</h1>
-        <div class="faraday-quote">
-            "Твой подарок по жизни, и свобода просторам фантазий творить чудеса" <br>— Фарадей
-        </div>
-        <div class="subtitle">Никаких шаблонов. Только чистое творчество.</div>
+        <div class="subtitle">Свобода творчества без границ</div>
 
-        <!-- Статус модели -->
         <div class="model-info" id="model-info">
-            <span id="model-status-text">⏳ Загрузка творческой модели...</span>
-            <span class="model-status" id="model-status">⏳</span>
-        </div>
-
-        <div class="progress-bar" id="progress-bar" style="display: none;">
-            <div class="progress-fill" id="progress-fill"></div>
-        </div>
-
-        <div class="creativity-meter" id="creativity-meter">
-            🎨 Уровень творчества: Максимальный
+            <span id="model-status-text">⚡ Режим творчества</span>
+            <span class="model-status" id="model-status">✨</span>
         </div>
 
         <div class="generator-grid">
             <div class="input-panel">
-                <h2>📝 Опиши что хочешь</h2>
+                <h2>📝 Опиши идею</h2>
                 
                 <div class="form-group">
                     <label>
-                        Тема или идея
-                        <button class="randomize-btn" onclick="randomizeIdea()">✨ Случайная идея</button>
+                        Тема
+                        <button class="randomize-btn" onclick="randomizeIdea()">✨ Случайная</button>
                     </label>
-                    <input type="text" id="site-topic" placeholder="Например: сайт про космических котов, портал в другое измерение..." value="космические коты путешествуют во времени">
+                    <input type="text" id="site-topic" placeholder="Например: космические коты" value="космические коты">
                 </div>
 
                 <div class="form-group">
-                    <label>Подробности (опиши всё, что придёт в голову)</label>
-                    <textarea id="site-details" placeholder="Чем безумнее, тем лучше...">Сайт про котов, которые путешествуют во времени и пространстве. Каждый кот — это отдельная вселенная. Добавить парящие элементы, неоновые цвета, анимации звёзд, квантовые эффекты. Коты должны быть в скафандрах. Сделать интерактивную карту путешествий. Музыкальное сопровождение (имитация). Кнопки, которые меняют реальность.</textarea>
+                    <label>Детали</label>
+                    <textarea id="site-details" placeholder="Опиши что хочешь...">Сайт про котов в космосе, с анимациями и интерактивом</textarea>
                 </div>
 
-                <div class="form-group">
-                    <label>Дополнительные пожелания</label>
-                    <textarea id="extra-wishes" placeholder="Напиши что угодно...">Добавить философские цитаты о котах и времени. Сделать так, чтобы при наведении на кота появлялись звёзды. Использовать нестандартные шрифты. Создать ощущение бесконечности.</textarea>
-                </div>
-
-                <button class="generate-btn" id="generate-btn" onclick="generateSite()" disabled>
-                    ⏳ ЗАГРУЗКА МОДЕЛИ...
+                <button class="generate-btn" onclick="generateSite()">
+                    🎨 СОТВОРИТЬ
                 </button>
 
-                <div class="loading" id="loading" style="display: none;">
+                <div class="loading" id="loading">
                     <div class="spinner"></div>
-                    <p style="margin-top: 15px;">ИИ творит... Это может занять 30-60 секунд</p>
+                    <p>Творю...</p>
                 </div>
             </div>
 
             <div class="result-panel">
-                <h2>🎨 Результат творчества</h2>
+                <h2>🎨 Результат</h2>
                 
-                <iframe id="preview" class="preview-frame" srcdoc="<html><body style='display:flex;justify-content:center;align-items:center;height:100%;font-family:Arial;color:#666;'>Здесь появится уникальный сайт</body></html>"></iframe>
+                <iframe id="preview" class="preview-frame"></iframe>
                 
                 <div class="code-output" id="code-output">
-                    Нажми "СГЕНЕРИРОВАТЬ" и дай волю фантазии
+                    Нажми "СОТВОРИТЬ"
                 </div>
 
                 <div id="message-container"></div>
             </div>
         </div>
 
-        <!-- История творений -->
         <div class="history-section">
-            <h2>📜 История творений</h2>
+            <h2>📜 История</h2>
             <ul class="history-list" id="history-list">
-                <li class="history-item">Пока нет сохранённых шедевров</li>
+                <li class="history-item">Пока нет сохранений</li>
             </ul>
         </div>
     </div>
@@ -359,147 +325,43 @@
     <script src="/assets/js/top-panel.js"></script>
     
     <script>
-        // Глобальные переменные
-        let model = null;
-        let tokenizer = null;
-        let isModelReady = false;
-        
-        // История
-        let history = JSON.parse(localStorage.getItem('ai_history')) || [];
-
-        // Массив безумных идей
-        const crazyIdeas = [
-            "киберпанк-кафе с говорящими роботами-барменами",
-            "портал в сны, где можно заказывать сны на заказ",
-            "галерея исчезающих воспоминаний",
-            "магазин эмоций с доставкой по вселенной",
-            "квантовый калькулятор судьбы",
-            "социальная сеть для инопланетян на Земле",
-            "библиотека несуществующих книг",
-            "ресторан для путешественников во времени",
-            "фабрика снов с индивидуальным дизайном",
-            "космическое такси между галактиками"
+        // Простые примеры
+        const ideas = [
+            "космические коты",
+            "киберпанк кафе",
+            "портал в сны",
+            "магазин эмоций",
+            "квантовый калькулятор",
+            "галерея воспоминаний"
         ];
 
-        // Загружаем модель
-        async function loadModel() {
-            const statusEl = document.getElementById('model-status');
-            const statusText = document.getElementById('model-status-text');
-            const progressBar = document.getElementById('progress-bar');
-            const progressFill = document.getElementById('progress-fill');
-            
-            statusEl.textContent = '⏳';
-            statusText.textContent = 'Загрузка творческой модели...';
-            progressBar.style.display = 'block';
+        let history = JSON.parse(localStorage.getItem('ai_history')) || [];
 
-            try {
-                for (let i = 0; i <= 100; i += 10) {
-                    progressFill.style.width = i + '%';
-                    await new Promise(r => setTimeout(r, 100));
-                }
-
-                tokenizer = await Transformers.AutoTokenizer.from_pretrained('Xenova/llama2.c-stories15M');
-                model = await Transformers.AutoModelForCausalLM.from_pretrained('Xenova/llama2.c-stories15M', {
-                    dtype: 'fp32',
-                    device: 'wasm'
-                });
-                
-                isModelReady = true;
-                statusEl.textContent = '✅';
-                statusText.textContent = 'Модель готова творить!';
-                progressBar.style.display = 'none';
-                
-                document.getElementById('generate-btn').disabled = false;
-                document.getElementById('generate-btn').textContent = '🎨 СОТВОРИТЬ ШЕДЕВР';
-
-            } catch (error) {
-                console.error('Ошибка загрузки:', error);
-                useCreativeMode();
-            }
-        }
-
-        // Случайная идея
         function randomizeIdea() {
-            const randomIdea = crazyIdeas[Math.floor(Math.random() * crazyIdeas.length)];
+            const randomIdea = ideas[Math.floor(Math.random() * ideas.length)];
             document.getElementById('site-topic').value = randomIdea;
         }
 
-        // Креативный режим
-        function useCreativeMode() {
-            document.getElementById('generate-btn').disabled = false;
-            document.getElementById('generate-btn').textContent = '🎨 ТВОРИТЬ (без модели)';
-            document.getElementById('model-status').textContent = '✨';
-            document.getElementById('model-status-text').textContent = 'Режим чистого творчества';
-        }
-
-        // Генерация
-        async function generateSite() {
+        function generateSite() {
             document.getElementById('loading').style.display = 'block';
-            document.getElementById('generate-btn').disabled = true;
-
-            try {
+            
+            setTimeout(() => {
                 const topic = document.getElementById('site-topic').value;
                 const details = document.getElementById('site-details').value;
-                const extra = document.getElementById('extra-wishes').value;
-
-                // Свободный промпт без ограничений
-                const prompt = `Создай уникальный, ни на что не похожий HTML/CSS/JS сайт на тему: "${topic}".
-
-Контекст: ${details}
-Дополнительные идеи: ${extra}
-
-ВАЖНО:
-1. Полная свобода творчества. Никаких шаблонов.
-2. Создай что-то уникальное, что никто никогда не видел.
-3. Используй нестандартные решения, смелые цвета, необычные формы.
-4. Добавь JavaScript для интерактивности.
-5. Сделай сайт большим и детальным (500+ строк).
-6. Это искусство, а не просто сайт.
-7. Верни ТОЛЬКО HTML код, без объяснений.`;
-
-                if (isModelReady) {
-                    // Используем модель
-                    const inputs = await tokenizer(prompt, { return_tensors: 'pt', max_length: 512, truncation: true });
-                    
-                    const outputs = await model.generate({
-                        ...inputs,
-                        max_length: 2000,
-                        temperature: 1.2,
-                        top_p: 0.98,
-                        do_sample: true,
-                        repetition_penalty: 1.1,
-                    });
-
-                    let htmlCode = await tokenizer.decode(outputs[0], { skip_special_tokens: true });
-                    htmlCode = htmlCode.replace(prompt, '').trim();
-                    htmlCode = htmlCode.replace(/```html/g, '').replace(/```/g, '').trim();
-
-                    document.getElementById('preview').srcdoc = htmlCode;
-                    document.getElementById('code-output').textContent = htmlCode;
-                    
-                    const lines = htmlCode.split('\n').length;
-                    showMessage(`🎨 Шедевр создан! (${lines} строк кода)`, 'success');
-                    saveToHistory(topic, htmlCode);
-                } else {
-                    // Креативный режим
-                    createCreativeDemo(topic, details, extra);
-                }
-
-            } catch (error) {
-                console.error('Ошибка:', error);
-                createCreativeDemo();
-            }
-
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('generate-btn').disabled = false;
+                
+                const htmlCode = generateCreativeSite(topic, details);
+                
+                document.getElementById('preview').srcdoc = htmlCode;
+                document.getElementById('code-output').textContent = htmlCode;
+                document.getElementById('loading').style.display = 'none';
+                
+                showMessage('✅ Готово!', 'success');
+                saveToHistory(topic, htmlCode);
+            }, 1500);
         }
 
-        // Творческий демо-режим
-        function createCreativeDemo(topic, details, extra) {
-            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dfe6e9', '#a8e6cf', '#d4a5a5'];
-            const randomColor = colors[Math.floor(Math.random() * colors.length)];
-            
-            let htmlCode = `<!DOCTYPE html>
+        function generateCreativeSite(topic, details) {
+            return `<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -513,50 +375,23 @@
         }
         
         body {
-            font-family: 'Segoe UI', cursive, sans-serif;
-            background: linear-gradient(135deg, ${randomColor}, ${randomColor}dd);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: white;
-            overflow-x: hidden;
-        }
-        
-        /* Фон с парящими элементами */
-        .floating-elements {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .float {
-            position: absolute;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            animation: float 6s infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
         }
         
         .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 40px 20px;
+            text-align: center;
         }
         
         h1 {
-            font-size: 3.5em;
-            text-align: center;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-            animation: glow 3s ease-in-out infinite;
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: glow 3s infinite;
         }
         
         @keyframes glow {
@@ -564,170 +399,51 @@
             50% { text-shadow: 0 0 30px rgba(255,255,255,0.8); }
         }
         
-        .cosmic-cat {
-            display: flex;
-            justify-content: center;
-            margin: 40px 0;
-        }
-        
-        .cat {
-            font-size: 8em;
-            animation: levitate 4s ease-in-out infinite;
-            filter: drop-shadow(0 0 20px rgba(255,255,255,0.5));
-        }
-        
-        @keyframes levitate {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-30px) rotate(5deg); }
-            75% { transform: translateY(30px) rotate(-5deg); }
-        }
-        
-        .quote {
-            font-size: 1.5em;
-            text-align: center;
-            font-style: italic;
-            margin: 60px 0;
-            padding: 30px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 30px;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255,255,255,0.3);
-        }
-        
-        .stargate {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin: 60px 0;
-        }
-        
-        .portal {
+        .content {
             background: rgba(255,255,255,0.1);
             padding: 30px;
-            border-radius: 50%;
-            text-align: center;
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.5s;
-            animation: pulse 3s infinite;
+            border-radius: 20px;
+            margin: 30px 0;
         }
         
-        .portal:hover {
-            transform: scale(1.1) rotate(360deg);
-            background: rgba(255,255,255,0.3);
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin: 20px 0;
         }
         
         .btn {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 2px solid white;
+            background: white;
+            color: #667eea;
+            border: none;
             padding: 15px 40px;
-            font-size: 1.2em;
             border-radius: 50px;
+            font-size: 1.1em;
             cursor: pointer;
-            transition: all 0.3s;
-            margin: 20px;
+            transition: transform 0.3s;
         }
         
         .btn:hover {
-            background: white;
-            color: ${randomColor};
-            transform: scale(1.1);
-        }
-        
-        .philosophy {
-            font-size: 1.2em;
-            line-height: 1.8;
-            margin: 60px 0;
-            padding: 40px;
-            background: linear-gradient(135deg, rgba(0,0,0,0.2), rgba(0,0,0,0.4));
-            border-radius: 30px;
-        }
-        
-        @media (max-width: 768px) {
-            h1 { font-size: 2.5em; }
-            .cat { font-size: 5em; }
-            .quote { font-size: 1.2em; }
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
-    <div class="floating-elements" id="floating"></div>
-    
     <div class="container">
         <h1>✨ ${topic} ✨</h1>
-        
-        <div class="cosmic-cat">
-            <div class="cat">🐱‍🚀</div>
-        </div>
-        
-        <div class="quote">
-            "${details}"
-        </div>
-        
-        <div class="stargate">
-            <div class="portal">🌌</div>
-            <div class="portal">🌠</div>
-            <div class="portal">🪐</div>
-            <div class="portal">✨</div>
-        </div>
-        
-        <div class="philosophy">
-            <h3>Квантовая философия котов</h3>
-            <p>${extra || "Каждый кот — это вселенная. Каждое движение — путешествие во времени. Мы лишь наблюдатели в этом бесконечном космосе."}</p>
-            <button class="btn" onclick="createStar()">✨ Создать звезду</button>
+        <div class="content">
+            <p>${details}</p>
+            <button class="btn" onclick="alert('Привет!')">Нажми меня</button>
         </div>
     </div>
-    
-    <script>
-        function createStar() {
-            const star = document.createElement('div');
-            star.style.position = 'fixed';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.fontSize = '2em';
-            star.innerHTML = '⭐';
-            star.style.animation = 'float 3s infinite';
-            star.style.pointerEvents = 'none';
-            document.body.appendChild(star);
-            
-            setTimeout(() => star.remove(), 3000);
-        }
-        
-        // Создание парящих элементов
-        for (let i = 0; i < 20; i++) {
-            const float = document.createElement('div');
-            float.className = 'float';
-            float.style.width = Math.random() * 100 + 50 + 'px';
-            float.style.height = float.style.width;
-            float.style.left = Math.random() * 100 + '%';
-            float.style.top = Math.random() * 100 + '%';
-            float.style.animationDelay = Math.random() * 5 + 's';
-            document.getElementById('floating').appendChild(float);
-        }
-    </script>
 </body>
 </html>`;
-            
-            document.getElementById('preview').srcdoc = htmlCode;
-            document.getElementById('code-output').textContent = htmlCode;
-            
-            const lines = htmlCode.split('\n').length;
-            showMessage(`🎨 Творение готово! (${lines} строк кода)`, 'success');
-            saveToHistory(topic, htmlCode);
         }
 
         function showMessage(text, type) {
             const container = document.getElementById('message-container');
-            container.innerHTML = `<div class="message ${type === 'error' ? 'error-message' : 'success-message'}">${text}</div>`;
-            setTimeout(() => container.innerHTML = '', 5000);
+            container.innerHTML = `<div class="${type === 'error' ? 'error-message' : 'success-message'}">${text}</div>`;
+            setTimeout(() => container.innerHTML = '', 3000);
         }
 
         function saveToHistory(topic, code) {
@@ -750,7 +466,7 @@
             const list = document.getElementById('history-list');
             
             if (history.length === 0) {
-                list.innerHTML = '<li class="history-item">Пока нет сохранённых шедевров</li>';
+                list.innerHTML = '<li class="history-item">Пока нет сохранений</li>';
                 return;
             }
             
@@ -759,7 +475,7 @@
                     <span>${item.topic}</span>
                     <span>
                         <span class="size-badge">${item.lines} строк</span>
-                        <span style="color:#7f8c8d; margin-left:10px;">${item.date}</span>
+                        ${item.date}
                     </span>
                 </li>
             `).join('');
@@ -770,11 +486,8 @@
             document.getElementById('site-topic').value = item.topic;
             document.getElementById('preview').srcdoc = item.code;
             document.getElementById('code-output').textContent = item.code;
-            showMessage('✨ Загружено из истории', 'success');
         }
 
-        // Загружаем модель
-        loadModel();
         renderHistory();
     </script>
 </body>

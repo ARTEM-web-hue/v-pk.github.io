@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Счётчик кликов - В ПК!</title>
+    
+    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <link rel="stylesheet" href="/assets/css/top-panel.css">
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 40px;
+            font-size: 1.2em;
+        }
+
+        /* Панель управления */
+        .control-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .add-counter-form {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
+        }
+
+        .color-picker {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: #2c3e50;
+            transform: scale(1.05);
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            height: 45px;
+            white-space: nowrap;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52,152,219,0.3);
+        }
+
+        /* Сетка счётчиков */
+        .counters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .counter-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .counter-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .counter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .counter-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .counter-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+        }
+
+        .counter-value {
+            font-size: 3.5em;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            color: #2c3e50;
+        }
+
+        .counter-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .counter-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            border: none;
+            font-size: 1.8em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .counter-btn.minus {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .counter-btn.plus {
+            background: #51cf66;
+            color: white;
+        }
+
+        .counter-btn.reset {
+            background: #ffd43b;
+            color: #2c3e50;
+            width: auto;
+            padding: 0 20px;
+            font-size: 1em;
+        }
+
+        .counter-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .counter-btn:active {
+            transform: scale(0.95);
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px;
+            opacity: 0.6;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        /* Статистика */
+        .stats-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 20px;
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+
+        .empty-state .emoji {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 600px) {
+            .add-counter-form {
+                flex-direction: column;
+            }
+            
+            .add-btn {
+                width: 100%;
+            }
+            
+            .counters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="top-panel-placeholder"></div>
+
+    <div class="container">
+        <h1>🧮 Счётчик кликов</h1>
+        <div class="subtitle">Создавай счётчики, кликай + и -, следи за статистикой</div>
+
+        <!-- Панель добавления -->
+        <div class="control-panel">
+            <h3 style="margin-top: 0; color: #2c3e50;">➕ Добавить счётчик</h3>
+            <div class="add-counter-form">
+                <div class="form-group">
+                    <label>Название</label>
+                    <input type="text" id="counter-name" placeholder="Например: Пончики" maxlength="30">
+                </div>
+                
+                <div class="form-group">
+                    <label>Цвет</label>
+                    <div class="color-picker" id="color-picker">
+                        <div class="color-option selected" style="background: #3498db;" data-color="#3498db"></div>
+                        <div class="color-option" style="background: #e74c3c;" data-color="#e74c3c"></div>
+                        <div class="color-option" style="background: #2ecc71;" data-color="#2ecc71"></div>
+                        <div class="color-option" style="background: #f39c12;" data-color="#f39c12"></div>
+                        <div class="color-option" style="background: #9b59b6;" data-color="#9b59b6"></div>
+                        <div class="color-option" style="background: #1abc9c;" data-color="#1abc9c"></div>
+                        <div class="color-option" style="background: #e67e22;" data-color="#e67e22"></div>
+                        <div class="color-option" style="background: #34495e;" data-color="#34495e"></div>
+                    </div>
+                </div>
+                
+                <button class="add-btn" onclick="addCounter()">➕ Добавить</button>
+            </div>
+        </div>
+
+        <!-- Сетка счётчиков -->
+        <div id="counters-container"></div>
+
+        <!-- Статистика -->
+        <div class="stats-panel" id="stats-panel">
+            <div class="stat-item">
+                <div class="stat-label">Всего счётчиков</div>
+                <div class="stat-value" id="total-counters">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Всего кликов</div>
+                <div class="stat-value" id="total-clicks">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Самый популярный</div>
+                <div class="stat-value" id="most-popular">—</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/top-panel.js"></script>
+    
+    <script>
+        // Загружаем счётчики из localStorage
+        let counters = JSON.parse(localStorage.getItem('counters')) || [];
+
+        // Выбранный цвет
+        let selectedColor = '#3498db';
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCounters();
+            initColorPicker();
+        });
+
+        // Выбор цвета
+        function initColorPicker() {
+            const colorOptions = document.querySelectorAll('.color-option');
+            colorOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    colorOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    selectedColor = option.dataset.color;
+                });
+            });
+        }
+
+        // Добавление счётчика
+        function addCounter() {
+            const nameInput = document.getElementById('counter-name');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                alert('Введите название счётчика!');
+                return;
+            }
+
+            const newCounter = {
+                id: Date.now(),
+                name: name,
+                color: selectedColor,
+                value: 0
+            };
+
+            counters.push(newCounter);
+            saveCounters();
+            renderCounters();
+            
+            // Очищаем поле
+            nameInput.value = '';
+        }
+
+        // Увеличение счётчика
+        function increment(id) {
+            const counter = counters.find(c => c.id === id);
+            if (counter) {
+                counter.value++;
+                saveCounters();
+                renderCounters();
+            }
+        }
+
+        // Уменьшение счётчика
+        function decrement(id) {
+            const counter = counters.find(c => c.id === id);
+            if (counter && counter.value > 0) {
+                counter.value--;
+                saveCounters();
+                renderCounters();
+            }
+        }
+
+        // Сброс счётчика
+        function reset(id) {
+            const counter = counters.find(c => c.id === id);
+            if (counter) {
+                counter.value = 0;
+                saveCounters();
+                renderCounters();
+            }
+        }
+
+        // Удаление счётчика
+        function deleteCounter(id) {
+            if (confirm('Удалить счётчик?')) {
+                counters = counters.filter(c => c.id !== id);
+                saveCounters();
+                renderCounters();
+            }
+        }
+
+        // Сохранение в localStorage
+        function saveCounters() {
+            localStorage.setItem('counters', JSON.stringify(counters));
+        }
+
+        // Отрисовка всех счётчиков
+        function renderCounters() {
+            const container = document.getElementById('counters-container');
+            
+            if (counters.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="emoji">🧮</div>
+                        Пока нет ни одного счётчика<br>
+                        Создай первый!
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="counters-grid">
+                        ${counters.map(counter => `
+                            <div class="counter-card" style="border-color: ${counter.color}20;">
+                                <div class="counter-header">
+                                    <span class="counter-title">${counter.name}</span>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div class="counter-color" style="background: ${counter.color};"></div>
+                                        <button class="delete-btn" onclick="deleteCounter(${counter.id})">🗑️</button>
+                                    </div>
+                                </div>
+                                <div class="counter-value">${counter.value}</div>
+                                <div class="counter-controls">
+                                    <button class="counter-btn minus" onclick="decrement(${counter.id})">−</button>
+                                    <button class="counter-btn plus" onclick="increment(${counter.id})">+</button>
+                                    <button class="counter-btn reset" onclick="reset(${counter.id})">Сброс</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            updateStats();
+        }
+
+        // Обновление статистики
+        function updateStats() {
+            const totalCounters = counters.length;
+            const totalClicks = counters.reduce((sum, c) => sum + c.value, 0);
+            
+            document.getElementById('total-counters').textContent = totalCounters;
+            document.getElementById('total-clicks').textContent = totalClicks;
+            
+            // Самый популярный счётчик
+            if (counters.length > 0) {
+                const mostPopular = counters.reduce((max, c) => c.value > max.value ? c : max, counters[0]);
+                document.getElementById('most-popular').textContent = 
+                    mostPopular.value > 0 ? `${mostPopular.name} (${mostPopular.value})` : '—';
+            } else {
+                document.getElementById('most-popular').textContent = '—';
+            }
+        }
+    </script>
+</body>
+</html>

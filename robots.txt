@@ -1,0 +1,13 @@
+# robots.txt для сайта В ПК!
+# https://v-pk.vercel.app
+
+User-agent: *
+Allow: /
+
+# Запрещаем служебные страницы (если есть)
+Disallow: /api/
+Disallow: /private/
+Disallow: /temp/
+
+# Указываем путь к карте сайта
+Sitemap: https://v-pk.vercel.app/sitemap.xml

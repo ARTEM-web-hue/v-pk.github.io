@@ -1,70 +1,93 @@
-/* ======= СТИЛИ ТОП-ПАНЕЛИ ======= */
-.top-panel {
-    background-color: #2c3e50;
-    color: white;
-    padding: 10px 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+/* ======= ТОП-ПАНЕЛЬ (УНИКАЛЬНЫЕ СТИЛИ) ======= */
+.vpk-top-panel {
+    background-color: #0a0e1a !important;
+    color: white !important;
+    padding: 12px 0 !important;
+    box-shadow: 0 4px 20px rgba(0, 255, 249, 0.2) !important;
+    border-bottom: 2px solid #00fff9 !important;
+    position: relative !important;
+    z-index: 1000 !important;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+.vpk-container {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 0 20px !important;
 }
 
-.panel-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
+.vpk-panel-content {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 20px !important;
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: white;
-    gap: 10px;
+.vpk-logo {
+    display: flex !important;
+    align-items: center !important;
+    text-decoration: none !important;
+    color: white !important;
+    gap: 12px !important;
+    transition: all 0.3s !important;
 }
 
-.logo-img {
-    height: 40px;
-    width: auto;
+.vpk-logo:hover {
+    transform: scale(1.02) !important;
+    text-shadow: 0 0 10px #00fff9 !important;
 }
 
-.site-title {
-    font-size: 24px;
-    font-weight: bold;
+.vpk-logo-img {
+    height: 45px !important;
+    width: auto !important;
+    filter: drop-shadow(0 0 5px #00fff9) !important;
 }
 
-.main-nav {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
+.vpk-site-title {
+    font-size: 26px !important;
+    font-weight: bold !important;
+    background: linear-gradient(135deg, #00fff9, #b829e6) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
 }
 
-.nav-link {
-    color: white;
-    text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-    font-size: 16px;
+.vpk-main-nav {
+    display: flex !important;
+    gap: 15px !important;
+    flex-wrap: wrap !important;
 }
 
-.nav-link:hover {
-    background-color: #34495e;
+.vpk-nav-link {
+    color: white !important;
+    text-decoration: none !important;
+    padding: 8px 16px !important;
+    border-radius: 25px !important;
+    transition: all 0.3s !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    border: 1px solid transparent !important;
+}
+
+.vpk-nav-link:hover {
+    background: rgba(0, 255, 249, 0.1) !important;
+    border-color: #00fff9 !important;
+    box-shadow: 0 0 15px rgba(0, 255, 249, 0.3) !important;
+    transform: translateY(-2px) !important;
 }
 
 /* Для мобильных */
-@media (max-width: 600px) {
-    .panel-content {
-        flex-direction: column;
-        text-align: center;
+@media (max-width: 700px) {
+    .vpk-panel-content {
+        flex-direction: column !important;
+        text-align: center !important;
     }
     
-    .main-nav {
-        justify-content: center;
+    .vpk-main-nav {
+        justify-content: center !important;
+    }
+    
+    .vpk-nav-link {
+        padding: 6px 12px !important;
+        font-size: 14px !important;
     }
 }

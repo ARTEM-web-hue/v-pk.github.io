@@ -281,6 +281,8 @@
         renderHistory();
 
         async function generateSite() {
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+            const targetUrl = 'https://llm.api.cloud.yandex.net/foundationModels/v1/completion';
             document.getElementById('loading').style.display = 'block';
             document.getElementById('generate-btn').disabled = true;
             document.getElementById('message-container').innerHTML = '';
@@ -304,7 +306,7 @@
 
 Верни ТОЛЬКО HTML код, без объяснений, без markdown.`;
 
-                const response = await fetch('https://llm.api.cloud.yandex.net/foundationModels/v1/completion', {
+                const response = await fetch(proxyUrl + targetUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

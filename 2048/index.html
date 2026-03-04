@@ -17,7 +17,7 @@
         }
 
         .container {
-            max-width: 600px;
+            max-width: 500px;
             margin: 40px auto;
             padding: 30px;
             background: rgba(255, 255, 255, 0.8);
@@ -52,40 +52,40 @@
 
         .score-container {
             background: #bbada0;
-            padding: 15px 25px;
+            padding: 10px 20px;
             border-radius: 10px;
             color: white;
             text-align: center;
-            min-width: 100px;
+            min-width: 80px;
         }
 
         .score-label {
-            font-size: 0.9em;
+            font-size: 0.8em;
             text-transform: uppercase;
             opacity: 0.8;
         }
 
         .score-value {
-            font-size: 2em;
+            font-size: 1.8em;
             font-weight: bold;
         }
 
         .best-container {
             background: #bbada0;
-            padding: 15px 25px;
+            padding: 10px 20px;
             border-radius: 10px;
             color: white;
             text-align: center;
-            min-width: 100px;
+            min-width: 80px;
         }
 
         .new-game-btn {
             background: #8f7a66;
             color: white;
             border: none;
-            padding: 15px 30px;
+            padding: 10px 20px;
             border-radius: 10px;
-            font-size: 1.2em;
+            font-size: 1em;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
@@ -97,7 +97,7 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        /* Поле игры */
+        /* Поле игры - фиксированный размер */
         .game-container {
             position: relative;
             background: #bbada0;
@@ -114,14 +114,13 @@
             gap: 15px;
             background: #bbada0;
             border-radius: 10px;
-            width: 100%;
         }
 
         .grid-cell {
-            width: 100%;
-            aspect-ratio: 1;
             background: rgba(238, 228, 218, 0.35);
             border-radius: 10px;
+            padding-bottom: 100%; /* Соотношение 1:1 */
+            position: relative;
         }
 
         .tile-container {
@@ -137,27 +136,34 @@
         }
 
         .tile {
+            background: #eee4da;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            aspect-ratio: 1;
-            width: 100%;
-            height: 100%;
-            border-radius: 10px;
-            font-size: 2.5em;
             font-weight: bold;
             color: #776e65;
             transition: all 0.15s;
             animation: appear 0.2s;
-            box-sizing: border-box;
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 100%; /* Квадратная плитка */
         }
 
-        /* Фиксированные размеры шрифта для разных значений */
-        .tile-2, .tile-4, .tile-8, .tile-16, .tile-32, .tile-64 { font-size: 2.5em; }
-        .tile-128, .tile-256, .tile-512 { font-size: 2em; }
-        .tile-1024, .tile-2048 { font-size: 1.8em; }
-        .tile-4096, .tile-8192 { font-size: 1.5em; } /* на будущее */
+        .tile span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5vw; /* Относительный размер */
+        }
 
+        /* Фиксированные размеры шрифта через vw для адаптивности */
+        @media (min-width: 500px) {
+            .tile span { font-size: 32px; }
+        }
+        
         .tile-2 { background: #eee4da; }
         .tile-4 { background: #ede0c8; }
         .tile-8 { background: #f2b179; color: white; }
@@ -289,10 +295,6 @@
                 padding: 20px;
             }
             
-            .tile-2, .tile-4, .tile-8, .tile-16, .tile-32, .tile-64 { font-size: 1.8em; }
-            .tile-128, .tile-256, .tile-512 { font-size: 1.4em; }
-            .tile-1024, .tile-2048 { font-size: 1.2em; }
-            
             .key {
                 width: 40px;
                 height: 40px;
@@ -361,12 +363,12 @@
             <div class="keys-grid">
                 <div class="key-group">
                     <div class="key-row">
-                        <div class="key wasd">W</div>
+                        <div class="key wasd">W / Ц</div>
                     </div>
                     <div class="key-row">
-                        <div class="key wasd">A</div>
-                        <div class="key wasd">S</div>
-                        <div class="key wasd">D</div>
+                        <div class="key wasd">A / Ф</div>
+                        <div class="key wasd">S / Ы</div>
+                        <div class="key wasd">D / В</div>
                     </div>
                 </div>
                 <div class="key-group">
@@ -432,7 +434,11 @@
                         tile.className = `tile tile-${board[i][j]}`;
                         tile.style.gridRow = i + 1;
                         tile.style.gridColumn = j + 1;
-                        tile.textContent = board[i][j];
+                        
+                        const span = document.createElement('span');
+                        span.textContent = board[i][j];
+                        tile.appendChild(span);
+                        
                         container.appendChild(tile);
                     }
                 }
@@ -546,8 +552,11 @@
                         
                         // Подсветить победную плитку
                         setTimeout(() => {
-                            const tiles = document.querySelectorAll('.tile-2048');
-                            tiles.forEach(t => t.classList.add('win'));
+                            const tiles = document.querySelectorAll('.tile-2048 span');
+                            tiles.forEach(t => {
+                                const parent = t.parentNode;
+                                parent.classList.add('win');
+                            });
                         }, 100);
                         
                         return true;
@@ -612,33 +621,26 @@
             init();
         }
 
-        // Управление с клавиатуры
+        // Управление с клавиатуры (англ + рус)
         document.addEventListener('keydown', function(event) {
-            switch(event.key) {
-                case 'ArrowLeft':
-                case 'a':
-                case 'A':
-                    event.preventDefault();
-                    move('left');
-                    break;
-                case 'ArrowRight':
-                case 'd':
-                case 'D':
-                    event.preventDefault();
-                    move('right');
-                    break;
-                case 'ArrowUp':
-                case 'w':
-                case 'W':
-                    event.preventDefault();
-                    move('up');
-                    break;
-                case 'ArrowDown':
-                case 's':
-                case 'S':
-                    event.preventDefault();
-                    move('down');
-                    break;
+            const key = event.key;
+            
+            // WASD + русские аналоги
+            if (key === 'ArrowLeft' || key === 'a' || key === 'A' || key === 'ф' || key === 'Ф') {
+                event.preventDefault();
+                move('left');
+            }
+            else if (key === 'ArrowRight' || key === 'd' || key === 'D' || key === 'в' || key === 'В') {
+                event.preventDefault();
+                move('right');
+            }
+            else if (key === 'ArrowUp' || key === 'w' || key === 'W' || key === 'ц' || key === 'Ц') {
+                event.preventDefault();
+                move('up');
+            }
+            else if (key === 'ArrowDown' || key === 's' || key === 'S' || key === 'ы' || key === 'Ы') {
+                event.preventDefault();
+                move('down');
             }
         });
 

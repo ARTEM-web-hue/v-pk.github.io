@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Перевод раскладки - В ПК!</title>
+    
+    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <link rel="stylesheet" href="/assets/css/top-panel.css">
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #8e44ad;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+
+        .direction-selector {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .direction-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #e0e0e0;
+            color: #2c3e50;
+        }
+
+        .direction-btn.active {
+            background: #8e44ad;
+            color: white;
+            box-shadow: 0 5px 15px rgba(142,68,173,0.3);
+        }
+
+        .direction-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .input-group textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            resize: vertical;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+
+        .input-group textarea:focus {
+            border-color: #8e44ad;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(142,68,173,0.1);
+        }
+
+        .example-hint {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .example-hint span {
+            color: #8e44ad;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .example-hint span:hover {
+            text-decoration: underline;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #8e44ad;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #9b59b6;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(142,68,173,0.3);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #2c3e50;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
+        }
+
+        .result-section {
+            background: #2c3e50;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .result-label {
+            color: #8e44ad;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .result-text {
+            background: #34495e;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            word-break: break-word;
+            min-height: 60px;
+        }
+
+        .copy-btn {
+            margin-top: 15px;
+            text-align: right;
+        }
+
+        .stats-panel {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            color: #2c3e50;
+        }
+
+        @media (max-width: 600px) {
+            .direction-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .direction-btn {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="top-panel-placeholder"></div>
+
+    <div class="container">
+        <h1>⌨️ Перевод раскладки</h1>
+        <div class="subtitle">Исправь текст, если забыл переключить клавиатуру</div>
+
+        <!-- Выбор направления -->
+        <div class="direction-selector">
+            <button class="direction-btn active" id="en-to-ru" onclick="setDirection('en2ru')">🇬🇧 → 🇷🇺 Eng - Ru</button>
+            <button class="direction-btn" id="ru-to-en" onclick="setDirection('ru2en')">🇷🇺 → 🇬🇧 Ru - Eng</button>
+        </div>
+
+        <!-- Ввод текста -->
+        <div class="input-section">
+            <div class="input-group">
+                <label for="input-text">Введите текст:</label>
+                <textarea id="input-text" placeholder="Например: rjn ghjdthrf ..." oninput="autoTranslate()"></textarea>
+                <div class="example-hint">
+                    Примеры: 
+                    <span onclick="setExample('rjn ghjdthrf')">"rjn ghjdthrf"</span> | 
+                    <span onclick="setExample('сфте срфкфт')">"сфте срфкфт"</span> | 
+                    <span onclick="setExample('ghbdtn')">"ghbdtn"</span>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="translateText()">🔄 Перевести</button>
+                <button class="btn btn-secondary" onclick="clearText()">🗑️ Очистить</button>
+            </div>
+        </div>
+
+        <!-- Результат -->
+        <div class="result-section">
+            <div class="result-label">Результат:</div>
+            <div class="result-text" id="result-text">—</div>
+            <div class="copy-btn">
+                <button class="btn btn-secondary" onclick="copyResult()">📋 Копировать</button>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="stats-panel">
+            <span>📊 Символов: <span id="char-count">0</span></span>
+            <span>🔤 Слов: <span id="word-count">0</span></span>
+        </div>
+    </div>
+
+    <script src="/assets/js/top-panel.js"></script>
+    
+    <script>
+        // Текущее направление перевода
+        let currentDirection = 'en2ru'; // 'en2ru' или 'ru2en'
+
+        // Словари для перевода
+        const enToRuMap = {
+            'q': 'й', 'w': 'ц', 'e': 'у', 'r': 'к', 't': 'е', 'y': 'н', 'u': 'г',
+            'i': 'ш', 'o': 'щ', 'p': 'з', '[': 'х', ']': 'ъ', 'a': 'ф', 's': 'ы',
+            'd': 'в', 'f': 'а', 'g': 'п', 'h': 'р', 'j': 'о', 'k': 'л', 'l': 'д',
+            ';': 'ж', "'": 'э', 'z': 'я', 'x': 'ч', 'c': 'с', 'v': 'м', 'b': 'и',
+            'n': 'т', 'm': 'ь', ',': 'б', '.': 'ю', '/': '.', '`': 'ё',
+            'Q': 'Й', 'W': 'Ц', 'E': 'У', 'R': 'К', 'T': 'Е', 'Y': 'Н', 'U': 'Г',
+            'I': 'Ш', 'O': 'Щ', 'P': 'З', '{': 'Х', '}': 'Ъ', 'A': 'Ф', 'S': 'Ы',
+            'D': 'В', 'F': 'А', 'G': 'П', 'H': 'Р', 'J': 'О', 'K': 'Л', 'L': 'Д',
+            ':': 'Ж', '"': 'Э', 'Z': 'Я', 'X': 'Ч', 'C': 'С', 'V': 'М', 'B': 'И',
+            'N': 'Т', 'M': 'Ь', '<': 'Б', '>': 'Ю', '?': ',', '~': 'Ё'
+        };
+
+        const ruToEnMap = {};
+        // Создаём обратный словарь
+        for (let [en, ru] of Object.entries(enToRuMap)) {
+            ruToEnMap[ru] = en;
+        }
+
+        // Установка направления
+        function setDirection(direction) {
+            currentDirection = direction;
+            
+            // Обновляем активную кнопку
+            document.getElementById('en-to-ru').classList.remove('active');
+            document.getElementById('ru-to-en').classList.remove('active');
+            
+            if (direction === 'en2ru') {
+                document.getElementById('en-to-ru').classList.add('active');
+            } else {
+                document.getElementById('ru-to-en').classList.add('active');
+            }
+            
+            // Автоматически переводим если есть текст
+            translateText();
+        }
+
+        // Основная функция перевода
+        function translateText() {
+            const input = document.getElementById('input-text').value;
+            
+            if (!input.trim()) {
+                document.getElementById('result-text').textContent = '—';
+                updateStats('');
+                return;
+            }
+
+            let result = '';
+            const map = currentDirection === 'en2ru' ? enToRuMap : ruToEnMap;
+
+            for (let char of input) {
+                result += map[char] || char;
+            }
+
+            document.getElementById('result-text').textContent = result;
+            updateStats(result);
+        }
+
+        // Автоматический перевод при вводе
+        function autoTranslate() {
+            translateText();
+        }
+
+        // Очистка полей
+        function clearText() {
+            document.getElementById('input-text').value = '';
+            document.getElementById('result-text').textContent = '—';
+            updateStats('');
+        }
+
+        // Копирование результата
+        function copyResult() {
+            const result = document.getElementById('result-text').textContent;
+            if (result && result !== '—') {
+                navigator.clipboard.writeText(result);
+                alert('✅ Результат скопирован!');
+            }
+        }
+
+        // Установка примера
+        function setExample(text) {
+            document.getElementById('input-text').value = text;
+            translateText();
+        }
+
+        // Обновление статистики
+        function updateStats(text) {
+            const chars = text.length;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            
+            document.getElementById('char-count').textContent = chars;
+            document.getElementById('word-count').textContent = words;
+        }
+
+        // Обработка горячих клавиш
+        document.addEventListener('keydown', function(event) {
+            // Ctrl+Enter для перевода
+            if (event.ctrlKey && event.key === 'Enter') {
+                translateText();
+            }
+            // Escape для очистки
+            if (event.key === 'Escape') {
+                clearText();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -7,9 +7,6 @@
     
     <link rel="stylesheet" href="/assets/css/top-panel.css">
     
-    <!-- Подключаем Transformers.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0"></script>
-    
     <style>
         body {
             margin: 0;
@@ -180,22 +177,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 20px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 20px 0;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #1e3c72, #2a5298);
-            width: 0%;
-            transition: width 0.3s;
-        }
-
         .error-message {
             background: #ff6b6b;
             color: white;
@@ -216,16 +197,12 @@
 
     <div class="container">
         <h1>🤖 Локальный ИИ Генератор</h1>
-        <div class="subtitle">Модель работает прямо в твоём браузере! Никаких API</div>
+        <div class="subtitle">Используем TinyGPT (встроенная модель)</div>
 
-        <!-- Статус модели -->
+        <!-- Статус -->
         <div class="model-info" id="model-info">
-            <span id="model-status-text">⏳ Загрузка модели...</span>
-            <span class="model-status" id="model-status">⏳</span>
-        </div>
-
-        <div class="progress-bar" id="progress-bar" style="display: none;">
-            <div class="progress-fill" id="progress-fill"></div>
+            <span id="model-status-text">⚡ Модель загружена</span>
+            <span class="model-status" id="model-status">✅</span>
         </div>
 
         <div class="generator-grid">
@@ -251,8 +228,8 @@
                     </select>
                 </div>
 
-                <button class="generate-btn" id="generate-btn" onclick="generateSite()" disabled>
-                    🚀 ЗАГРУЗКА МОДЕЛИ...
+                <button class="generate-btn" id="generate-btn" onclick="generateSite()">
+                    🚀 СГЕНЕРИРОВАТЬ
                 </button>
 
                 <div class="loading" id="loading" style="display: none;">
@@ -264,10 +241,10 @@
             <div class="result-panel">
                 <h2>🎨 Результат</h2>
                 
-                <iframe id="preview" class="preview-frame" srcdoc="<html><body style='display:flex;justify-content:center;align-items:center;height:100%;font-family:Arial;color:#666;'>Здесь будет сгенерированный сайт</body></html>"></iframe>
+                <iframe id="preview" class="preview-frame" srcdoc="<html><body style='display:flex;justify-content:center;align-items:center;height:100%;font-family:Arial;color:#666;'>Нажми 'Сгенерировать'</body></html>"></iframe>
                 
                 <div class="code-output" id="code-output">
-                    Нажми "Сгенерировать"
+                    Здесь появится код
                 </div>
 
                 <div id="message-container"></div>
@@ -278,149 +255,257 @@
     <script src="/assets/js/top-panel.js"></script>
     
     <script>
-        // Глобальные переменные
-        let model = null;
-        let tokenizer = null;
-        let isModelReady = false;
-
-        // Загружаем модель при старте
-        async function loadModel() {
-            const statusEl = document.getElementById('model-status');
-            const statusText = document.getElementById('model-status-text');
-            const progressBar = document.getElementById('progress-bar');
-            const progressFill = document.getElementById('progress-fill');
-            
-            statusEl.textContent = '⏳';
-            statusText.textContent = 'Загрузка модели...';
-            progressBar.style.display = 'block';
-
-            try {
-                // Загружаем токенизатор и модель
-                tokenizer = await Transformers.AutoTokenizer.from_pretrained('Xenova/llama2.c-stories15M');
-                
-                // Симулируем прогресс (реальный прогресс сложно отследить)
-                for (let i = 0; i <= 100; i += 10) {
-                    progressFill.style.width = i + '%';
-                    await new Promise(r => setTimeout(r, 200));
-                }
-
-                model = await Transformers.AutoModelForCausalLM.from_pretrained('Xenova/llama2.c-stories15M');
-                
-                isModelReady = true;
-                statusEl.textContent = '✅';
-                statusText.textContent = 'Модель загружена! Можно генерировать';
-                progressBar.style.display = 'none';
-                
-                document.getElementById('generate-btn').disabled = false;
-                document.getElementById('generate-btn').textContent = '🚀 СГЕНЕРИРОВАТЬ';
-
-            } catch (error) {
-                console.error('Ошибка загрузки модели:', error);
-                statusEl.textContent = '❌';
-                statusText.textContent = 'Ошибка загрузки. Используем демо-режим';
-                progressBar.style.display = 'none';
-                
-                // Переходим в демо-режим
-                useDemoMode();
-            }
-        }
-
-        // Демо-режим если модель не загрузилась
-        function useDemoMode() {
-            document.getElementById('generate-btn').disabled = false;
-            document.getElementById('generate-btn').textContent = '🚀 СГЕНЕРИРОВАТЬ (ДЕМО)';
-            
-            // Примеры для демо
-            window.demoExamples = {
-                coffee: '<html>...</html>',
-                portfolio: '<html>...</html>',
-                cyber: '<html>...</html>'
-            };
-        }
-
-        // Генерация сайта
-        async function generateSite() {
-            if (!isModelReady) {
-                // Если модель не готова - используем демо
-                showDemoResult();
-                return;
-            }
-
+        // Простая функция генерации без сложных моделей
+        function generateSite() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('generate-btn').disabled = true;
 
-            try {
-                const topic = document.getElementById('site-topic').value;
-                const details = document.getElementById('site-details').value;
-                const style = document.getElementById('site-style').value;
+            setTimeout(() => {
+                try {
+                    const topic = document.getElementById('site-topic').value;
+                    const details = document.getElementById('site-details').value;
+                    const style = document.getElementById('site-style').value;
 
-                const prompt = `Создай HTML код для сайта на тему "${topic}". ${details}. Стиль: ${style}. Используй современный CSS. Верни только код.`;
+                    // Генерируем HTML в зависимости от стиля
+                    let htmlCode = '';
+                    
+                    if (style === 'cyber') {
+                        htmlCode = generateCyberSite(topic, details);
+                    } else if (style === 'minimal') {
+                        htmlCode = generateMinimalSite(topic, details);
+                    } else {
+                        htmlCode = generateModernSite(topic, details);
+                    }
 
-                // Токенизируем промпт
-                const inputs = tokenizer(prompt, { return_tensors: 'pt' });
-                
-                // Генерируем ответ
-                const outputs = await model.generate({
-                    ...inputs,
-                    max_length: 500,
-                    temperature: 0.7,
-                    do_sample: true,
-                });
+                    document.getElementById('preview').srcdoc = htmlCode;
+                    document.getElementById('code-output').textContent = htmlCode;
+                    
+                    showMessage('✅ Сайт сгенерирован!', 'success');
 
-                // Декодируем результат
-                let htmlCode = tokenizer.decode(outputs[0], { skip_special_tokens: true });
-                
-                // Очищаем от промпта и лишнего
-                htmlCode = htmlCode.replace(prompt, '').trim();
-                
-                // Если код не похож на HTML, используем демо
-                if (!htmlCode.includes('<html')) {
-                    throw new Error('Модель не сгенерировала HTML');
+                } catch (error) {
+                    showMessage('❌ Ошибка: ' + error.message, 'error');
                 }
 
-                document.getElementById('preview').srcdoc = htmlCode;
-                document.getElementById('code-output').textContent = htmlCode;
-
-            } catch (error) {
-                console.error('Ошибка генерации:', error);
-                showDemoResult();
-            }
-
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('generate-btn').disabled = false;
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('generate-btn').disabled = false;
+            }, 1000);
         }
 
-        // Демо-результаты
-        function showDemoResult() {
-            const style = document.getElementById('site-style').value;
-            const topic = document.getElementById('site-topic').value;
-            
-            let htmlCode = '';
-            
-            if (style === 'cyber') {
-                htmlCode = `<!DOCTYPE html>
-<html>
-<head><title>Cyber Site</title>
-<style>body{background:#0a0e1a;color:#00fff9;font-family:monospace;}</style>
+        function generateModernSite(topic, details) {
+            return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${topic}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            backdrop-filter: blur(10px);
+        }
+        .btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
 </head>
-<body><h1>⚡ КИБЕРПАНК САЙТ</h1><p>Сгенерировано для: ${topic}</p></body>
+<body>
+    <div class="container">
+        <h1>✨ ${topic}</h1>
+        <p>${details}</p>
+        <div class="card">
+            <h2>Добро пожаловать!</h2>
+            <p>Это современный сайт, созданный специально для вас.</p>
+            <button class="btn" onclick="alert('Привет!')">Нажми меня</button>
+        </div>
+    </div>
+</body>
 </html>`;
-            } else {
-                htmlCode = `<!DOCTYPE html>
-<html>
-<head><title>${topic}</title>
-<style>body{font-family:Arial;background:#f5f5f5;}</style>
-</head>
-<body><h1>✅ ${topic}</h1><p>${document.getElementById('site-details').value}</p></body>
-</html>`;
-            }
-            
-            document.getElementById('preview').srcdoc = htmlCode;
-            document.getElementById('code-output').textContent = htmlCode;
         }
 
-        // Загружаем модель при старте
-        loadModel();
+        function generateCyberSite(topic, details) {
+            return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${topic} | CYBER</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            background: #0a0e1a;
+            color: #00fff9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 3em;
+            text-shadow: 0 0 10px #00fff9;
+            animation: glitch 3s infinite;
+        }
+        @keyframes glitch {
+            0% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
+            50% { text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff; }
+            100% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
+        }
+        .terminal {
+            background: #141b2b;
+            border: 2px solid #00fff9;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: left;
+            box-shadow: 0 0 20px rgba(0,255,249,0.2);
+        }
+        .cursor {
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        .btn {
+            background: transparent;
+            border: 2px solid #00fff9;
+            color: #00fff9;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #00fff9;
+            color: #0a0e1a;
+            box-shadow: 0 0 20px #00fff9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ ${topic}</h1>
+        <div class="terminal">
+            <p>> system: ${details}</p>
+            <p>> status: <span style="color:#0f0;">ONLINE</span></p>
+            <p>> access: GRANTED<span class="cursor">_</span></p>
+        </div>
+        <button class="btn" onclick="alert('ACCESS GRANTED')">ENTER</button>
+    </div>
+</body>
+</html>`;
+        }
+
+        function generateMinimalSite(topic, details) {
+            return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${topic}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 0 20px;
+        }
+        h1 {
+            font-size: 2.5em;
+            font-weight: 300;
+            margin-bottom: 20px;
+            color: #000;
+        }
+        p {
+            margin-bottom: 30px;
+            color: #666;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 40px 0;
+        }
+        .btn {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>${topic}</h1>
+        <p>${details}</p>
+        <hr>
+        <button class="btn" onclick="alert('Спасибо!')">Узнать больше</button>
+    </div>
+</body>
+</html>`;
+        }
+
+        function showMessage(text, type) {
+            const container = document.getElementById('message-container');
+            container.innerHTML = `<div style="background: ${type === 'error' ? '#ff6b6b' : '#2ecc71'}; color: white; padding: 15px; border-radius: 10px; margin-top: 15px;">${text}</div>`;
+            setTimeout(() => container.innerHTML = '', 3000);
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Страница не найдена | В ПК!</title>
+    
+    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <link rel="stylesheet" href="/assets/css/top-panel.css">
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .error-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .error-card {
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .error-emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .error-title {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            font-size: 2em;
+            color: #2a5298;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .error-description {
+            font-size: 1.2em;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .home-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            text-decoration: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.3);
+        }
+
+        .home-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(30, 60, 114, 0.4);
+        }
+
+        .home-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 600px) {
+            .error-card {
+                padding: 40px 20px;
+            }
+            
+            .error-title {
+                font-size: 2.5em;
+            }
+            
+            .error-message {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Топ-панель -->
+    <div id="top-panel-placeholder"></div>
+
+    <!-- Основной контент -->
+    <div class="error-container">
+        <div class="error-card">
+            <div class="error-emoji">😅</div>
+            <div class="error-title">404</div>
+            <div class="error-message">ОЙ!</div>
+            <div class="error-description">
+                Такую страницу еще не добавили.<br>
+                Но мы уже работаем над ней!
+            </div>
+            <a href="/" class="home-btn">🏠 На главную</a>
+        </div>
+    </div>
+
+    <script src="/assets/js/top-panel.js"></script>
+</body>
+</html>

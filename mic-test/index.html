@@ -25,12 +25,94 @@
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .container {
             max-width: 1200px;
             margin: 40px auto;
             padding: 30px;
+            position: relative;
+        }
+
+        /* Модальное окно разрешения */
+        .permission-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: all 0.3s;
+        }
+
+        .permission-modal.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 40px;
+            padding: 50px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .modal-title {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .modal-text {
+            color: var(--gray);
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .modal-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-size: 1.3em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(52,152,219,0.3);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(52,152,219,0.4);
         }
 
         /* Шапка */
@@ -45,21 +127,11 @@
             font-weight: 700;
             margin: 0 0 10px;
             text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            letter-spacing: -0.5px;
         }
 
         .subtitle {
             color: rgba(255,255,255,0.9);
             font-size: 1.2em;
-            font-weight: 400;
-        }
-
-        /* Основная сетка */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            margin-bottom: 25px;
         }
 
         /* Карточки */
@@ -69,12 +141,7 @@
             padding: 30px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: transform 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
+            margin-bottom: 25px;
         }
 
         .card-header {
@@ -97,32 +164,20 @@
             margin: 0;
         }
 
-        /* Статус микрофона */
-        .mic-status {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
-            padding: 25px;
-            color: white;
-            margin-bottom: 25px;
-        }
-
-        .status-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
+        /* Статус */
         .status-info {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 16px;
+            margin-bottom: 20px;
         }
 
         .status-led {
-            width: 16px;
-            height: 16px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             background: var(--gray);
             transition: all 0.3s;
@@ -131,7 +186,6 @@
         .status-led.active {
             background: var(--success);
             box-shadow: 0 0 20px var(--success);
-            animation: pulse 2s infinite;
         }
 
         .status-led.error {
@@ -139,29 +193,14 @@
             box-shadow: 0 0 20px var(--danger);
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .status-text {
-            font-size: 1.1em;
-        }
-
         .device-selector {
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.3);
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--light);
             border-radius: 12px;
-            padding: 12px 20px;
-            color: white;
             font-size: 1em;
-            cursor: pointer;
-            min-width: 250px;
-        }
-
-        .device-selector option {
-            background: var(--dark);
-            color: white;
+            margin-bottom: 20px;
+            background: white;
         }
 
         /* Визуализатор */
@@ -169,7 +208,7 @@
             background: var(--dark);
             border-radius: 20px;
             padding: 20px;
-            margin: 25px 0;
+            margin: 20px 0;
         }
 
         .visualizer-header {
@@ -196,7 +235,7 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 15px;
-            margin: 25px 0;
+            margin: 20px 0;
         }
 
         .metric {
@@ -210,7 +249,6 @@
             color: var(--gray);
             font-size: 0.9em;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
             margin-bottom: 8px;
         }
 
@@ -223,19 +261,18 @@
         .metric-unit {
             color: var(--gray);
             font-size: 0.9em;
-            margin-left: 4px;
         }
 
         /* Кнопки */
         .button-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
-            margin: 25px 0;
+            margin: 20px 0;
         }
 
         .btn {
-            padding: 16px 24px;
+            padding: 15px 20px;
             border: none;
             border-radius: 16px;
             font-size: 1.1em;
@@ -245,7 +282,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             color: white;
         }
 
@@ -265,24 +302,18 @@
             cursor: not-allowed;
         }
 
-        .btn-small {
-            padding: 12px 20px;
-            font-size: 0.95em;
+        .echo-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.9em;
+            background: var(--gray);
+            color: white;
+            margin-left: 8px;
         }
 
-        /* Плеер */
-        .player-section {
-            background: var(--light);
-            border-radius: 20px;
-            padding: 25px;
-            margin-top: 25px;
-        }
-
-        .player-title {
-            color: var(--dark);
-            font-size: 1.2em;
-            font-weight: 600;
-            margin-bottom: 15px;
+        .echo-badge.active {
+            background: var(--success);
         }
 
         audio {
@@ -290,31 +321,7 @@
             margin: 10px 0;
         }
 
-        /* Индикатор эха */
-        .echo-indicator {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 0.9em;
-            font-weight: 600;
-            margin-left: 10px;
-        }
-
-        .echo-indicator.active {
-            background: var(--success);
-            color: white;
-        }
-
-        .echo-indicator.inactive {
-            background: var(--gray);
-            color: white;
-        }
-
         @media (max-width: 800px) {
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-            
             .metrics-grid {
                 grid-template-columns: 1fr;
             }
@@ -322,119 +329,121 @@
             .button-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .modal-content {
+                margin: 20px;
+                padding: 30px;
+            }
         }
     </style>
 </head>
 <body>
     <div id="top-panel-placeholder"></div>
 
+    <!-- Модальное окно разрешения -->
+    <div class="permission-modal" id="permissionModal">
+        <div class="modal-content">
+            <div class="modal-icon">🎤</div>
+            <div class="modal-title">Доступ к микрофону</div>
+            <div class="modal-text">
+                Для тестирования микрофона нам нужно разрешение.<br>
+                Никакие данные не сохраняются без вашего согласия.
+            </div>
+            <button class="modal-btn" onclick="requestMicrophone()">
+                ✅ РАЗРЕШИТЬ
+            </button>
+        </div>
+    </div>
+
     <div class="container">
         <div class="page-header">
             <h1>🎤 Тест микрофона</h1>
-            <div class="subtitle">Профессиональная диагностика и анализ</div>
+            <div class="subtitle">Профессиональная диагностика и визуализация</div>
         </div>
 
-        <!-- Статус микрофона -->
-        <div class="mic-status" id="micStatus">
-            <div class="status-row">
-                <div class="status-info">
-                    <div class="status-led" id="statusLed"></div>
-                    <span class="status-text" id="statusText">Инициализация...</span>
-                </div>
-                <select class="device-selector" id="micSelect" onchange="changeDevice()">
-                    <option>Загрузка устройств...</option>
-                </select>
+        <!-- Выбор устройства -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">🎙️</span>
+                <h2 class="card-title">Настройки микрофона</h2>
+            </div>
+
+            <div class="status-info" id="statusInfo">
+                <div class="status-led" id="statusLed"></div>
+                <span id="statusText">Ожидание разрешения...</span>
+            </div>
+
+            <select class="device-selector" id="micSelect" disabled>
+                <option>Сначала разрешите доступ</option>
+            </select>
+
+            <div class="button-grid">
+                <button class="btn btn-primary" id="testBtn" onclick="startTest()" disabled>
+                    🎧 Начать проверку
+                </button>
+                <button class="btn btn-danger" id="stopBtn" onclick="stopTest()" disabled>
+                    ⏹️ Остановить
+                </button>
             </div>
         </div>
 
-        <!-- Две колонки -->
-        <div class="grid-2">
-            <!-- Левая колонка: Визуализация -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-icon">📊</span>
-                    <h2 class="card-title">Визуализация</h2>
-                </div>
-
-                <div class="visualizer-container">
-                    <div class="visualizer-header">
-                        <span>Звуковой сигнал</span>
-                        <span class="volume-value" id="volumeLevel">-∞ дБ</span>
-                    </div>
-                    <canvas id="visualizer" width="500" height="200"></canvas>
-                </div>
-
-                <div class="metrics-grid">
-                    <div class="metric">
-                        <div class="metric-label">Громкость</div>
-                        <div class="metric-value" id="volumePercent">0<span class="metric-unit">%</span></div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">Частота</div>
-                        <div class="metric-value" id="frequency">0<span class="metric-unit">Гц</span></div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">Пик</div>
-                        <div class="metric-value" id="peakVolume">0<span class="metric-unit">%</span></div>
-                    </div>
-                </div>
+        <!-- Визуализация и метрики -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">📊</span>
+                <h2 class="card-title">Анализ звука</h2>
             </div>
 
-            <!-- Правая колонка: Информация -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="card-icon">ℹ️</span>
-                    <h2 class="card-title">Информация</h2>
+            <div class="visualizer-container">
+                <div class="visualizer-header">
+                    <span>Звуковые волны</span>
+                    <span class="volume-value" id="volumeLevel">-∞ дБ</span>
                 </div>
+                <canvas id="visualizer" width="800" height="200"></canvas>
+            </div>
 
-                <div class="metrics-grid">
-                    <div class="metric">
-                        <div class="metric-label">Частота</div>
-                        <div class="metric-value" id="sampleRate">—<span class="metric-unit">кГц</span></div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">Каналы</div>
-                        <div class="metric-value" id="channels">—</div>
-                    </div>
-                    <div class="metric">
-                        <div class="metric-label">Битрейт</div>
-                        <div class="metric-value" id="bitrate">—<span class="metric-unit">kbps</span></div>
-                    </div>
+            <div class="metrics-grid">
+                <div class="metric">
+                    <div class="metric-label">Громкость</div>
+                    <div class="metric-value" id="volumePercent">0<span class="metric-unit">%</span></div>
                 </div>
-
-                <div class="button-grid">
-                    <button class="btn btn-primary" id="requestBtn" onclick="requestMicrophone()">
-                        <span>🎤</span> Запросить доступ
-                    </button>
-                    <button class="btn btn-success" id="testBtn" onclick="startTest()" disabled>
-                        <span>🎧</span> Начать проверку
-                    </button>
-                    <button class="btn btn-danger" id="stopTestBtn" onclick="stopTest()" disabled>
-                        <span>⏹️</span> Остановить
-                    </button>
+                <div class="metric">
+                    <div class="metric-label">Частота</div>
+                    <div class="metric-value" id="frequency">0<span class="metric-unit">Гц</span></div>
                 </div>
-
-                <div class="button-grid">
-                    <button class="btn btn-warning btn-small" id="recordBtn" onclick="startRecording()" disabled>
-                        <span>⏺️</span> Запись
-                    </button>
-                    <button class="btn btn-secondary btn-small" id="stopRecordBtn" onclick="stopRecording()" disabled>
-                        <span>⏹️</span> Стоп
-                    </button>
-                    <button class="btn btn-primary btn-small" id="echoBtn" onclick="toggleEcho()" disabled>
-                        <span>🔊</span> Эхо <span id="echoIndicator" class="echo-indicator inactive">Выкл</span>
-                    </button>
+                <div class="metric">
+                    <div class="metric-label">Пик</div>
+                    <div class="metric-value" id="peakVolume">0<span class="metric-unit">%</span></div>
                 </div>
             </div>
         </div>
 
-        <!-- Плеер -->
-        <div class="player-section" id="playerSection" style="display: none;">
-            <div class="player-title">🎵 Последняя запись</div>
-            <audio id="playback" controls></audio>
-            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                <button class="btn btn-success btn-small" onclick="downloadRecording()">⬇️ Скачать</button>
-                <button class="btn btn-danger btn-small" onclick="clearRecording()">🗑️ Очистить</button>
+        <!-- Запись и эхо -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-icon">⏺️</span>
+                <h2 class="card-title">Запись и эхо</h2>
+            </div>
+
+            <div class="button-grid">
+                <button class="btn btn-warning" id="recordBtn" onclick="startRecording()" disabled>
+                    ⏺️ Начать запись
+                </button>
+                <button class="btn btn-secondary" id="stopRecordBtn" onclick="stopRecording()" disabled>
+                    ⏹️ Стоп запись
+                </button>
+                <button class="btn btn-primary" id="echoBtn" onclick="toggleEcho()" disabled>
+                    🔊 Эхо <span id="echoBadge" class="echo-badge">Выкл</span>
+                </button>
+            </div>
+
+            <div id="playerSection" style="display: none; margin-top: 20px;">
+                <h3 style="margin-bottom: 10px; color: var(--dark);">Ваша запись:</h3>
+                <audio id="playback" controls></audio>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button class="btn btn-success btn-small" onclick="downloadRecording()">⬇️ Скачать</button>
+                    <button class="btn btn-danger btn-small" onclick="clearRecording()">🗑️ Очистить</button>
+                </div>
             </div>
         </div>
     </div>
@@ -454,38 +463,38 @@
         let isTestActive = false;
         let echoEnabled = false;
         let peakVolume = 0;
-        
+        let hasPermission = false;
+
         // Canvas
         const canvas = document.getElementById('visualizer');
         const canvasCtx = canvas.getContext('2d');
 
-        // Инициализация
-        window.onload = async () => {
-            updateStatus('init', 'Запрос доступа к микрофону...');
-            await requestMicrophone();
-        };
-
-        // Запрос микрофона
+        // Запрос разрешения
         async function requestMicrophone() {
             try {
                 mediaStream = await navigator.mediaDevices.getUserMedia({ 
                     audio: {
                         echoCancellation: false,
                         noiseSuppression: false,
-                        autoGainControl: false,
-                        sampleRate: 48000,
-                        channelCount: 2
+                        autoGainControl: false
                     } 
                 });
                 
-                updateStatus('success', 'Микрофон готов к работе');
+                hasPermission = true;
+                document.getElementById('permissionModal').classList.add('hidden');
+                
+                updateStatus('active', 'Микрофон готов');
                 await getDevices();
-                enableButtons(['testBtn', 'recordBtn', 'echoBtn']);
-                await startTest();
+                
+                // Активируем кнопки
+                document.getElementById('testBtn').disabled = false;
+                document.getElementById('recordBtn').disabled = false;
+                document.getElementById('echoBtn').disabled = false;
+                document.getElementById('micSelect').disabled = false;
                 
             } catch (error) {
                 updateStatus('error', 'Ошибка доступа: ' + error.message);
-                console.error('Error:', error);
+                alert('Не удалось получить доступ к микрофону. Проверьте разрешения.');
             }
         }
 
@@ -501,65 +510,75 @@
         }
 
         // Смена устройства
-        async function changeDevice() {
-            if (isTestActive) await stopTest();
-            await requestMicrophone();
-        }
+        document.getElementById('micSelect').addEventListener('change', async function() {
+            if (isTestActive) {
+                await stopTest();
+            }
+            
+            if (this.value) {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: { deviceId: { exact: this.value } } 
+                });
+                updateStatus('active', 'Микрофон готов');
+            }
+        });
 
-        // Начать тест
+        // Начать проверку
         async function startTest() {
-            if (isTestActive) return;
+            if (isTestActive || !hasPermission) return;
             
             try {
-                const deviceId = document.getElementById('micSelect').value;
-                if (deviceId && deviceId !== 'Загрузка устройств...') {
-                    mediaStream = await navigator.mediaDevices.getUserMedia({ 
-                        audio: { deviceId: { exact: deviceId } } 
-                    });
-                }
-                
-                audioContext = new AudioContext();
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 analyser = audioContext.createAnalyser();
-                analyser.fftSize = 2048;
+                analyser.fftSize = 512;
                 
                 source = audioContext.createMediaStreamSource(mediaStream);
                 source.connect(analyser);
                 
-                // Информация
-                document.getElementById('sampleRate').textContent = (audioContext.sampleRate / 1000).toFixed(1);
-                document.getElementById('channels').textContent = source.channelCount;
-                document.getElementById('bitrate').textContent = Math.round(audioContext.sampleRate * source.channelCount * 16 / 1000);
+                await audioContext.resume();
                 
                 isTestActive = true;
-                draw();
+                peakVolume = 0;
                 
-                updateButtons(['testBtn'], true);
-                updateButtons(['stopTestBtn'], false);
+                document.getElementById('testBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+                
+                draw();
                 
             } catch (error) {
                 console.error('Start test error:', error);
+                alert('Ошибка при запуске теста');
             }
         }
 
-        // Остановить тест
+        // Остановить проверку
         function stopTest() {
             if (animationId) {
                 cancelAnimationFrame(animationId);
                 animationId = null;
             }
             
-            if (source) source.disconnect();
-            if (audioContext) audioContext.close();
+            if (source) {
+                source.disconnect();
+            }
+            
+            if (audioContext) {
+                audioContext.close();
+            }
             
             canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
             
             isTestActive = false;
             
-            updateButtons(['testBtn'], false);
-            updateButtons(['stopTestBtn'], true);
+            document.getElementById('testBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            
+            document.getElementById('volumeLevel').textContent = '-∞ дБ';
+            document.getElementById('volumePercent').textContent = '0';
+            document.getElementById('frequency').textContent = '0';
         }
 
-        // Рисование
+        // Рисование волн
         function draw() {
             const bufferLength = analyser.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
@@ -572,7 +591,7 @@
                 
                 analyser.getByteFrequencyData(dataArray);
                 
-                // Громкость
+                // Вычисляем громкость
                 let sum = 0;
                 for (let i = 0; i < bufferLength; i++) {
                     sum += dataArray[i];
@@ -591,21 +610,11 @@
                 const freq = (maxIndex * audioContext.sampleRate) / bufferLength;
                 document.getElementById('frequency').textContent = Math.round(freq);
                 
-                // Эхо
-                if (echoEnabled && avgVolume > 10) {
-                    document.getElementById('echoIndicator').textContent = 'Слышу!';
-                    setTimeout(() => {
-                        if (echoEnabled) {
-                            document.getElementById('echoIndicator').textContent = 'Вкл';
-                        }
-                    }, 500);
-                }
-                
-                // Рисуем график
+                // Рисуем волны
                 canvasCtx.fillStyle = '#1a1a2e';
                 canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
                 
-                const barWidth = (WIDTH / bufferLength) * 2;
+                const barWidth = (WIDTH / bufferLength) * 2.5;
                 let x = 0;
                 
                 for (let i = 0; i < bufferLength; i += 2) {
@@ -644,8 +653,8 @@
             
             mediaRecorder.start();
             
-            updateButtons(['recordBtn'], true);
-            updateButtons(['stopRecordBtn'], false);
+            document.getElementById('recordBtn').disabled = true;
+            document.getElementById('stopRecordBtn').disabled = false;
         }
 
         function stopRecording() {
@@ -653,21 +662,21 @@
                 mediaRecorder.stop();
             }
             
-            updateButtons(['recordBtn'], false);
-            updateButtons(['stopRecordBtn'], true);
+            document.getElementById('recordBtn').disabled = false;
+            document.getElementById('stopRecordBtn').disabled = true;
         }
 
         // Эхо
         function toggleEcho() {
             echoEnabled = !echoEnabled;
-            const indicator = document.getElementById('echoIndicator');
+            const badge = document.getElementById('echoBadge');
             
             if (echoEnabled) {
-                indicator.textContent = 'Вкл';
-                indicator.className = 'echo-indicator active';
+                badge.textContent = 'Вкл';
+                badge.style.background = '#27ae60';
             } else {
-                indicator.textContent = 'Выкл';
-                indicator.className = 'echo-indicator inactive';
+                badge.textContent = 'Выкл';
+                badge.style.background = '#95a5a6';
             }
         }
 
@@ -677,7 +686,7 @@
             const url = URL.createObjectURL(window.lastRecording);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `recording-${Date.now()}.webm`;
+            a.download = `microphone-${Date.now()}.webm`;
             a.click();
         }
 
@@ -693,28 +702,13 @@
             const text = document.getElementById('statusText');
             
             led.className = 'status-led';
-            if (type === 'success') {
+            if (type === 'active') {
                 led.classList.add('active');
             } else if (type === 'error') {
                 led.classList.add('error');
             }
             
             text.textContent = message;
-        }
-
-        // Управление кнопками
-        function enableButtons(ids) {
-            ids.forEach(id => {
-                const btn = document.getElementById(id);
-                if (btn) btn.disabled = false;
-            });
-        }
-
-        function updateButtons(ids, disable) {
-            ids.forEach(id => {
-                const btn = document.getElementById(id);
-                if (btn) btn.disabled = disable;
-            });
         }
     </script>
 </body>

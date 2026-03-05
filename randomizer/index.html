@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рандомер - В ПК!</title>
+    
+    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <link rel="stylesheet" href="/assets/css/top-panel.css">
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255,255,255,0.3);
+            animation: glow 3s infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 20px rgba(255,255,255,0.3); }
+            50% { text-shadow: 0 0 40px rgba(255,215,0,0.5); }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 40px;
+            font-size: 1.2em;
+            font-style: italic;
+        }
+
+        /* Магический шар */
+        .magic-ball {
+            width: 300px;
+            height: 300px;
+            margin: 30px auto;
+            background: radial-gradient(circle at 30% 30%, #fff, #4a4a8c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 50px rgba(255,255,255,0.3), inset 0 0 50px rgba(255,255,255,0.3);
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .magic-ball:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 70px rgba(255,215,0,0.5);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .ball-content {
+            width: 200px;
+            height: 200px;
+            background: #2c3e50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .ball-text {
+            color: #ecf0f1;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            animation: flicker 0.1s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; text-shadow: 0 0 10px #fff; }
+            50% { opacity: 0.8; text-shadow: 0 0 20px gold; }
+        }
+
+        /* Результат */
+        .result-container {
+            background: rgba(255,255,255,0.1);
+            border-radius: 30px;
+            padding: 40px;
+            margin: 40px 0;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-image {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            margin-bottom: 20px;
+            animation: appear 0.5s;
+        }
+
+        .result-text {
+            font-size: 2em;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 15px;
+            animation: slideUp 0.5s;
+        }
+
+        .result-description {
+            font-size: 1.3em;
+            color: rgba(255,255,255,0.9);
+            font-style: italic;
+            animation: slideUp 0.5s;
+        }
+
+        @keyframes appear {
+            0% { opacity: 0; transform: scale(0.5); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Кнопка */
+        .destiny-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 20px 60px;
+            border-radius: 50px;
+            font-size: 1.8em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(102,126,234,0.4);
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .destiny-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(102,126,234,0.6);
+        }
+
+        .destiny-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .destiny-btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: loading 2s infinite;
+        }
+
+        @keyframes loading {
+            100% { left: 100%; }
+        }
+
+        /* Счётчик нажатий */
+        .click-counter {
+            color: rgba(255,255,255,0.7);
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+
+        .rare-counter {
+            color: gold;
+            font-weight: bold;
+        }
+
+        /* Магические фразы */
+        .magic-phrase {
+            font-size: 2em;
+            color: gold;
+            text-shadow: 0 0 20px gold;
+            margin: 20px 0;
+            animation: spin 2s infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(10deg); }
+            75% { transform: rotate(-10deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        /* История */
+        .history-section {
+            margin-top: 40px;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+        }
+
+        .history-title {
+            color: white;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .history-list {
+            list-style: none;
+            padding: 0;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5em;
+            }
+            
+            .magic-ball {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .ball-content {
+                width: 160px;
+                height: 160px;
+            }
+            
+            .destiny-btn {
+                font-size: 1.3em;
+                padding: 15px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="top-panel-placeholder"></div>
+
+    <div class="container">
+        <h1>🎱 РАНДОМЕР</h1>
+        <div class="subtitle">Узнай свою судьбу... если повезёт</div>
+
+        <!-- Магический шар -->
+        <div class="magic-ball" id="magicBall" onclick="if(!isRolling) roll()">
+            <div class="ball-content">
+                <div class="ball-text" id="ballText">?</div>
+            </div>
+        </div>
+
+        <!-- Счётчик -->
+        <div class="click-counter">
+            ✨ Попыток: <span id="totalRolls">0</span> | 
+            💫 Редких: <span id="rareCount" class="rare-counter">0</span>
+        </div>
+
+        <!-- Кнопка -->
+        <button class="destiny-btn" id="rollBtn" onclick="roll()">
+            🎲 УЗНАТЬ СУДЬБУ
+        </button>
+
+        <!-- Результат -->
+        <div class="result-container" id="resultContainer" style="display: none;">
+            <img id="resultImage" class="result-image" src="" alt="">
+            <div class="result-text" id="resultTitle"></div>
+            <div class="result-description" id="resultDesc"></div>
+        </div>
+
+        <!-- История -->
+        <div class="history-section">
+            <div class="history-title">📜 История предсказаний</div>
+            <ul class="history-list" id="historyList">
+                <li class="history-item">Жду твоего выбора...</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="/assets/js/top-panel.js"></script>
+    
+    <script>
+        // Магические фразы во время ожидания
+        const magicPhrases = [
+            "✨ Шар думает...",
+            "🌀 Вселенная шепчет...",
+            "⭐ Звёзды выравниваются...",
+            "🔮 Туман рассеивается...",
+            "🌙 Луна влияет...",
+            "⚡ Энергия накапливается...",
+            "🎱 Шар концентрируется...",
+            "💫 Судьба решается..."
+        ];
+
+        // Варианты результатов
+        const results = [
+            {
+                name: "Ластик",
+                desc: "Ничего не забыл стереть?",
+                img: "/assets/eraser.png",
+                rare: false
+            },
+            {
+                name: "Сейф",
+                desc: "Храни деньги надёжнее...",
+                img: "/assets/Ceyf.png",
+                rare: false
+            },
+            {
+                name: "Микрофон",
+                desc: "Говори громче!",
+                img: "/assets/micro.png",
+                rare: false
+            },
+            {
+                name: "Увлажнитель воздуха",
+                desc: "Воздух влажный???",
+                img: "/assets/vlag.png",
+                rare: false
+            },
+            {
+                name: "Лекарство",
+                desc: "Не болей",
+                img: "/assets/eraser.png",  // Замени на medicine.png когда будет
+                rare: false
+            },
+            {
+                name: "ХАХАХАХАХАААХАХА",
+                desc: "А вот ты и попался :)",
+                img: "",
+                rare: true
+            }
+        ];
+
+        // Добавляем ещё 4 обычных варианта
+        const extraItems = [
+            { name: "Кот", desc: "Мяу?", img: "", rare: false },
+            { name: "Пицца", desc: "Съешь меня", img: "", rare: false },
+            { name: "Дождик", desc: "Кап-кап", img: "", rare: false },
+            { name: "Звезда", desc: "Падающая...", img: "", rare: false }
+        ];
+        
+        results.push(...extraItems);
+
+        // Переменные состояния
+        let isRolling = false;
+        let totalRolls = parseInt(localStorage.getItem('totalRolls')) || 0;
+        let rareCount = parseInt(localStorage.getItem('rareCount')) || 0;
+        let history = JSON.parse(localStorage.getItem('rollHistory')) || [];
+
+        // Инициализация
+        document.getElementById('totalRolls').textContent = totalRolls;
+        document.getElementById('rareCount').textContent = rareCount;
+        updateHistory();
+
+        // Функция броска
+        async function roll() {
+            if (isRolling) return;
+            
+            isRolling = true;
+            const btn = document.getElementById('rollBtn');
+            const ballText = document.getElementById('ballText');
+            const resultContainer = document.getElementById('resultContainer');
+            
+            btn.disabled = true;
+            btn.classList.add('loading');
+            resultContainer.style.display = 'none';
+            
+            // Анимация магического шара
+            for (let i = 0; i < 10; i++) {
+                ballText.style.animation = 'flicker 0.1s infinite';
+                ballText.textContent = magicPhrases[Math.floor(Math.random() * magicPhrases.length)];
+                await sleep(300);
+            }
+            
+            // Выбираем результат
+            const random = Math.random();
+            let result;
+            
+            // Редкий шанс 5%
+            if (random < 0.05) {
+                result = results.find(r => r.rare === true);
+                rareCount++;
+                localStorage.setItem('rareCount', rareCount);
+            } else {
+                const normalResults = results.filter(r => !r.rare);
+                result = normalResults[Math.floor(Math.random() * normalResults.length)];
+            }
+            
+            // Обновляем счётчики
+            totalRolls++;
+            localStorage.setItem('totalRolls', totalRolls);
+            
+            document.getElementById('totalRolls').textContent = totalRolls;
+            document.getElementById('rareCount').textContent = rareCount;
+            
+            // Показываем результат
+            ballText.style.animation = 'none';
+            ballText.textContent = '?';
+            
+            const resultImage = document.getElementById('resultImage');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultDesc = document.getElementById('resultDesc');
+            
+            if (result.img) {
+                resultImage.src = result.img;
+                resultImage.style.display = 'block';
+            } else {
+                resultImage.style.display = 'none';
+            }
+            
+            resultTitle.textContent = result.name;
+            resultDesc.textContent = result.desc;
+            
+            resultContainer.style.display = 'flex';
+            
+            // Добавляем в историю
+            addToHistory(result);
+            
+            btn.disabled = false;
+            btn.classList.remove('loading');
+            isRolling = false;
+        }
+
+        // Функция задержки
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // Добавление в историю
+        function addToHistory(result) {
+            const time = new Date().toLocaleTimeString();
+            history.unshift({
+                name: result.name,
+                time: time
+            });
+            
+            if (history.length > 10) history.pop();
+            
+            localStorage.setItem('rollHistory', JSON.stringify(history));
+            updateHistory();
+        }
+
+        // Обновление истории
+        function updateHistory() {
+            const list = document.getElementById('historyList');
+            
+            if (history.length === 0) {
+                list.innerHTML = '<li class="history-item">Жду твоего выбора...</li>';
+                return;
+            }
+            
+            list.innerHTML = history.map(item => `
+                <li class="history-item">
+                    ${item.time} — ${item.name}
+                </li>
+            `).join('');
+        }
+
+        // Клик по шару
+        document.getElementById('magicBall').addEventListener('click', roll);
+    </script>
+</body>
+</html>

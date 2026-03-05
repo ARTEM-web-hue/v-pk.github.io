@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Проверка клавиатуры - В ПК!</title>
-    <!-- Yandex.Metrika counter -->
+        <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
     (function(m,e,t,r,i,k,a){
         m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -24,101 +24,195 @@
         body {
             margin: 0;
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
             min-height: 100vh;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 40px auto;
             padding: 30px;
         }
 
         h1 {
             text-align: center;
-            color: white;
-            font-size: 2.5em;
+            color: #fff;
+            font-size: 3em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 0 0 20px rgba(100, 200, 255, 0.5);
+            letter-spacing: 2px;
         }
 
         .subtitle {
             text-align: center;
-            color: rgba(255,255,255,0.9);
+            color: #a0a0c0;
             margin-bottom: 30px;
             font-size: 1.2em;
         }
 
-        /* Список нажатых клавиш */
-        .pressed-keys-section {
-            background: rgba(255,255,255,0.95);
-            border-radius: 20px;
-            padding: 20px;
+        /* Основная сетка */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
-        .section-title {
-            color: #2c3e50;
+        /* Карточки */
+        .card {
+            background: rgba(30, 30, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(100, 200, 255, 0.2);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(100, 200, 255, 0.3);
+        }
+
+        .card-title {
+            color: #64c8ff;
             font-size: 1.3em;
-            margin-bottom: 15px;
+            font-weight: bold;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .keys-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            min-height: 50px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 15px;
-        }
-
-        .key-badge {
-            background: #3498db;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 25px;
-            font-size: 0.9em;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(52,152,219,0.3);
-            animation: appear 0.2s;
-        }
-
-        @keyframes appear {
-            0% { opacity: 0; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
+        .card-title i {
+            font-size: 1.3em;
         }
 
         .clear-btn {
-            background: #e74c3c;
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
             color: white;
             border: none;
             padding: 8px 20px;
-            border-radius: 25px;
+            border-radius: 30px;
             cursor: pointer;
             font-size: 0.9em;
-            margin-left: auto;
+            font-weight: bold;
             transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 75, 75, 0.3);
         }
 
         .clear-btn:hover {
-            background: #c0392b;
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 75, 75, 0.5);
+        }
+
+        /* Контейнеры для клавиш */
+        .keys-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(20, 20, 30, 0.6);
+            border-radius: 15px;
+            scrollbar-width: thin;
+            scrollbar-color: #64c8ff #2d2d44;
+        }
+
+        .keys-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .keys-grid::-webkit-scrollbar-track {
+            background: #2d2d44;
+            border-radius: 10px;
+        }
+
+        .keys-grid::-webkit-scrollbar-thumb {
+            background: #64c8ff;
+            border-radius: 10px;
+        }
+
+        .key-badge {
+            background: linear-gradient(135deg, #64c8ff, #4a9eff);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-size: 1em;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(100, 200, 255, 0.3);
+            animation: slideIn 0.2s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .key-badge.pressed {
+            background: linear-gradient(135deg, #ff6b6b, #ff4757);
+            box-shadow: 0 0 20px #ff4757;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 20px #ff4757;
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 30px #ff4757;
+            }
+        }
+
+        /* Счётчики */
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(20, 20, 30, 0.6);
+            border-radius: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            color: #64c8ff;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #a0a0c0;
+            font-size: 0.9em;
         }
 
         /* Клавиатура */
         .keyboard {
-            background: rgba(255,255,255,0.95);
+            background: rgba(30, 30, 46, 0.95);
+            backdrop-filter: blur(10px);
             border-radius: 30px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(100, 200, 255, 0.3);
+            border: 1px solid rgba(100, 200, 255, 0.3);
         }
 
-        .keyboard-row {
+        .row {
             display: flex;
             justify-content: center;
             gap: 6px;
@@ -126,79 +220,120 @@
         }
 
         .key {
-            background: #ecf0f1;
-            border: 2px solid #bdc3c7;
-            border-radius: 10px;
-            padding: 15px 0;
+            background: linear-gradient(135deg, #3a3a4e, #2a2a3a);
+            border: 2px solid rgba(100, 200, 255, 0.3);
+            border-radius: 12px;
+            padding: 15px 10px;
             min-width: 50px;
             text-align: center;
             font-weight: bold;
-            color: #2c3e50;
+            color: #e0e0ff;
             cursor: pointer;
-            transition: all 0.1s;
-            box-shadow: 0 4px 0 #bdc3c7;
+            transition: all 0.15s;
+            box-shadow: 0 4px 0 #1a1a2a;
             user-select: none;
-            font-size: 1.1em;
+            font-size: 1em;
+            position: relative;
+            text-shadow: 0 0 10px rgba(100, 200, 255, 0.5);
         }
 
+        .key.wide { min-width: 85px; }
+        .key.space { min-width: 300px; }
+
         .key:hover {
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #4a4a6e, #3a3a5a);
             transform: translateY(-2px);
-            box-shadow: 0 6px 0 #bdc3c7;
+            box-shadow: 0 6px 0 #1a1a2a;
+            border-color: #64c8ff;
         }
 
         .key.pressed {
-            background: #3498db;
-            border-color: #2980b9;
+            background: linear-gradient(135deg, #64c8ff, #4a9eff);
             color: white;
-            box-shadow: 0 4px 0 #2980b9;
             transform: translateY(2px);
+            box-shadow: 0 2px 0 #1a1a2a, 0 0 20px #64c8ff;
+            border-color: white;
         }
 
-        .key.wide {
-            min-width: 80px;
+        .key.pressed::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border: 2px solid #fff;
+            border-radius: 14px;
+            animation: borderGlow 1s infinite;
         }
 
-        .key.extra-wide {
-            min-width: 120px;
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
         }
 
-        .key.space {
-            min-width: 300px;
+        .empty-key {
+            min-width: 50px;
+            visibility: hidden;
         }
 
-        /* Инструкция */
+        /* Логи */
+        .log-entry {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(20, 20, 30, 0.8);
+            border-radius: 10px;
+            color: #a0a0c0;
+            font-family: monospace;
+            font-size: 0.9em;
+            border-left: 3px solid #64c8ff;
+            animation: logAppear 0.3s;
+        }
+
+        .log-entry .key-name {
+            color: #64c8ff;
+            font-weight: bold;
+        }
+
+        .log-entry .time {
+            color: #ffd700;
+            float: right;
+        }
+
+        @keyframes logAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .instruction {
             text-align: center;
-            color: white;
+            color: #a0a0c0;
             margin-top: 20px;
-            font-size: 1.1em;
+            padding: 15px;
+            background: rgba(30, 30, 46, 0.7);
+            border-radius: 50px;
+            border: 1px solid rgba(100, 200, 255, 0.3);
         }
 
-        .instruction span {
-            background: rgba(255,255,255,0.2);
-            padding: 5px 15px;
-            border-radius: 20px;
+        .warning {
+            color: #ffd700;
+            font-weight: bold;
         }
 
-        @media (max-width: 800px) {
-            .key {
-                min-width: 30px;
-                padding: 8px 0;
-                font-size: 0.8em;
+        @media (max-width: 700px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
             }
             
-            .key.wide {
-                min-width: 50px;
-            }
-            
-            .key.extra-wide {
-                min-width: 70px;
-            }
-            
-            .key.space {
-                min-width: 150px;
-            }
+            .key { min-width: 30px; padding: 10px 5px; font-size: 0.8em; }
+            .key.wide { min-width: 50px; }
+            .key.space { min-width: 150px; }
         }
     </style>
 </head>
@@ -206,235 +341,298 @@
     <div id="top-panel-placeholder"></div>
 
     <div class="container">
-        <h1>⌨️ Проверка клавиатуры</h1>
-        <div class="subtitle">Нажимай клавиши — проверяй работу</div>
+        <h1>⌨️ KEYBOARD TEST</h1>
+        <div class="subtitle">Проверка всех клавиш с логированием</div>
 
-        <!-- Список нажатых клавиш -->
-        <div class="pressed-keys-section">
-            <div class="section-title">
-                <span>✨ Нажатые клавиши:</span>
-                <button class="clear-btn" onclick="clearPressed()">Очистить</button>
+        <!-- Сетка из двух колонок -->
+        <div class="grid-2">
+            <!-- Левая колонка - история и зажатые -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">
+                        <i>📋</i> История нажатий
+                    </span>
+                    <button class="clear-btn" id="clearHistoryBtn">Очистить историю</button>
+                </div>
+                <div class="keys-grid" id="historyList"></div>
+                
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalCount">0</div>
+                        <div class="stat-label">Всего клавиш</div>
+                    </div>
+                </div>
             </div>
-            <div class="keys-container" id="pressedKeys">
-                <div class="key-badge">Нажми любую клавишу...</div>
+
+            <!-- Правая колонка - зажатые клавиши -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">
+                        <i>🔒</i> Зажатые клавиши
+                    </span>
+                    <button class="clear-btn" id="clearPressedBtn">Сбросить</button>
+                </div>
+                <div class="keys-grid" id="pressedList"></div>
+                
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-value" id="pressedCount">0</div>
+                        <div class="stat-label">Зажато сейчас</div>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Клавиатура -->
-        <div class="keyboard" id="keyboard">
-            <!-- Ряд 1: Esc, F1-F12 -->
-            <div class="keyboard-row">
-                <div class="key" data-key="Escape">Esc</div>
-                <div class="key" data-key="F1">F1</div>
-                <div class="key" data-key="F2">F2</div>
-                <div class="key" data-key="F3">F3</div>
-                <div class="key" data-key="F4">F4</div>
-                <div class="key" data-key="F5">F5</div>
-                <div class="key" data-key="F6">F6</div>
-                <div class="key" data-key="F7">F7</div>
-                <div class="key" data-key="F8">F8</div>
-                <div class="key" data-key="F9">F9</div>
-                <div class="key" data-key="F10">F10</div>
-                <div class="key" data-key="F11">F11</div>
-                <div class="key" data-key="F12">F12</div>
-            </div>
+        <div class="keyboard" id="keyboard"></div>
 
-            <!-- Ряд 2: `, 1-9, 0, -, =, Backspace -->
-            <div class="keyboard-row">
-                <div class="key" data-key="`">`</div>
-                <div class="key" data-key="1">1</div>
-                <div class="key" data-key="2">2</div>
-                <div class="key" data-key="3">3</div>
-                <div class="key" data-key="4">4</div>
-                <div class="key" data-key="5">5</div>
-                <div class="key" data-key="6">6</div>
-                <div class="key" data-key="7">7</div>
-                <div class="key" data-key="8">8</div>
-                <div class="key" data-key="9">9</div>
-                <div class="key" data-key="0">0</div>
-                <div class="key" data-key="-">-</div>
-                <div class="key" data-key="=">=</div>
-                <div class="key wide" data-key="Backspace">Backspace</div>
+        <!-- Логи событий -->
+        <div class="card" style="margin-top: 30px;">
+            <div class="card-header">
+                <span class="card-title">
+                    <i>📝</i> Лог событий
+                </span>
+                <button class="clear-btn" id="clearLogBtn">Очистить лог</button>
             </div>
-
-            <!-- Ряд 3: Tab, Q, W, E, R, T, Y, U, I, O, P, [, ], \ -->
-            <div class="keyboard-row">
-                <div class="key wide" data-key="Tab">Tab</div>
-                <div class="key" data-key="q">Q</div>
-                <div class="key" data-key="w">W</div>
-                <div class="key" data-key="e">E</div>
-                <div class="key" data-key="r">R</div>
-                <div class="key" data-key="t">T</div>
-                <div class="key" data-key="y">Y</div>
-                <div class="key" data-key="u">U</div>
-                <div class="key" data-key="i">I</div>
-                <div class="key" data-key="o">O</div>
-                <div class="key" data-key="p">P</div>
-                <div class="key" data-key="[">[</div>
-                <div class="key" data-key="]">]</div>
-                <div class="key wide" data-key="\\">\</div>
-            </div>
-
-            <!-- Ряд 4: Caps, A, S, D, F, G, H, J, K, L, ;, ', Enter -->
-            <div class="keyboard-row">
-                <div class="key wide" data-key="CapsLock">Caps</div>
-                <div class="key" data-key="a">A</div>
-                <div class="key" data-key="s">S</div>
-                <div class="key" data-key="d">D</div>
-                <div class="key" data-key="f">F</div>
-                <div class="key" data-key="g">G</div>
-                <div class="key" data-key="h">H</div>
-                <div class="key" data-key="j">J</div>
-                <div class="key" data-key="k">K</div>
-                <div class="key" data-key="l">L</div>
-                <div class="key" data-key=";">;</div>
-                <div class="key" data-key="'">'</div>
-                <div class="key extra-wide" data-key="Enter">Enter</div>
-            </div>
-
-            <!-- Ряд 5: Shift, Z, X, C, V, B, N, M, ,, ., /, Shift -->
-            <div class="keyboard-row">
-                <div class="key extra-wide" data-key="ShiftLeft">Shift</div>
-                <div class="key" data-key="z">Z</div>
-                <div class="key" data-key="x">X</div>
-                <div class="key" data-key="c">C</div>
-                <div class="key" data-key="v">V</div>
-                <div class="key" data-key="b">B</div>
-                <div class="key" data-key="n">N</div>
-                <div class="key" data-key="m">M</div>
-                <div class="key" data-key=",">,</div>
-                <div class="key" data-key=".">.</div>
-                <div class="key" data-key="/">/</div>
-                <div class="key extra-wide" data-key="ShiftRight">Shift</div>
-            </div>
-
-            <!-- Ряд 6: Ctrl, Win, Alt, Space, Alt, Win, Menu, Ctrl -->
-            <div class="keyboard-row">
-                <div class="key wide" data-key="ControlLeft">Ctrl</div>
-                <div class="key wide" data-key="MetaLeft">Win</div>
-                <div class="key wide" data-key="AltLeft">Alt</div>
-                <div class="key space" data-key="Space">Пробел</div>
-                <div class="key wide" data-key="AltRight">Alt</div>
-                <div class="key wide" data-key="MetaRight">Win</div>
-                <div class="key wide" data-key="ContextMenu">Menu</div>
-                <div class="key wide" data-key="ControlRight">Ctrl</div>
-            </div>
-
-            <!-- Стрелки -->
-            <div class="keyboard-row">
-                <div class="key" data-key="Insert">Ins</div>
-                <div class="key" data-key="Home">Home</div>
-                <div class="key" data-key="PageUp">PgUp</div>
-                <div class="key" data-key="Delete">Del</div>
-                <div class="key" data-key="End">End</div>
-                <div class="key" data-key="PageDown">PgDn</div>
-            </div>
-            
-            <div class="keyboard-row">
-                <div class="key"></div>
-                <div class="key"></div>
-                <div class="key" data-key="ArrowUp">↑</div>
-                <div class="key"></div>
-                <div class="key" data-key="ArrowLeft">←</div>
-                <div class="key" data-key="ArrowDown">↓</div>
-                <div class="key" data-key="ArrowRight">→</div>
-            </div>
+            <div class="keys-grid" id="logList" style="max-height: 200px;"></div>
         </div>
 
         <div class="instruction">
-            <span>👇 Нажимай на клавиши мышкой или физической клавиатурой</span>
+            ⚡ <span class="warning">Все горячие клавиши отключены!</span> Нажимай любые кнопки — всё логируется
         </div>
     </div>
 
     <script src="/assets/js/top-panel.js"></script>
     
     <script>
-        // Массив для хранения нажатых клавиш
-        let pressedKeys = [];
+        // Конфигурация клавиатуры
+        const keyboardLayout = [
+            ['Esc', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12'],
+            ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'Backspace'],
+            ['Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']', '\\'],
+            ['Caps', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\'', 'Enter'],
+            ['Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', 'Shift'],
+            ['Ctrl', 'Win', 'Alt', 'Пробел', 'Alt', 'Win', 'Menu', 'Ctrl'],
+            ['Ins', 'Home', 'PgUp', 'Del', 'End', 'PgDn'],
+            ['', '', '↑', '', '←', '↓', '→']
+        ];
 
-        // Функция добавления клавиши в список
-        function addKey(keyName) {
-            // Проверяем, есть ли уже такая клавиша
-            if (!pressedKeys.includes(keyName)) {
-                pressedKeys.push(keyName);
-                updatePressedList();
-            }
+        // Соответствие клавиш
+        const keyMap = {
+            'Пробел': 'Space',
+            '↑': 'ArrowUp', '↓': 'ArrowDown', '←': 'ArrowLeft', '→': 'ArrowRight',
+            'Esc': 'Escape', 'Backspace': 'Backspace', 'Enter': 'Enter', 'Tab': 'Tab',
+            'Caps': 'CapsLock', 'Shift': 'Shift', 'Ctrl': 'Control', 'Alt': 'Alt', 'Win': 'Meta',
+            'Ins': 'Insert', 'Del': 'Delete', 'Home': 'Home', 'End': 'End',
+            'PgUp': 'PageUp', 'PgDn': 'PageDown', 'Menu': 'ContextMenu'
+        };
+
+        // Обратный маппинг
+        const reverseMap = {};
+        for (let [name, code] of Object.entries(keyMap)) {
+            reverseMap[code] = name;
         }
 
-        // Обновление списка нажатых клавиш
-        function updatePressedList() {
-            const container = document.getElementById('pressedKeys');
+        // Состояние
+        let pressedKeys = new Set();
+        let historyKeys = [];
+        let eventLog = [];
+
+        // ПОЛНЫЙ ПЕРЕХВАТ
+        window.addEventListener('keydown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             
-            if (pressedKeys.length === 0) {
-                container.innerHTML = '<div class="key-badge">Нажми любую клавишу...</div>';
+            const key = e.key;
+            const code = e.code;
+            
+            let displayName = reverseMap[code] || key;
+            if (key === ' ') displayName = 'Пробел';
+            if (key === 'Control') displayName = 'Ctrl';
+            if (key === 'Shift') displayName = 'Shift';
+            if (key === 'Alt') displayName = 'Alt';
+            if (key === 'Meta') displayName = 'Win';
+            
+            // Добавляем в зажатые
+            pressedKeys.add(displayName);
+            
+            // Добавляем в историю
+            if (!historyKeys.includes(displayName)) {
+                historyKeys.push(displayName);
+            }
+            
+            // Добавляем в лог
+            addToLog('keydown', displayName, code);
+            
+            // Обновляем UI
+            updateUI();
+            highlightKey(code, displayName, true);
+        }, true);
+
+        window.addEventListener('keyup', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const key = e.key;
+            const code = e.code;
+            
+            let displayName = reverseMap[code] || key;
+            if (key === ' ') displayName = 'Пробел';
+            if (key === 'Control') displayName = 'Ctrl';
+            if (key === 'Shift') displayName = 'Shift';
+            if (key === 'Alt') displayName = 'Alt';
+            if (key === 'Meta') displayName = 'Win';
+            
+            // Убираем из зажатых
+            pressedKeys.delete(displayName);
+            
+            // Добавляем в лог
+            addToLog('keyup', displayName, code);
+            
+            // Обновляем UI
+            updateUI();
+            highlightKey(code, displayName, false);
+        }, true);
+
+        // Блокируем контекстное меню
+        document.addEventListener('contextmenu', e => e.preventDefault());
+
+        // Добавление в лог
+        function addToLog(type, keyName, code) {
+            const time = new Date().toLocaleTimeString();
+            eventLog.unshift({
+                type: type,
+                key: keyName,
+                code: code,
+                time: time
+            });
+            
+            if (eventLog.length > 50) eventLog.pop();
+            updateLog();
+        }
+
+        // Обновление лога
+        function updateLog() {
+            const logContainer = document.getElementById('logList');
+            if (eventLog.length === 0) {
+                logContainer.innerHTML = '<div class="log-entry">Ожидание событий...</div>';
                 return;
             }
             
-            container.innerHTML = pressedKeys.map(key => 
-                `<div class="key-badge">${key}</div>`
+            logContainer.innerHTML = eventLog.map(log => `
+                <div class="log-entry">
+                    <span class="key-name">${log.key}</span>
+                    <span style="color:${log.type === 'keydown' ? '#64c8ff' : '#ff6b6b'}">
+                        (${log.type})
+                    </span>
+                    <span class="time">${log.time}</span>
+                </div>
+            `).join('');
+        }
+
+        // Обновление интерфейса
+        function updateUI() {
+            // История
+            const historyContainer = document.getElementById('historyList');
+            historyContainer.innerHTML = historyKeys.map(key => 
+                `<span class="key-badge">${key}</span>`
             ).join('');
-        }
-
-        // Очистка списка
-        function clearPressed() {
-            pressedKeys = [];
-            updatePressedList();
             
-            // Убираем подсветку со всех клавиш
-            document.querySelectorAll('.key').forEach(key => {
-                key.classList.remove('pressed');
-            });
+            // Зажатые
+            const pressedContainer = document.getElementById('pressedList');
+            pressedContainer.innerHTML = Array.from(pressedKeys).map(key => 
+                `<span class="key-badge pressed">${key}</span>`
+            ).join('');
+            
+            // Счётчики
+            document.getElementById('totalCount').textContent = historyKeys.length;
+            document.getElementById('pressedCount').textContent = pressedKeys.size;
         }
 
-        // Подсветка клавиши на экране
-        function highlightKey(keyCode) {
-            const keys = document.querySelectorAll(`[data-key="${keyCode}"]`);
+        // Подсветка клавиши
+        function highlightKey(code, displayName, isPressed) {
+            const keys = document.querySelectorAll('.key');
             keys.forEach(key => {
-                key.classList.add('pressed');
+                if (key.dataset.code === code || key.textContent.trim() === displayName) {
+                    if (isPressed) {
+                        key.classList.add('pressed');
+                    } else {
+                        key.classList.remove('pressed');
+                    }
+                }
             });
         }
 
-        // Обработка нажатия на клавишу
-        document.addEventListener('keydown', function(event) {
-            event.preventDefault();
-            
-            let keyName = event.key;
-            let keyCode = event.code;
-            
-            // Красивое название для специальных клавиш
-            if (keyName === ' ') keyName = 'Пробел';
-            else if (keyName === 'Control') keyName = 'Ctrl';
-            else if (keyName === 'Shift') keyName = 'Shift';
-            else if (keyName === 'Alt') keyName = 'Alt';
-            else if (keyName === 'Meta') keyName = 'Win';
-            else if (keyName === 'Escape') keyName = 'Esc';
-            else if (keyName === 'ArrowUp') keyName = '↑';
-            else if (keyName === 'ArrowDown') keyName = '↓';
-            else if (keyName === 'ArrowLeft') keyName = '←';
-            else if (keyName === 'ArrowRight') keyName = '→';
-            else if (keyName === 'Backspace') keyName = 'Backspace';
-            else if (keyName === 'Enter') keyName = 'Enter';
-            else if (keyName === 'Tab') keyName = 'Tab';
-            else if (keyName === 'CapsLock') keyName = 'Caps';
-            else if (keyName === 'Delete') keyName = 'Del';
-            else if (keyName === 'Insert') keyName = 'Ins';
-            else if (keyName === 'Home') keyName = 'Home';
-            else if (keyName === 'End') keyName = 'End';
-            else if (keyName === 'PageUp') keyName = 'PgUp';
-            else if (keyName === 'PageDown') keyName = 'PgDn';
-            
-            addKey(keyName);
-            highlightKey(event.code);
+        // Очистка истории
+        document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+            historyKeys = [];
+            updateUI();
         });
 
-        // Обработка клика по клавишам мышкой
-        document.querySelectorAll('.key[data-key]').forEach(key => {
-            key.addEventListener('click', function() {
-                const keyCode = this.dataset.key;
-                let keyName = this.textContent.trim();
+        // Очистка зажатых
+        document.getElementById('clearPressedBtn').addEventListener('click', () => {
+            pressedKeys.clear();
+            updateUI();
+            document.querySelectorAll('.key').forEach(k => k.classList.remove('pressed'));
+        });
+
+        // Очистка лога
+        document.getElementById('clearLogBtn').addEventListener('click', () => {
+            eventLog = [];
+            updateLog();
+        });
+
+        // Сборка клавиатуры
+        function buildKeyboard() {
+            const keyboard = document.getElementById('keyboard');
+            
+            keyboardLayout.forEach(row => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'row';
                 
-                // Специальные случаи
-                if (keyName === 'Пробел') keyName = 'Space';
-                if (keyName === '↑') keyName = 'ArrowUp';
-                if (keyName === '↓') keyName = 'ArrowDown';
-                if (keyName === '←') keyName = 'ArrowLeft
+                row.forEach(keyName => {
+                    const key = document.createElement('div');
+                    key.className = 'key';
+                    
+                    if (keyName === 'Пробел') key.classList.add('space');
+                    else if (['Backspace', 'Enter', 'Shift', 'Ctrl', 'Alt', 'Win', 'Caps'].includes(keyName)) {
+                        key.classList.add('wide');
+                    }
+                    
+                    if (keyName === '') {
+                        key.classList.add('empty-key');
+                    } else {
+                        key.textContent = keyName;
+                        key.dataset.code = keyMap[keyName] || keyName;
+                        
+                        key.addEventListener('click', () => {
+                            // Добавляем в историю при клике
+                            if (!historyKeys.includes(keyName)) {
+                                historyKeys.push(keyName);
+                            }
+                            pressedKeys.add(keyName);
+                            addToLog('click', keyName, key.dataset.code);
+                            updateUI();
+                            key.classList.add('pressed');
+                            setTimeout(() => {
+                                pressedKeys.delete(keyName);
+                                updateUI();
+                                key.classList.remove('pressed');
+                            }, 300);
+                        });
+                    }
+                    
+                    rowDiv.appendChild(key);
+                });
+                
+                keyboard.appendChild(rowDiv);
+            });
+        }
+
+        // Запуск
+        buildKeyboard();
+        updateUI();
+        updateLog();
+    </script>
+</body>
+</html>

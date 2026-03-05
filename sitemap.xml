@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-    <!-- Главная страница -->
+    
     <url>
         <loc>https://v-pk.vercel.app/</loc>
         <lastmod>2026-03-05</lastmod>
@@ -8,7 +8,7 @@
         <priority>1.0</priority>
     </url>
     
-    <!-- CPS ЛКМ -->
+
     <url>
         <loc>https://v-pk.vercel.app/cps-lkm/</loc>
         <lastmod>2026-03-05</lastmod>
@@ -16,7 +16,7 @@
         <priority>0.9</priority>
     </url>
     
-    <!-- CPS ПКМ -->
+
     <url>
         <loc>https://v-pk.vercel.app/cps-pkm/</loc>
         <lastmod>2026-03-05</lastmod>
@@ -24,7 +24,7 @@
         <priority>0.9</priority>
     </url>
     
-    <!-- Дабл-клик тест -->
+
     <url>
         <loc>https://v-pk.vercel.app/double-click/</loc>
         <lastmod>2026-03-05</lastmod>
@@ -32,7 +32,7 @@
         <priority>0.8</priority>
     </url>
     
-    <!-- Тест реакции -->
+
     <url>
         <loc>https://v-pk.vercel.app/reaction/</loc>
         <lastmod>2026-03-05</lastmod>
@@ -40,7 +40,7 @@
         <priority>0.9</priority>
     </url>
     
-    <!-- Счётчик кликов (НОВЫЙ) -->
+
     <url>
         <loc>https://v-pk.vercel.app/counter/</loc>
         <lastmod>2026-03-05</lastmod>
@@ -48,7 +48,7 @@
         <priority>0.8</priority>
     </url>
     
-    <!-- Игра 2048 (НОВЫЙ) -->
+
     <url>
         <loc>https://v-pk.vercel.app/2048/</loc>
         <lastmod>2026-03-05</lastmod>
@@ -56,7 +56,7 @@
         <priority>0.9</priority>
     </url>
     
-    <!-- Рандомер (НОВЫЙ) -->
+
     <url>
         <loc>https://v-pk.vercel.app/randomizer/</loc>
         <lastmod>2026-03-05</lastmod>
@@ -64,7 +64,7 @@
         <priority>0.8</priority>
     </url>
     
-    <!-- Перевод раскладки (НОВЫЙ) -->
+
     <url>
         <loc>https://v-pk.vercel.app/keyboard-layout/</loc>
         <lastmod>2026-03-05</lastmod>
@@ -72,7 +72,7 @@
         <priority>0.7</priority>
     </url>
     
-    <!-- Предложить идею (НОВЫЙ) -->
+
     <url>
         <loc>https://v-pk.vercel.app/suggest-idea/</loc>
         <lastmod>2026-03-05</lastmod>
@@ -80,7 +80,7 @@
         <priority>0.6</priority>
     </url>
     
-    <!-- ИИ Генератор -->
+
     <url>
         <loc>https://v-pk.vercel.app/ii-cite/</loc>
         <lastmod>2026-03-05</lastmod>
@@ -88,21 +88,11 @@
         <priority>0.8</priority>
     </url>
     
-    <!-- Автокликеры -->
+
     <url>
         <loc>https://v-pk.vercel.app/autoclickers/</loc>
         <lastmod>2026-03-05</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
-    
-    <!-- Системная информация (НОВЫЙ, если добавили) -->
-    <!--
-    <url>
-        <loc>https://v-pk.vercel.app/system-info/</loc>
-        <lastmod>2026-03-05</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-    -->
-</urlset>ы
+</urlset>

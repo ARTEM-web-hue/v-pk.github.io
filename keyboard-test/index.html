@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проверка клавиатуры - В ПК!</title>
+    
+    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <link rel="stylesheet" href="/assets/css/top-panel.css">
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 30px;
+            font-size: 1.2em;
+        }
+
+        /* Список нажатых клавиш */
+        .pressed-keys-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .keys-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-height: 50px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px;
+        }
+
+        .key-badge {
+            background: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(52,152,219,0.3);
+            animation: appear 0.2s;
+        }
+
+        @keyframes appear {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .clear-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: auto;
+            transition: all 0.3s;
+        }
+
+        .clear-btn:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        /* Клавиатура */
+        .keyboard {
+            background: rgba(255,255,255,0.95);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .key {
+            background: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            padding: 15px 0;
+            min-width: 50px;
+            text-align: center;
+            font-weight: bold;
+            color: #2c3e50;
+            cursor: pointer;
+            transition: all 0.1s;
+            box-shadow: 0 4px 0 #bdc3c7;
+            user-select: none;
+            font-size: 1.1em;
+        }
+
+        .key:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #bdc3c7;
+        }
+
+        .key.pressed {
+            background: #3498db;
+            border-color: #2980b9;
+            color: white;
+            box-shadow: 0 4px 0 #2980b9;
+            transform: translateY(2px);
+        }
+
+        .key.wide {
+            min-width: 80px;
+        }
+
+        .key.extra-wide {
+            min-width: 120px;
+        }
+
+        .key.space {
+            min-width: 300px;
+        }
+
+        /* Инструкция */
+        .instruction {
+            text-align: center;
+            color: white;
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+
+        .instruction span {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        @media (max-width: 800px) {
+            .key {
+                min-width: 30px;
+                padding: 8px 0;
+                font-size: 0.8em;
+            }
+            
+            .key.wide {
+                min-width: 50px;
+            }
+            
+            .key.extra-wide {
+                min-width: 70px;
+            }
+            
+            .key.space {
+                min-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="top-panel-placeholder"></div>
+
+    <div class="container">
+        <h1>⌨️ Проверка клавиатуры</h1>
+        <div class="subtitle">Нажимай клавиши — проверяй работу</div>
+
+        <!-- Список нажатых клавиш -->
+        <div class="pressed-keys-section">
+            <div class="section-title">
+                <span>✨ Нажатые клавиши:</span>
+                <button class="clear-btn" onclick="clearPressed()">Очистить</button>
+            </div>
+            <div class="keys-container" id="pressedKeys">
+                <div class="key-badge">Нажми любую клавишу...</div>
+            </div>
+        </div>
+
+        <!-- Клавиатура -->
+        <div class="keyboard" id="keyboard">
+            <!-- Ряд 1: Esc, F1-F12 -->
+            <div class="keyboard-row">
+                <div class="key" data-key="Escape">Esc</div>
+                <div class="key" data-key="F1">F1</div>
+                <div class="key" data-key="F2">F2</div>
+                <div class="key" data-key="F3">F3</div>
+                <div class="key" data-key="F4">F4</div>
+                <div class="key" data-key="F5">F5</div>
+                <div class="key" data-key="F6">F6</div>
+                <div class="key" data-key="F7">F7</div>
+                <div class="key" data-key="F8">F8</div>
+                <div class="key" data-key="F9">F9</div>
+                <div class="key" data-key="F10">F10</div>
+                <div class="key" data-key="F11">F11</div>
+                <div class="key" data-key="F12">F12</div>
+            </div>
+
+            <!-- Ряд 2: `, 1-9, 0, -, =, Backspace -->
+            <div class="keyboard-row">
+                <div class="key" data-key="`">`</div>
+                <div class="key" data-key="1">1</div>
+                <div class="key" data-key="2">2</div>
+                <div class="key" data-key="3">3</div>
+                <div class="key" data-key="4">4</div>
+                <div class="key" data-key="5">5</div>
+                <div class="key" data-key="6">6</div>
+                <div class="key" data-key="7">7</div>
+                <div class="key" data-key="8">8</div>
+                <div class="key" data-key="9">9</div>
+                <div class="key" data-key="0">0</div>
+                <div class="key" data-key="-">-</div>
+                <div class="key" data-key="=">=</div>
+                <div class="key wide" data-key="Backspace">Backspace</div>
+            </div>
+
+            <!-- Ряд 3: Tab, Q, W, E, R, T, Y, U, I, O, P, [, ], \ -->
+            <div class="keyboard-row">
+                <div class="key wide" data-key="Tab">Tab</div>
+                <div class="key" data-key="q">Q</div>
+                <div class="key" data-key="w">W</div>
+                <div class="key" data-key="e">E</div>
+                <div class="key" data-key="r">R</div>
+                <div class="key" data-key="t">T</div>
+                <div class="key" data-key="y">Y</div>
+                <div class="key" data-key="u">U</div>
+                <div class="key" data-key="i">I</div>
+                <div class="key" data-key="o">O</div>
+                <div class="key" data-key="p">P</div>
+                <div class="key" data-key="[">[</div>
+                <div class="key" data-key="]">]</div>
+                <div class="key wide" data-key="\\">\</div>
+            </div>
+
+            <!-- Ряд 4: Caps, A, S, D, F, G, H, J, K, L, ;, ', Enter -->
+            <div class="keyboard-row">
+                <div class="key wide" data-key="CapsLock">Caps</div>
+                <div class="key" data-key="a">A</div>
+                <div class="key" data-key="s">S</div>
+                <div class="key" data-key="d">D</div>
+                <div class="key" data-key="f">F</div>
+                <div class="key" data-key="g">G</div>
+                <div class="key" data-key="h">H</div>
+                <div class="key" data-key="j">J</div>
+                <div class="key" data-key="k">K</div>
+                <div class="key" data-key="l">L</div>
+                <div class="key" data-key=";">;</div>
+                <div class="key" data-key="'">'</div>
+                <div class="key extra-wide" data-key="Enter">Enter</div>
+            </div>
+
+            <!-- Ряд 5: Shift, Z, X, C, V, B, N, M, ,, ., /, Shift -->
+            <div class="keyboard-row">
+                <div class="key extra-wide" data-key="ShiftLeft">Shift</div>
+                <div class="key" data-key="z">Z</div>
+                <div class="key" data-key="x">X</div>
+                <div class="key" data-key="c">C</div>
+                <div class="key" data-key="v">V</div>
+                <div class="key" data-key="b">B</div>
+                <div class="key" data-key="n">N</div>
+                <div class="key" data-key="m">M</div>
+                <div class="key" data-key=",">,</div>
+                <div class="key" data-key=".">.</div>
+                <div class="key" data-key="/">/</div>
+                <div class="key extra-wide" data-key="ShiftRight">Shift</div>
+            </div>
+
+            <!-- Ряд 6: Ctrl, Win, Alt, Space, Alt, Win, Menu, Ctrl -->
+            <div class="keyboard-row">
+                <div class="key wide" data-key="ControlLeft">Ctrl</div>
+                <div class="key wide" data-key="MetaLeft">Win</div>
+                <div class="key wide" data-key="AltLeft">Alt</div>
+                <div class="key space" data-key="Space">Пробел</div>
+                <div class="key wide" data-key="AltRight">Alt</div>
+                <div class="key wide" data-key="MetaRight">Win</div>
+                <div class="key wide" data-key="ContextMenu">Menu</div>
+                <div class="key wide" data-key="ControlRight">Ctrl</div>
+            </div>
+
+            <!-- Стрелки -->
+            <div class="keyboard-row">
+                <div class="key" data-key="Insert">Ins</div>
+                <div class="key" data-key="Home">Home</div>
+                <div class="key" data-key="PageUp">PgUp</div>
+                <div class="key" data-key="Delete">Del</div>
+                <div class="key" data-key="End">End</div>
+                <div class="key" data-key="PageDown">PgDn</div>
+            </div>
+            
+            <div class="keyboard-row">
+                <div class="key"></div>
+                <div class="key"></div>
+                <div class="key" data-key="ArrowUp">↑</div>
+                <div class="key"></div>
+                <div class="key" data-key="ArrowLeft">←</div>
+                <div class="key" data-key="ArrowDown">↓</div>
+                <div class="key" data-key="ArrowRight">→</div>
+            </div>
+        </div>
+
+        <div class="instruction">
+            <span>👇 Нажимай на клавиши мышкой или физической клавиатурой</span>
+        </div>
+    </div>
+
+    <script src="/assets/js/top-panel.js"></script>
+    
+    <script>
+        // Массив для хранения нажатых клавиш
+        let pressedKeys = [];
+
+        // Функция добавления клавиши в список
+        function addKey(keyName) {
+            // Проверяем, есть ли уже такая клавиша
+            if (!pressedKeys.includes(keyName)) {
+                pressedKeys.push(keyName);
+                updatePressedList();
+            }
+        }
+
+        // Обновление списка нажатых клавиш
+        function updatePressedList() {
+            const container = document.getElementById('pressedKeys');
+            
+            if (pressedKeys.length === 0) {
+                container.innerHTML = '<div class="key-badge">Нажми любую клавишу...</div>';
+                return;
+            }
+            
+            container.innerHTML = pressedKeys.map(key => 
+                `<div class="key-badge">${key}</div>`
+            ).join('');
+        }
+
+        // Очистка списка
+        function clearPressed() {
+            pressedKeys = [];
+            updatePressedList();
+            
+            // Убираем подсветку со всех клавиш
+            document.querySelectorAll('.key').forEach(key => {
+                key.classList.remove('pressed');
+            });
+        }
+
+        // Подсветка клавиши на экране
+        function highlightKey(keyCode) {
+            const keys = document.querySelectorAll(`[data-key="${keyCode}"]`);
+            keys.forEach(key => {
+                key.classList.add('pressed');
+            });
+        }
+
+        // Обработка нажатия на клавишу
+        document.addEventListener('keydown', function(event) {
+            event.preventDefault();
+            
+            let keyName = event.key;
+            let keyCode = event.code;
+            
+            // Красивое название для специальных клавиш
+            if (keyName === ' ') keyName = 'Пробел';
+            else if (keyName === 'Control') keyName = 'Ctrl';
+            else if (keyName === 'Shift') keyName = 'Shift';
+            else if (keyName === 'Alt') keyName = 'Alt';
+            else if (keyName === 'Meta') keyName = 'Win';
+            else if (keyName === 'Escape') keyName = 'Esc';
+            else if (keyName === 'ArrowUp') keyName = '↑';
+            else if (keyName === 'ArrowDown') keyName = '↓';
+            else if (keyName === 'ArrowLeft') keyName = '←';
+            else if (keyName === 'ArrowRight') keyName = '→';
+            else if (keyName === 'Backspace') keyName = 'Backspace';
+            else if (keyName === 'Enter') keyName = 'Enter';
+            else if (keyName === 'Tab') keyName = 'Tab';
+            else if (keyName === 'CapsLock') keyName = 'Caps';
+            else if (keyName === 'Delete') keyName = 'Del';
+            else if (keyName === 'Insert') keyName = 'Ins';
+            else if (keyName === 'Home') keyName = 'Home';
+            else if (keyName === 'End') keyName = 'End';
+            else if (keyName === 'PageUp') keyName = 'PgUp';
+            else if (keyName === 'PageDown') keyName = 'PgDn';
+            
+            addKey(keyName);
+            highlightKey(event.code);
+        });
+
+        // Обработка клика по клавишам мышкой
+        document.querySelectorAll('.key[data-key]').forEach(key => {
+            key.addEventListener('click', function() {
+                const keyCode = this.dataset.key;
+                let keyName = this.textContent.trim();
+                
+                // Специальные случаи
+                if (keyName === 'Пробел') keyName = 'Space';
+                if (keyName === '↑') keyName = 'ArrowUp';
+                if (keyName === '↓') keyName = 'ArrowDown';
+                if (keyName === '←') keyName = 'ArrowLeft

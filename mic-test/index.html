@@ -3,181 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тест микрофона - В ПК!</title>
+    <title>Профессиональный тест микрофона - В ПК!</title>
     
     <link rel="icon" type="image/png" href="/assets/logo.png">
     <link rel="stylesheet" href="/assets/css/top-panel.css">
     
     <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --gray: #95a5a6;
+        }
+
         body {
             margin: 0;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 40px auto;
             padding: 30px;
         }
 
-        h1 {
+        /* Шапка */
+        .page-header {
             text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
             color: white;
-            font-size: 2.8em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            font-size: 3.2em;
+            font-weight: 700;
+            margin: 0 0 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            letter-spacing: -0.5px;
         }
 
         .subtitle {
-            text-align: center;
             color: rgba(255,255,255,0.9);
-            margin-bottom: 40px;
             font-size: 1.2em;
+            font-weight: 400;
         }
 
-        /* Карточка */
-        .mic-card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 30px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            margin-bottom: 30px;
+        /* Основная сетка */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
         }
 
-        /* Статус */
-        .permission-status {
+        /* Карточки */
+        .card {
+            background: rgba(255,255,255,0.98);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
         }
 
-        .status-icon {
+        .card-icon {
             font-size: 2em;
         }
 
+        .card-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        /* Статус микрофона */
+        .mic-status {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 25px;
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .status-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .status-led {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--gray);
+            transition: all 0.3s;
+        }
+
+        .status-led.active {
+            background: var(--success);
+            box-shadow: 0 0 20px var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        .status-led.error {
+            background: var(--danger);
+            box-shadow: 0 0 20px var(--danger);
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
         .status-text {
-            color: #2c3e50;
             font-size: 1.1em;
         }
 
-        .status-text .denied {
-            color: #e74c3c;
-            font-weight: bold;
+        .device-selector {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            padding: 12px 20px;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            min-width: 250px;
         }
 
-        .status-text .granted {
-            color: #27ae60;
-            font-weight: bold;
+        .device-selector option {
+            background: var(--dark);
+            color: white;
         }
 
-        /* График */
+        /* Визуализатор */
         .visualizer-container {
-            background: #1a1a2e;
+            background: var(--dark);
             border-radius: 20px;
             padding: 20px;
-            margin-bottom: 30px;
+            margin: 25px 0;
         }
 
-        .visualizer-title {
-            color: white;
-            margin-bottom: 15px;
+        .visualizer-header {
             display: flex;
             justify-content: space-between;
+            color: white;
+            margin-bottom: 15px;
         }
 
-        .volume-level {
-            color: #00ff9d;
+        .volume-value {
+            color: var(--success);
+            font-weight: 600;
         }
 
         #visualizer {
             width: 100%;
             height: 200px;
-            background: #0f0f1a;
-            border-radius: 15px;
+            background: #1a1a2e;
+            border-radius: 12px;
         }
 
-        /* Кнопка эха */
-        .echo-control {
-            text-align: center;
-            margin: 30px 0;
-        }
-
-        .echo-btn {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-            border: none;
-            padding: 20px 60px;
-            border-radius: 60px;
-            font-size: 1.5em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(52,152,219,0.4);
-        }
-
-        .echo-btn.echo-active {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            animation: pulse 1.5s infinite;
-        }
-
-        .echo-btn.echo-listening {
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(241,196,15,0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 20px 50px rgba(241,196,15,0.6); }
-        }
-
-        .echo-status {
-            margin-top: 15px;
-            color: #7f8c8d;
-            font-size: 1.1em;
-        }
-
-        /* Индикаторы */
-        .indicators {
+        /* Метрики */
+        .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 15px;
-            margin-top: 30px;
+            margin: 25px 0;
         }
 
-        .indicator {
-            background: #f0f0f0;
-            padding: 15px;
-            border-radius: 15px;
+        .metric {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 20px;
             text-align: center;
         }
 
-        .indicator-label {
-            color: #7f8c8d;
+        .metric-label {
+            color: var(--gray);
             font-size: 0.9em;
-            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
         }
 
-        .indicator-value {
-            color: #2c3e50;
-            font-size: 1.3em;
-            font-weight: bold;
+        .metric-value {
+            color: var(--dark);
+            font-size: 1.8em;
+            font-weight: 700;
         }
 
-        @media (max-width: 600px) {
-            .indicators {
+        .metric-unit {
+            color: var(--gray);
+            font-size: 0.9em;
+            margin-left: 4px;
+        }
+
+        /* Кнопки */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .btn {
+            padding: 16px 24px;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: white;
+        }
+
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+        .btn-success { background: linear-gradient(135deg, var(--success), #219a52); }
+        .btn-danger { background: linear-gradient(135deg, var(--danger), #c0392b); }
+        .btn-warning { background: linear-gradient(135deg, var(--warning), #e67e22); }
+        .btn-secondary { background: linear-gradient(135deg, var(--gray), #7f8c8d); }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-small {
+            padding: 12px 20px;
+            font-size: 0.95em;
+        }
+
+        /* Плеер */
+        .player-section {
+            background: var(--light);
+            border-radius: 20px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+
+        .player-title {
+            color: var(--dark);
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        audio {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        /* Индикатор эха */
+        .echo-indicator {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .echo-indicator.active {
+            background: var(--success);
+            color: white;
+        }
+
+        .echo-indicator.inactive {
+            background: var(--gray);
+            color: white;
+        }
+
+        @media (max-width: 800px) {
+            .grid-2 {
                 grid-template-columns: 1fr;
             }
             
-            .echo-btn {
-                padding: 15px 30px;
-                font-size: 1.2em;
-                width: 100%;
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -186,51 +329,112 @@
     <div id="top-panel-placeholder"></div>
 
     <div class="container">
-        <h1>🎤 Тест микрофона</h1>
-        <div class="subtitle">Скажи что-нибудь — через секунду услышишь эхо</div>
+        <div class="page-header">
+            <h1>🎤 Тест микрофона</h1>
+            <div class="subtitle">Профессиональная диагностика и анализ</div>
+        </div>
 
-        <div class="mic-card">
-            <!-- Статус -->
-            <div class="permission-status" id="permissionStatus">
-                <div class="status-icon">⏳</div>
-                <div class="status-text">
-                    <span>Запрашиваю доступ к микрофону...</span>
+        <!-- Статус микрофона -->
+        <div class="mic-status" id="micStatus">
+            <div class="status-row">
+                <div class="status-info">
+                    <div class="status-led" id="statusLed"></div>
+                    <span class="status-text" id="statusText">Инициализация...</span>
+                </div>
+                <select class="device-selector" id="micSelect" onchange="changeDevice()">
+                    <option>Загрузка устройств...</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Две колонки -->
+        <div class="grid-2">
+            <!-- Левая колонка: Визуализация -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">📊</span>
+                    <h2 class="card-title">Визуализация</h2>
+                </div>
+
+                <div class="visualizer-container">
+                    <div class="visualizer-header">
+                        <span>Звуковой сигнал</span>
+                        <span class="volume-value" id="volumeLevel">-∞ дБ</span>
+                    </div>
+                    <canvas id="visualizer" width="500" height="200"></canvas>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <div class="metric-label">Громкость</div>
+                        <div class="metric-value" id="volumePercent">0<span class="metric-unit">%</span></div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Частота</div>
+                        <div class="metric-value" id="frequency">0<span class="metric-unit">Гц</span></div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Пик</div>
+                        <div class="metric-value" id="peakVolume">0<span class="metric-unit">%</span></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Визуализатор -->
-            <div class="visualizer-container">
-                <div class="visualizer-title">
-                    <span>📊 Твой голос сейчас</span>
-                    <span class="volume-level" id="volumeLevel">-∞ дБ</span>
+            <!-- Правая колонка: Информация -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-icon">ℹ️</span>
+                    <h2 class="card-title">Информация</h2>
                 </div>
-                <canvas id="visualizer" width="800" height="200"></canvas>
-            </div>
 
-            <!-- Кнопка эха -->
-            <div class="echo-control">
-                <button class="echo-btn" id="echoBtn" onclick="toggleEcho()" disabled>
-                    🎤 АКТИВИРОВАТЬ ЭХО
-                </button>
-                <div class="echo-status" id="echoStatus">
-                    Микрофон слушает постоянно. Нажми кнопку чтобы услышать эхо
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <div class="metric-label">Частота</div>
+                        <div class="metric-value" id="sampleRate">—<span class="metric-unit">кГц</span></div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Каналы</div>
+                        <div class="metric-value" id="channels">—</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Битрейт</div>
+                        <div class="metric-value" id="bitrate">—<span class="metric-unit">kbps</span></div>
+                    </div>
+                </div>
+
+                <div class="button-grid">
+                    <button class="btn btn-primary" id="requestBtn" onclick="requestMicrophone()">
+                        <span>🎤</span> Запросить доступ
+                    </button>
+                    <button class="btn btn-success" id="testBtn" onclick="startTest()" disabled>
+                        <span>🎧</span> Начать проверку
+                    </button>
+                    <button class="btn btn-danger" id="stopTestBtn" onclick="stopTest()" disabled>
+                        <span>⏹️</span> Остановить
+                    </button>
+                </div>
+
+                <div class="button-grid">
+                    <button class="btn btn-warning btn-small" id="recordBtn" onclick="startRecording()" disabled>
+                        <span>⏺️</span> Запись
+                    </button>
+                    <button class="btn btn-secondary btn-small" id="stopRecordBtn" onclick="stopRecording()" disabled>
+                        <span>⏹️</span> Стоп
+                    </button>
+                    <button class="btn btn-primary btn-small" id="echoBtn" onclick="toggleEcho()" disabled>
+                        <span>🔊</span> Эхо <span id="echoIndicator" class="echo-indicator inactive">Выкл</span>
+                    </button>
                 </div>
             </div>
+        </div>
 
-            <!-- Индикаторы -->
-            <div class="indicators">
-                <div class="indicator">
-                    <div class="indicator-label">Громкость</div>
-                    <div class="indicator-value" id="volumePercent">0%</div>
-                </div>
-                <div class="indicator">
-                    <div class="indicator-label">Частота</div>
-                    <div class="indicator-value" id="frequency">—</div>
-                </div>
-                <div class="indicator">
-                    <div class="indicator-label">Эхо</div>
-                    <div class="indicator-value" id="echoIndicator">⏸️</div>
-                </div>
+        <!-- Плеер -->
+        <div class="player-section" id="playerSection" style="display: none;">
+            <div class="player-title">🎵 Последняя запись</div>
+            <audio id="playback" controls></audio>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button class="btn btn-success btn-small" onclick="downloadRecording()">⬇️ Скачать</button>
+                <button class="btn btn-danger btn-small" onclick="clearRecording()">🗑️ Очистить</button>
             </div>
         </div>
     </div>
@@ -238,101 +442,124 @@
     <script src="/assets/js/top-panel.js"></script>
     
     <script>
-        // Глобальные переменные
+        // Состояние
         let audioContext = null;
         let analyser = null;
-        let microphone = null;
         let mediaStream = null;
         let source = null;
         let animationId = null;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let devices = [];
+        let isTestActive = false;
         let echoEnabled = false;
-        let isListening = false;
-        let lastSoundTime = 0;
-        let soundDetected = false;
-
+        let peakVolume = 0;
+        
         // Canvas
         const canvas = document.getElementById('visualizer');
         const canvasCtx = canvas.getContext('2d');
 
-        // ЗАПРАШИВАЕМ ДОСТУП СРАЗУ ПРИ ЗАГРУЗКЕ
-        async function initMicrophone() {
+        // Инициализация
+        window.onload = async () => {
+            updateStatus('init', 'Запрос доступа к микрофону...');
+            await requestMicrophone();
+        };
+
+        // Запрос микрофона
+        async function requestMicrophone() {
             try {
                 mediaStream = await navigator.mediaDevices.getUserMedia({ 
                     audio: {
                         echoCancellation: false,
                         noiseSuppression: false,
-                        autoGainControl: false
+                        autoGainControl: false,
+                        sampleRate: 48000,
+                        channelCount: 2
                     } 
                 });
                 
-                // Обновляем статус
-                document.getElementById('permissionStatus').innerHTML = `
-                    <div class="status-icon">🟢</div>
-                    <div class="status-text">
-                        <span class="granted">✓ Микрофон работает</span>
-                    </div>
-                `;
-                
-                // Запускаем прослушивание
-                startListening();
-                
-                // Активируем кнопку
-                document.getElementById('echoBtn').disabled = false;
+                updateStatus('success', 'Микрофон готов к работе');
+                await getDevices();
+                enableButtons(['testBtn', 'recordBtn', 'echoBtn']);
+                await startTest();
                 
             } catch (error) {
-                console.error('Ошибка доступа:', error);
-                document.getElementById('permissionStatus').innerHTML = `
-                    <div class="status-icon">🔴</div>
-                    <div class="status-text">
-                        <span class="denied">✗ Нет доступа к микрофону: ${error.message}</span>
-                    </div>
-                `;
+                updateStatus('error', 'Ошибка доступа: ' + error.message);
+                console.error('Error:', error);
             }
         }
 
-        // Запуск прослушивания (ВСЕГДА)
-        async function startListening() {
+        // Получение устройств
+        async function getDevices() {
+            const allDevices = await navigator.mediaDevices.enumerateDevices();
+            devices = allDevices.filter(d => d.kind === 'audioinput');
+            
+            const select = document.getElementById('micSelect');
+            select.innerHTML = devices.map((d, i) => 
+                `<option value="${d.deviceId}">${d.label || `Микрофон ${i + 1}`}</option>`
+            ).join('');
+        }
+
+        // Смена устройства
+        async function changeDevice() {
+            if (isTestActive) await stopTest();
+            await requestMicrophone();
+        }
+
+        // Начать тест
+        async function startTest() {
+            if (isTestActive) return;
+            
             try {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const deviceId = document.getElementById('micSelect').value;
+                if (deviceId && deviceId !== 'Загрузка устройств...') {
+                    mediaStream = await navigator.mediaDevices.getUserMedia({ 
+                        audio: { deviceId: { exact: deviceId } } 
+                    });
+                }
+                
+                audioContext = new AudioContext();
                 analyser = audioContext.createAnalyser();
-                analyser.fftSize = 256;
+                analyser.fftSize = 2048;
                 
                 source = audioContext.createMediaStreamSource(mediaStream);
                 source.connect(analyser);
                 
-                // Запускаем визуализацию
+                // Информация
+                document.getElementById('sampleRate').textContent = (audioContext.sampleRate / 1000).toFixed(1);
+                document.getElementById('channels').textContent = source.channelCount;
+                document.getElementById('bitrate').textContent = Math.round(audioContext.sampleRate * source.channelCount * 16 / 1000);
+                
+                isTestActive = true;
                 draw();
                 
-                isListening = true;
+                updateButtons(['testBtn'], true);
+                updateButtons(['stopTestBtn'], false);
                 
             } catch (error) {
-                console.error('Ошибка при запуске:', error);
+                console.error('Start test error:', error);
             }
         }
 
-        // Переключение эха
-        function toggleEcho() {
-            echoEnabled = !echoEnabled;
-            const btn = document.getElementById('echoBtn');
-            const status = document.getElementById('echoStatus');
-            const echoIndicator = document.getElementById('echoIndicator');
+        // Остановить тест
+        function stopTest() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
             
-            if (echoEnabled) {
-                btn.textContent = '🔊 ЭХО АКТИВИРОВАНО';
-                btn.classList.add('echo-active');
-                status.textContent = 'Эхо включено. Говори что-нибудь...';
-                echoIndicator.textContent = '🔊 Вкл';
-                echoIndicator.style.color = '#27ae60';
-            } else {
-                btn.textContent = '🎤 АКТИВИРОВАТЬ ЭХО';
-                btn.classList.remove('echo-active', 'echo-listening');
-                status.textContent = 'Микрофон слушает постоянно. Нажми кнопку чтобы услышать эхо';
-                echoIndicator.textContent = '⏸️ Выкл';
-                echoIndicator.style.color = '#7f8c8d';
-            }
+            if (source) source.disconnect();
+            if (audioContext) audioContext.close();
+            
+            canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            isTestActive = false;
+            
+            updateButtons(['testBtn'], false);
+            updateButtons(['stopTestBtn'], true);
         }
 
-        // Рисование визуализатора и детектор звука
+        // Рисование
         function draw() {
             const bufferLength = analyser.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
@@ -340,122 +567,155 @@
             const WIDTH = canvas.width;
             const HEIGHT = canvas.height;
             
-            const drawVisual = () => {
-                animationId = requestAnimationFrame(drawVisual);
+            function drawFrame() {
+                animationId = requestAnimationFrame(drawFrame);
                 
                 analyser.getByteFrequencyData(dataArray);
                 
-                // Вычисляем громкость
+                // Громкость
                 let sum = 0;
                 for (let i = 0; i < bufferLength; i++) {
                     sum += dataArray[i];
                 }
                 const avgVolume = sum / bufferLength / 255 * 100;
+                const currentPeak = Math.max(...dataArray) / 255 * 100;
                 
-                // Обновляем индикаторы
-                document.getElementById('volumePercent').textContent = Math.round(avgVolume) + '%';
+                peakVolume = Math.max(peakVolume, currentPeak);
+                
+                document.getElementById('volumePercent').textContent = Math.round(avgVolume);
                 document.getElementById('volumeLevel').textContent = Math.round(avgVolume) + '%';
+                document.getElementById('peakVolume').textContent = Math.round(peakVolume);
                 
-                // Определяем частоту (примерно)
+                // Частота
                 const maxIndex = dataArray.indexOf(Math.max(...dataArray));
-                const frequency = (maxIndex * audioContext.sampleRate) / (2 * bufferLength);
-                document.getElementById('frequency').textContent = Math.round(frequency) + ' Гц';
+                const freq = (maxIndex * audioContext.sampleRate) / bufferLength;
+                document.getElementById('frequency').textContent = Math.round(freq);
                 
-                // Детектор звука (для эха)
-                if (avgVolume > 5) { // Порог срабатывания
-                    const now = Date.now();
-                    if (!soundDetected && echoEnabled) {
-                        soundDetected = true;
-                        lastSoundTime = now;
-                        
-                        // Меняем кнопку на "слушаю"
-                        document.getElementById('echoBtn').classList.add('echo-listening');
-                        
-                        // Через 1 секунду воспроизводим эхо
-                        setTimeout(() => {
-                            if (echoEnabled && soundDetected) {
-                                playEcho();
-                            }
-                            document.getElementById('echoBtn').classList.remove('echo-listening');
-                        }, 1000);
-                    }
-                } else {
-                    soundDetected = false;
+                // Эхо
+                if (echoEnabled && avgVolume > 10) {
+                    document.getElementById('echoIndicator').textContent = 'Слышу!';
+                    setTimeout(() => {
+                        if (echoEnabled) {
+                            document.getElementById('echoIndicator').textContent = 'Вкл';
+                        }
+                    }, 500);
                 }
                 
                 // Рисуем график
-                canvasCtx.fillStyle = '#0f0f1a';
+                canvasCtx.fillStyle = '#1a1a2e';
                 canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
                 
-                const barWidth = (WIDTH / bufferLength) * 2.5;
+                const barWidth = (WIDTH / bufferLength) * 2;
                 let x = 0;
                 
-                for (let i = 0; i < bufferLength; i++) {
+                for (let i = 0; i < bufferLength; i += 2) {
                     const barHeight = (dataArray[i] / 255) * HEIGHT;
                     
-                    // Градиент
-                    const green = Math.min(255, dataArray[i] * 2);
-                    const red = Math.min(255, dataArray[i]);
+                    const gradient = canvasCtx.createLinearGradient(0, HEIGHT, 0, HEIGHT - barHeight);
+                    gradient.addColorStop(0, '#3498db');
+                    gradient.addColorStop(1, '#9b59b6');
                     
-                    canvasCtx.fillStyle = `rgb(${red}, ${green}, 100)`;
-                    canvasCtx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
+                    canvasCtx.fillStyle = gradient;
+                    canvasCtx.fillRect(x, HEIGHT - barHeight, barWidth - 1, barHeight);
                     
-                    x += barWidth + 1;
+                    x += barWidth;
                 }
+            }
+            
+            drawFrame();
+        }
+
+        // Запись
+        function startRecording() {
+            recordedChunks = [];
+            mediaRecorder = new MediaRecorder(mediaStream);
+            
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) recordedChunks.push(e.data);
             };
             
-            drawVisual();
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+                const url = URL.createObjectURL(blob);
+                document.getElementById('playback').src = url;
+                document.getElementById('playerSection').style.display = 'block';
+                window.lastRecording = blob;
+            };
+            
+            mediaRecorder.start();
+            
+            updateButtons(['recordBtn'], true);
+            updateButtons(['stopRecordBtn'], false);
         }
 
-        // Воспроизведение эха (имитация через синтез)
-        function playEcho() {
-            if (!echoEnabled) return;
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
             
-            const echoCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const now = echoCtx.currentTime;
-            
-            // Создаём простой звук (имитация голоса)
-            const osc = echoCtx.createOscillator();
-            const gainNode = echoCtx.createGain();
-            
-            osc.type = 'sine';
-            osc.frequency.value = 440; // Нота Ля
-            
-            gainNode.gain.setValueAtTime(0.3, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
-            
-            osc.connect(gainNode);
-            gainNode.connect(echoCtx.destination);
-            
-            osc.start(now);
-            osc.stop(now + 0.5);
-            
-            // Визуальный эффект
-            const echoIndicator = document.getElementById('echoIndicator');
-            echoIndicator.textContent = '🔊 Эхо!';
-            echoIndicator.style.color = '#f39c12';
-            setTimeout(() => {
-                if (echoEnabled) {
-                    echoIndicator.textContent = '🔊 Вкл';
-                    echoIndicator.style.color = '#27ae60';
-                } else {
-                    echoIndicator.textContent = '⏸️ Выкл';
-                    echoIndicator.style.color = '#7f8c8d';
-                }
-            }, 500);
+            updateButtons(['recordBtn'], false);
+            updateButtons(['stopRecordBtn'], true);
         }
 
-        // Запускаем при загрузке
-        window.onload = () => {
-            initMicrophone();
-        };
+        // Эхо
+        function toggleEcho() {
+            echoEnabled = !echoEnabled;
+            const indicator = document.getElementById('echoIndicator');
+            
+            if (echoEnabled) {
+                indicator.textContent = 'Вкл';
+                indicator.className = 'echo-indicator active';
+            } else {
+                indicator.textContent = 'Выкл';
+                indicator.className = 'echo-indicator inactive';
+            }
+        }
 
-        // Очистка при выходе
-        window.onunload = () => {
-            if (source) source.disconnect();
-            if (audioContext) audioContext.close();
-            if (animationId) cancelAnimationFrame(animationId);
-        };
+        // Скачивание
+        function downloadRecording() {
+            if (!window.lastRecording) return;
+            const url = URL.createObjectURL(window.lastRecording);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `recording-${Date.now()}.webm`;
+            a.click();
+        }
+
+        function clearRecording() {
+            document.getElementById('playerSection').style.display = 'none';
+            document.getElementById('playback').src = '';
+            window.lastRecording = null;
+        }
+
+        // Обновление статуса
+        function updateStatus(type, message) {
+            const led = document.getElementById('statusLed');
+            const text = document.getElementById('statusText');
+            
+            led.className = 'status-led';
+            if (type === 'success') {
+                led.classList.add('active');
+            } else if (type === 'error') {
+                led.classList.add('error');
+            }
+            
+            text.textContent = message;
+        }
+
+        // Управление кнопками
+        function enableButtons(ids) {
+            ids.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) btn.disabled = false;
+            });
+        }
+
+        function updateButtons(ids, disable) {
+            ids.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) btn.disabled = disable;
+            });
+        }
     </script>
 </body>
 </html>

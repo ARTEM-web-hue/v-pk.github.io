@@ -282,16 +282,16 @@
                             <option value="EAN8">EAN-8 (8 цифр)</option>
                             <option value="UPC">UPC</option>
                             <option value="CODE39">CODE39</option>
-                            <option value="ITF">ITF-14</option>
+                            <option value="ITF14">ITF-14</option>
                         </select>
                     </div>
 
                     <div class="option-item">
-                        <label>📐 Ширина</label>
+                        <label>📐 Ширина линии</label>
                         <select id="barcodeWidth">
-                            <option value="1">Маленький</option>
-                            <option value="2" selected>Средний</option>
-                            <option value="3">Большой</option>
+                            <option value="1">Тонкая</option>
+                            <option value="2" selected>Средняя</option>
+                            <option value="3">Толстая</option>
                         </select>
                     </div>
 
@@ -317,15 +317,15 @@
                     <div class="option-item">
                         <label>📐 Размер</label>
                         <select id="qrSize">
-                            <option value="150">Маленький (150x150)</option>
-                            <option value="250" selected>Средний (250x250)</option>
-                            <option value="350">Большой (350x350)</option>
-                            <option value="500">Огромный (500x500)</option>
+                            <option value="150">150x150</option>
+                            <option value="250" selected>250x250</option>
+                            <option value="350">350x350</option>
+                            <option value="500">500x500</option>
                         </select>
                     </div>
 
                     <div class="option-item">
-                        <label>🎨 Коррекция ошибок</label>
+                        <label>🎨 Коррекция</label>
                         <select id="qrErrorLevel">
                             <option value="L">L (7%)</option>
                             <option value="M" selected>M (15%)</option>
@@ -378,6 +378,10 @@
     <script src="/assets/js/top-panel.js"></script>
     
     <script>
+        // Проверяем загрузку библиотек
+        console.log('JsBarcode:', typeof JsBarcode);
+        console.log('QRCode:', typeof QRCode);
+
         let currentMode = 'barcode';
         let lastBarcodeData = null;
         let lastQRData = null;
@@ -394,14 +398,10 @@
                 document.getElementById('barcodeModeBtn').classList.add('active');
                 document.getElementById('barcodeMode').style.display = 'block';
                 document.getElementById('qrMode').style.display = 'none';
-                document.getElementById('barcodeResult').style.display = 'none';
-                document.getElementById('qrResult').style.display = 'none';
             } else {
                 document.getElementById('qrModeBtn').classList.add('active');
                 document.getElementById('qrMode').style.display = 'block';
                 document.getElementById('barcodeMode').style.display = 'none';
-                document.getElementById('barcodeResult').style.display = 'none';
-                document.getElementById('qrResult').style.display = 'none';
             }
             
             document.getElementById('resultSection').style.display = 'none';
@@ -429,22 +429,40 @@
             }
 
             try {
+                // Проверяем наличие библиотеки
+                if (typeof JsBarcode === 'undefined') {
+                    throw new Error('Библиотека JsBarcode не загрузилась');
+                }
+
                 const canvas = document.getElementById('barcodeCanvas');
+                
+                // Очищаем canvas
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Генерируем
                 JsBarcode(canvas, text, {
                     format: format,
                     width: width,
                     height: height,
                     displayValue: true,
                     fontSize: 18,
-                    margin: 10
+                    margin: 10,
+                    valid: function(valid) {
+                        if (!valid) {
+                            throw new Error('Неверный формат данных для ' + format);
+                        }
+                    }
                 });
 
+                // Сохраняем данные
                 lastBarcodeData = {
                     text: text,
                     format: format,
                     canvasData: canvas.toDataURL('image/png')
                 };
 
+                // Показываем результат
                 document.getElementById('resultSection').style.display = 'block';
                 document.getElementById('barcodeResult').style.display = 'block';
                 document.getElementById('qrResult').style.display = 'none';
@@ -453,6 +471,7 @@
                 
             } catch (error) {
                 alert('Ошибка генерации: ' + error.message);
+                console.error('Barcode error:', error);
             }
         }
 
@@ -468,17 +487,27 @@
             }
 
             try {
+                // Проверяем наличие библиотеки
+                if (typeof QRCode === 'undefined') {
+                    throw new Error('Библиотека QRCode не загрузилась');
+                }
+
                 const container = document.getElementById('qrContainer');
                 container.innerHTML = '';
 
-                QRCode.toCanvas(text, {
+                // Создаём canvas
+                const canvas = document.createElement('canvas');
+                
+                // Генерируем QR-код
+                QRCode.toCanvas(canvas, text, {
                     width: size,
                     height: size,
                     errorCorrectionLevel: errorLevel,
                     margin: 2
-                }, (error, canvas) => {
+                }, (error) => {
                     if (error) {
-                        alert('Ошибка генерации: ' + error);
+                        alert('Ошибка генерации: ' + error.message);
+                        console.error('QR error:', error);
                         return;
                     }
                     
@@ -491,6 +520,7 @@
                     };
                 });
 
+                // Показываем результат
                 document.getElementById('resultSection').style.display = 'block';
                 document.getElementById('barcodeResult').style.display = 'none';
                 document.getElementById('qrResult').style.display = 'block';
@@ -498,7 +528,8 @@
                 addToHistory('QR-код', text);
                 
             } catch (error) {
-                alert('Ошибка генерации: ' + error);
+                alert('Ошибка генерации: ' + error.message);
+                console.error('QR error:', error);
             }
         }
 
@@ -526,7 +557,7 @@
         function addToHistory(type, value) {
             const item = {
                 type: type,
-                value: value.substring(0, 30) + (value.length > 30 ? '...' : ''),
+                value: value.length > 30 ? value.substring(0, 27) + '...' : value,
                 time: new Date().toLocaleString()
             };
             
@@ -554,8 +585,14 @@
             `).join('');
         }
 
-        // Инициализация
-        updateHistory();
+        // Проверка при загрузке
+        window.onload = function() {
+            updateHistory();
+            console.log('Страница загружена, библиотеки:', {
+                JsBarcode: typeof JsBarcode,
+                QRCode: typeof QRCode
+            });
+        };
     </script>
 </body>
 </html>

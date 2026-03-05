@@ -223,3 +223,22 @@
         text-align: center !important;
     }
 }
+/* ======= СТИЛИ ДЛЯ ТЕГА DESCRIPTION ======= */
+Description {
+    display: block;
+    position: relative;
+    top: 100vh; /* Опускаем в самый низ страницы */
+    font-size: 1px;
+    line-height: 1px;
+    height: 1px;
+    width: 1px;
+    color: rgba(0, 0, 0, 0.01);
+    opacity: 0.01;
+    overflow: hidden;
+    pointer-events: none;
+    user-select: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+    white-space: nowrap;
+}

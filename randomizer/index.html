@@ -17,10 +17,9 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 40px auto;
             padding: 30px;
-            text-align: center;
         }
 
         h1 {
@@ -45,11 +44,26 @@
             font-style: italic;
         }
 
+        /* Двухколоночный макет */
+        .game-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* Левая колонка - шар и кнопка */
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         /* Магический шар */
         .magic-ball {
-            width: 300px;
-            height: 300px;
-            margin: 30px auto;
+            width: 350px;
+            height: 350px;
+            margin: 20px auto;
             background: radial-gradient(circle at 30% 30%, #fff, #4a4a8c);
             border-radius: 50%;
             display: flex;
@@ -72,8 +86,8 @@
         }
 
         .ball-content {
-            width: 200px;
-            height: 200px;
+            width: 250px;
+            height: 250px;
             background: #2c3e50;
             border-radius: 50%;
             display: flex;
@@ -85,10 +99,11 @@
 
         .ball-text {
             color: #ecf0f1;
-            font-size: 1.5em;
+            font-size: 1.8em;
             font-weight: bold;
             text-align: center;
             animation: flicker 0.1s infinite;
+            padding: 20px;
         }
 
         @keyframes flicker {
@@ -96,39 +111,82 @@
             50% { opacity: 0.8; text-shadow: 0 0 20px gold; }
         }
 
-        /* Результат */
-        .result-container {
+        /* Кнопка */
+        .destiny-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 50px;
+            font-size: 1.8em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(102,126,234,0.4);
+            margin: 30px 0;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .destiny-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(102,126,234,0.6);
+        }
+
+        .destiny-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Правая колонка - результат */
+        .right-column {
             background: rgba(255,255,255,0.1);
             border-radius: 30px;
-            padding: 40px;
-            margin: 40px 0;
+            padding: 30px;
             backdrop-filter: blur(10px);
             border: 2px solid rgba(255,255,255,0.2);
-            min-height: 300px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .result-title {
+            color: gold;
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .result-content {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            text-align: center;
         }
 
         .result-image {
-            width: 200px;
-            height: 200px;
+            width: 250px;
+            height: 250px;
             object-fit: contain;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             animation: appear 0.5s;
+            filter: drop-shadow(0 0 20px rgba(255,215,0,0.3));
         }
 
-        .result-text {
-            font-size: 2em;
+        .result-name {
+            font-size: 2.5em;
             color: white;
             font-weight: bold;
             margin-bottom: 15px;
             animation: slideUp 0.5s;
         }
 
-        .result-description {
-            font-size: 1.3em;
+        .result-desc {
+            font-size: 1.5em;
             color: rgba(255,255,255,0.9);
             font-style: italic;
             animation: slideUp 0.5s;
@@ -144,124 +202,82 @@
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* Кнопка */
-        .destiny-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        /* Счётчики */
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
             color: white;
-            border: none;
-            padding: 20px 60px;
-            border-radius: 50px;
-            font-size: 1.8em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(102,126,234,0.4);
-            margin: 30px 0;
-            position: relative;
-            overflow: hidden;
         }
 
-        .destiny-btn:hover:not(:disabled) {
-            transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(102,126,234,0.6);
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.7;
         }
 
-        .destiny-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .destiny-btn.loading::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: loading 2s infinite;
-        }
-
-        @keyframes loading {
-            100% { left: 100%; }
-        }
-
-        /* Счётчик нажатий */
-        .click-counter {
-            color: rgba(255,255,255,0.7);
-            font-size: 1.2em;
-            margin: 20px 0;
-        }
-
-        .rare-counter {
-            color: gold;
+        .stat-value {
+            font-size: 1.5em;
             font-weight: bold;
         }
 
-        /* Магические фразы */
-        .magic-phrase {
-            font-size: 2em;
+        .rare-value {
             color: gold;
-            text-shadow: 0 0 20px gold;
-            margin: 20px 0;
-            animation: spin 2s infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            25% { transform: rotate(10deg); }
-            75% { transform: rotate(-10deg); }
-            100% { transform: rotate(0deg); }
         }
 
         /* История */
         .history-section {
-            margin-top: 40px;
+            margin-top: 30px;
             padding: 20px;
             background: rgba(0,0,0,0.2);
-            border-radius: 20px;
+            border-radius: 15px;
         }
 
         .history-title {
             color: white;
-            font-size: 1.5em;
-            margin-bottom: 20px;
+            font-size: 1.3em;
+            margin-bottom: 15px;
         }
 
         .history-list {
             list-style: none;
             padding: 0;
-            max-height: 150px;
+            max-height: 120px;
             overflow-y: auto;
         }
 
         .history-item {
             background: rgba(255,255,255,0.1);
             color: white;
-            padding: 10px;
+            padding: 8px;
             margin: 5px 0;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 0.9em;
         }
 
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 2.5em;
+        @media (max-width: 900px) {
+            .game-layout {
+                grid-template-columns: 1fr;
             }
             
             .magic-ball {
-                width: 250px;
-                height: 250px;
+                width: 280px;
+                height: 280px;
             }
             
             .ball-content {
-                width: 160px;
-                height: 160px;
+                width: 200px;
+                height: 200px;
             }
             
-            .destiny-btn {
+            .ball-text {
                 font-size: 1.3em;
-                padding: 15px 30px;
             }
         }
     </style>
@@ -273,29 +289,48 @@
         <h1>🎱 РАНДОМЕР</h1>
         <div class="subtitle">Узнай свою судьбу... если повезёт</div>
 
-        <!-- Магический шар -->
-        <div class="magic-ball" id="magicBall" onclick="if(!isRolling) roll()">
-            <div class="ball-content">
-                <div class="ball-text" id="ballText">?</div>
+        <!-- Статистика сверху -->
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-label">Всего попыток</div>
+                <div class="stat-value" id="totalRolls">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Редких</div>
+                <div class="stat-value rare-value" id="rareCount">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Шанс редкого</div>
+                <div class="stat-value" id="rareChance">5%</div>
             </div>
         </div>
 
-        <!-- Счётчик -->
-        <div class="click-counter">
-            ✨ Попыток: <span id="totalRolls">0</span> | 
-            💫 Редких: <span id="rareCount" class="rare-counter">0</span>
-        </div>
+        <!-- Двухколоночный макет -->
+        <div class="game-layout">
+            <!-- Левая колонка - шар и кнопка -->
+            <div class="left-column">
+                <!-- Магический шар -->
+                <div class="magic-ball" id="magicBall" onclick="if(!isRolling) roll()">
+                    <div class="ball-content">
+                        <div class="ball-text" id="ballText">?</div>
+                    </div>
+                </div>
 
-        <!-- Кнопка -->
-        <button class="destiny-btn" id="rollBtn" onclick="roll()">
-            🎲 УЗНАТЬ СУДЬБУ
-        </button>
+                <!-- Кнопка -->
+                <button class="destiny-btn" id="rollBtn" onclick="roll()">
+                    🎲 УЗНАТЬ СУДЬБУ
+                </button>
+            </div>
 
-        <!-- Результат -->
-        <div class="result-container" id="resultContainer" style="display: none;">
-            <img id="resultImage" class="result-image" src="" alt="">
-            <div class="result-text" id="resultTitle"></div>
-            <div class="result-description" id="resultDesc"></div>
+            <!-- Правая колонка - результат -->
+            <div class="right-column" id="resultContainer">
+                <div class="result-title">✨ ПРЕДСКАЗАНИЕ ✨</div>
+                <div class="result-content">
+                    <img id="resultImage" class="result-image" src="" alt="" style="display: none;">
+                    <div class="result-name" id="resultName">?</div>
+                    <div class="result-desc" id="resultDesc">Нажми на шар или кнопку</div>
+                </div>
+            </div>
         </div>
 
         <!-- История -->
@@ -325,31 +360,31 @@
         // Варианты результатов
         const results = [
             {
-                name: "Ластик",
+                name: "ЛАСТИК",
                 desc: "Ничего не забыл стереть?",
                 img: "/assets/eraser.png",
                 rare: false
             },
             {
-                name: "Сейф",
+                name: "СЕЙФ",
                 desc: "Храни деньги надёжнее...",
                 img: "/assets/Ceyf.png",
                 rare: false
             },
             {
-                name: "Микрофон",
+                name: "МИКРОФОН",
                 desc: "Говори громче!",
                 img: "/assets/micro.png",
                 rare: false
             },
             {
-                name: "Увлажнитель воздуха",
+                name: "УВЛАЖНИТЕЛЬ",
                 desc: "Воздух влажный???",
                 img: "/assets/vlag.png",
                 rare: false
             },
             {
-                name: "Лекарство",
+                name: "ЛЕКАРСТВО",
                 desc: "Не болей",
                 img: "/assets/eraser.png",  // Замени на medicine.png когда будет
                 rare: false
@@ -359,18 +394,14 @@
                 desc: "А вот ты и попался :)",
                 img: "",
                 rare: true
-            }
+            },
+            { name: "КОТ", desc: "Мяу? У тебя кот в судьбе", img: "", rare: false },
+            { name: "ПИЦЦА", desc: "Съешь меня сегодня", img: "", rare: false },
+            { name: "ДОЖДИК", desc: "Кап-кап... возьми зонт", img: "", rare: false },
+            { name: "ЗВЕЗДА", desc: "Загадай желание", img: "", rare: false },
+            { name: "ЧАЙ", desc: "Попей чайку", img: "", rare: false },
+            { name: "СОН", desc: "Пора спать", img: "", rare: false }
         ];
-
-        // Добавляем ещё 4 обычных варианта
-        const extraItems = [
-            { name: "Кот", desc: "Мяу?", img: "", rare: false },
-            { name: "Пицца", desc: "Съешь меня", img: "", rare: false },
-            { name: "Дождик", desc: "Кап-кап", img: "", rare: false },
-            { name: "Звезда", desc: "Падающая...", img: "", rare: false }
-        ];
-        
-        results.push(...extraItems);
 
         // Переменные состояния
         let isRolling = false;
@@ -391,15 +422,16 @@
             const btn = document.getElementById('rollBtn');
             const ballText = document.getElementById('ballText');
             const resultContainer = document.getElementById('resultContainer');
+            const resultImage = document.getElementById('resultImage');
+            const resultName = document.getElementById('resultName');
+            const resultDesc = document.getElementById('resultDesc');
             
             btn.disabled = true;
-            btn.classList.add('loading');
-            resultContainer.style.display = 'none';
             
             // Анимация магического шара
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 8; i++) {
                 ballText.style.animation = 'flicker 0.1s infinite';
-                ballText.textContent = magicPhrases[Math.floor(Math.random() * magicPhrases.length)];
+                ballText.textContent = magicPhrases[i % magicPhrases.length];
                 await sleep(300);
             }
             
@@ -412,6 +444,7 @@
                 result = results.find(r => r.rare === true);
                 rareCount++;
                 localStorage.setItem('rareCount', rareCount);
+                document.getElementById('rareCount').textContent = rareCount;
             } else {
                 const normalResults = results.filter(r => !r.rare);
                 result = normalResults[Math.floor(Math.random() * normalResults.length)];
@@ -420,17 +453,11 @@
             // Обновляем счётчики
             totalRolls++;
             localStorage.setItem('totalRolls', totalRolls);
-            
             document.getElementById('totalRolls').textContent = totalRolls;
-            document.getElementById('rareCount').textContent = rareCount;
             
             // Показываем результат
             ballText.style.animation = 'none';
             ballText.textContent = '?';
-            
-            const resultImage = document.getElementById('resultImage');
-            const resultTitle = document.getElementById('resultTitle');
-            const resultDesc = document.getElementById('resultDesc');
             
             if (result.img) {
                 resultImage.src = result.img;
@@ -439,16 +466,13 @@
                 resultImage.style.display = 'none';
             }
             
-            resultTitle.textContent = result.name;
+            resultName.textContent = result.name;
             resultDesc.textContent = result.desc;
-            
-            resultContainer.style.display = 'flex';
             
             // Добавляем в историю
             addToHistory(result);
             
             btn.disabled = false;
-            btn.classList.remove('loading');
             isRolling = false;
         }
 
@@ -465,7 +489,7 @@
                 time: time
             });
             
-            if (history.length > 10) history.pop();
+            if (history.length > 8) history.pop();
             
             localStorage.setItem('rollHistory', JSON.stringify(history));
             updateHistory();
@@ -486,9 +510,6 @@
                 </li>
             `).join('');
         }
-
-        // Клик по шару
-        document.getElementById('magicBall').addEventListener('click', roll);
     </script>
 </body>
 </html>

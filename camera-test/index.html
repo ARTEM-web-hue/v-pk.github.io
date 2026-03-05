@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест веб-камеры - В ПК!</title>
+    
+    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <link rel="stylesheet" href="/assets/css/top-panel.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0f172a;
+            font-size: 2.8em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #475569;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+
+        /* Модальное окно */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 32px;
+            padding: 40px;
+            max-width: 440px;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+            animation: gentle-appear 0.4s;
+        }
+
+        @keyframes gentle-appear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            background: #f1f5f9;
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            color: #3b82f6;
+        }
+
+        .modal-title {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .modal-text {
+            color: #475569;
+            margin-bottom: 28px;
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+
+        .modal-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 60px;
+            font-size: 1.2em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 10px 20px rgba(59,130,246,0.2);
+        }
+
+        .modal-btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 15px 30px rgba(59,130,246,0.3);
+        }
+
+        /* Основная карточка */
+        .dashboard {
+            background: white;
+            border-radius: 40px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Шапка */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .camera-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f8fafc;
+            padding: 8px 16px;
+            border-radius: 40px;
+        }
+
+        .camera-led {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #94a3b8;
+            transition: all 0.3s;
+        }
+
+        .camera-led.active {
+            background: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .camera-name {
+            color: #0f172a;
+            font-weight: 500;
+        }
+
+        .device-selector {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #0f172a;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 0.95em;
+            cursor: pointer;
+            min-width: 250px;
+        }
+
+        .device-selector:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        /* Сетка */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        /* Видео */
+        .video-container {
+            background: #0f172a;
+            border-radius: 24px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+        }
+
+        #videoElement {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Информация о камере */
+        .info-container {
+            background: #f8fafc;
+            border-radius: 24px;
+            padding: 24px;
+        }
+
+        .info-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #64748b;
+        }
+
+        .info-value {
+            color: #0f172a;
+            font-weight: 500;
+        }
+
+        /* Инструменты */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .tool-card {
+            background: #f8fafc;
+            border-radius: 24px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .tool-card:hover {
+            background: #f1f5f9;
+            border-color: #3b82f6;
+        }
+
+        .tool-icon {
+            font-size: 2em;
+        }
+
+        .tool-info {
+            flex: 1;
+        }
+
+        .tool-title {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .tool-status {
+            font-size: 0.9em;
+            color: #64748b;
+        }
+
+        .tool-status.active {
+            color: #22c55e;
+        }
+
+        /* Снапшот */
+        .snapshot-section {
+            margin-top: 24px;
+            padding: 24px;
+            background: #f8fafc;
+            border-radius: 24px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .snapshot-title {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 16px;
+        }
+
+        .snapshot-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .snapshot-item {
+            aspect-ratio: 1;
+            background: #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .snapshot-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .snapshot-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @media (max-width: 800px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .snapshot-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="top-panel-placeholder"></div>
+
+    <!-- Модальное окно -->
+    <div class="modal" id="permissionModal">
+        <div class="modal-content">
+            <div class="modal-icon">📸</div>
+            <div class="modal-title">Хотите проверить камеру?</div>
+            <div class="modal-text">
+                Мы попросим доступ к веб-камере, чтобы показать<br>
+                изображение и параметры устройства.<br>
+                <span style="color: #64748b; font-size: 0.95em; margin-top: 8px; display: block;">
+                    Данные никуда не отправляются, всё работает локально
+                </span>
+            </div>
+            <button class="modal-btn" onclick="initCamera()">
+                Разрешить доступ
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>📸 Тест веб-камеры</h1>
+        <div class="subtitle">Проверьте работу камеры в реальном времени</div>
+
+        <div class="dashboard">
+            <!-- Шапка -->
+            <div class="dashboard-header">
+                <div class="camera-info">
+                    <div class="camera-led" id="cameraLed"></div>
+                    <span class="camera-name" id="cameraName">Ожидание разрешения</span>
+                </div>
+                <select class="device-selector" id="cameraSelect" disabled>
+                    <option>Выберите камеру</option>
+                </select>
+            </div>
+
+            <!-- Основная сетка -->
+            <div class="grid-2">
+                <!-- Видео -->
+                <div class="video-container">
+                    <video id="videoElement" autoplay playsinline></video>
+                </div>
+
+                <!-- Информация -->
+                <div class="info-container">
+                    <div class="info-title">ℹ️ Информация о камере</div>
+                    <div class="info-row">
+                        <span class="info-label">Название</span>
+                        <span class="info-value" id="cameraModel">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Разрешение</span>
+                        <span class="info-value" id="cameraResolution">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Частота кадров</span>
+                        <span class="info-value" id="cameraFps">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Формат</span>
+                        <span class="info-value" id="cameraFormat">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Инструменты -->
+            <div class="tools-grid">
+                <div class="tool-card" onclick="takeSnapshot()">
+                    <div class="tool-icon">📷</div>
+                    <div class="tool-info">
+                        <div class="tool-title">Сделать снимок</div>
+                        <div class="tool-status" id="snapshotStatus">Готово</div>
+                    </div>
+                </div>
+
+                <div class="tool-card" onclick="toggleMirror()">
+                    <div class="tool-icon">🔄</div>
+                    <div class="tool-info">
+                        <div class="tool-title">Зеркало</div>
+                        <div class="tool-status" id="mirrorStatus">Выключено</div>
+                    </div>
+                </div>
+
+                <div class="tool-card" onclick="toggleTorch()" id="torchTool" style="display: none;">
+                    <div class="tool-icon">🔦</div>
+                    <div class="tool-info">
+                        <div class="tool-title">Фонарик</div>
+                        <div class="tool-status" id="torchStatus">Выключено</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Снимки -->
+            <div class="snapshot-section" id="snapshotSection" style="display: none;">
+                <div class="snapshot-title">📸 Последние снимки</div>
+                <div class="snapshot-grid" id="snapshotGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/top-panel.js"></script>
+    
+    <script>
+        // Состояние
+        let mediaStream = null;
+        let videoElement = document.getElementById('videoElement');
+        let snapshots = [];
+        let mirrorEnabled = false;
+        let torchSupported = false;
+
+        // Инициализация камеры
+        async function initCamera() {
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: {
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 },
+                        facingMode: 'user'
+                    }
+                });
+                
+                videoElement.srcObject = mediaStream;
+                
+                document.getElementById('permissionModal').classList.add('hidden');
+                
+                document.getElementById('cameraLed').classList.add('active');
+                document.getElementById('cameraName').textContent = 'Камера работает';
+                
+                await getDevices();
+                getCameraInfo();
+                
+                // Проверка поддержки фонарика
+                const track = mediaStream.getVideoTracks()[0];
+                const capabilities = track.getCapabilities?.();
+                if (capabilities?.torch) {
+                    document.getElementById('torchTool').style.display = 'flex';
+                    torchSupported = true;
+                }
+                
+            } catch (error) {
+                alert('Не удалось получить доступ к камере');
+            }
+        }
+
+        // Получение устройств
+        async function getDevices() {
+            const allDevices = await navigator.mediaDevices.enumerateDevices();
+            const cameras = allDevices.filter(d => d.kind === 'videoinput');
+            
+            const select = document.getElementById('cameraSelect');
+            select.disabled = false;
+            select.innerHTML = cameras.map((cam, i) => 
+                `<option value="${cam.deviceId}">${cam.label || `Камера ${i+1}`}</option>`
+            ).join('');
+        }
+
+        // Смена камеры
+        document.getElementById('cameraSelect').addEventListener('change', async function() {
+            if (this.value) {
+                if (mediaStream) {
+                    mediaStream.getTracks().forEach(t => t.stop());
+                }
+                
+                mediaStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { deviceId: { exact: this.value } }
+                });
+                
+                videoElement.srcObject = mediaStream;
+                getCameraInfo();
+            }
+        });
+
+        // Информация о камере
+        function getCameraInfo() {
+            const track = mediaStream.getVideoTracks()[0];
+            const settings = track.getSettings();
+            const capabilities = track.getCapabilities?.();
+            
+            document.getElementById('cameraModel').textContent = track.label || 'Неизвестно';
+            
+            let resolution = '—';
+            if (settings.width && settings.height) {
+                resolution = `${settings.width} x ${settings.height}`;
+            }
+            document.getElementById('cameraResolution').textContent = resolution;
+            
+            let fps = '—';
+            if (settings.frameRate) {
+                fps = Math.round(settings.frameRate) + ' fps';
+            }
+            document.getElementById('cameraFps').textContent = fps;
+            
+            let format = '—';
+            if (capabilities?.videoBitsPerSecond) {
+                format = 'HD';
+            }
+            document.getElementById('cameraFormat').textContent = format;
+        }
+
+        // Сделать снимок
+        function takeSnapshot() {
+            const canvas = document.createElement('canvas');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            
+            const ctx = canvas.getContext('2d');
+            
+            if (mirrorEnabled) {
+                ctx.translate(canvas.width, 0);
+                ctx.scale(-1, 1);
+            }
+            
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            
+            const imageUrl = canvas.toDataURL('image/png');
+            
+            snapshots.unshift(imageUrl);
+            if (snapshots.length > 8) snapshots.pop();
+            
+            updateSnapshots();
+            
+            const status = document.getElementById('snapshotStatus');
+            status.textContent = 'Снимок готов!';
+            status.style.color = '#22c55e';
+            
+            setTimeout(() => {
+                status.textContent = 'Готово';
+                status.style.color = '#64748b';
+            }, 2000);
+        }
+
+        // Обновление снимков
+        function updateSnapshots() {
+            const section = document.getElementById('snapshotSection');
+            const grid = document.getElementById('snapshotGrid');
+            
+            if (snapshots.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            section.style.display = 'block';
+            
+            grid.innerHTML = snapshots.map((snapshot, i) => `
+                <div class="snapshot-item" onclick="downloadSnapshot(${i})">
+                    <img src="${snapshot}" alt="Снимок ${i+1}">
+                </div>
+            `).join('');
+        }
+
+        // Скачивание снимка
+        function downloadSnapshot(index) {
+            const link = document.createElement('a');
+            link.download = `camera-${Date.now()}.png`;
+            link.href = snapshots[index];
+            link.click();
+        }
+
+        // Зеркало
+        function toggleMirror() {
+            mirrorEnabled = !mirrorEnabled;
+            const status = document.getElementById('mirrorStatus');
+            
+            videoElement.style.transform = mirrorEnabled ? 'scaleX(-1)' : 'none';
+            
+            status.textContent = mirrorEnabled ? 'Включено' : 'Выключено';
+            status.style.color = mirrorEnabled ? '#22c55e' : '#64748b';
+        }
+
+        // Фонарик
+        async function toggleTorch() {
+            if (!torchSupported) return;
+            
+            const track = mediaStream.getVideoTracks()[0];
+            const status = document.getElementById('torchStatus');
+            
+            try {
+                const currentTorch = track.getConstraints().torch || false;
+                await track.applyConstraints({ torch: !currentTorch });
+                
+                status.textContent = !currentTorch ? 'Включено' : 'Выключено';
+                status.style.color = !currentTorch ? '#22c55e' : '#64748b';
+                
+            } catch (error) {
+                console.error('Torch error:', error);
+            }
+        }
+
+        // При загрузке
+        window.onload = () => {
+            // Модалка уже видна
+        };
+    </script>
+</body>
+</html>
